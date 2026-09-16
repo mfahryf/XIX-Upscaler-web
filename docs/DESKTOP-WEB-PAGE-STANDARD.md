@@ -95,12 +95,43 @@ Mesin vektor juga dimiliki aplikasi desktop. Menyalinnya secara manual
 ke repo halaman akan menghasilkan dua salinan yang menyimpang. Aturannya:
 
 - sumber kebenaran adalah repo aplikasi desktop;
-- repo halaman menyalinnya lewat script saat build, bukan disimpan
-  sebagai berkas yang dirawat tangan;
-- script mencatat sidik jari berkas sumber, dan build gagal bila sidik
-  jari berbeda dari yang tercatat;
+- repo halaman menyalinnya lewat script, dan berkas hasilnya tidak
+  disunting langsung;
+- script mencatat sidik jari untuk dua sisi, karena keduanya diperiksa di
+  tempat yang berbeda;
 - hanya bagian yang berjalan di browser yang disalin. Runner Node milik
   aplikasi desktop tidak ikut, karena halaman memakai berkas lokal.
+
+**Berkas hasil ikut disimpan di repo.** Ini keputusan sadar. Build image
+hanya menyalin isi repo halaman ke dalam image, sehingga build tidak dapat
+membaca repo aplikasi desktop. Menyalin mesin di dalam build akan membuat
+build bergantung pada repo lain, dan itu bertentangan dengan cara Coolify
+membangun satu repo. Karena itu berkas hasil disimpan, dan kesegarannya
+dijaga oleh sidik jari, bukan oleh larangan menyimpan.
+
+**Periksa sidik jari di dua kesempatan.** Keduanya perlu karena masing-
+masing menangkap hal yang berbeda:
+
+| Perintah | Kapan dipakai | Yang diperiksa |
+| --- | --- | --- |
+| `engine:verify` | Saat mengembangkan, ketika repo sumber tersedia | Sidik jari berkas sumber |
+| `engine:verify-generated` | Saat build image, tanpa repo sumber | Sidik jari berkas hasil |
+
+Pemeriksaan pada berkas sumber menangkap mesin yang berubah di repo aplikasi.
+Pemeriksaan pada berkas hasil menangkap salinan yang tercampur di repo halaman.
+Tanpa salah satunya, akan ada perubahan mesin yang lolos tanpa disadari.
+
+### Bentuk modul mesin
+
+Mesin di aplikasi desktop dapat berbentuk CommonJS, sedangkan halaman ini
+ESM. Mengimpor berkas CommonJS langsung dari halaman akan gagal pada saat
+build, dengan pesan bahwa fungsi yang dituju tidak diekspor.
+
+Bungkus berkas itu menjadi modul ESM di dalam skrip penyalin, bukan dengan
+menyunting berkas sumber. Dengan begitu sumber tetap satu-satunya acuan, dan
+halaman tidak menyimpan versi yang sudah diubah tangannya sendiri. Contoh
+pada XIX-Vectorizer: `detect.js` dibungkus, sedangkan `worker.js` disalin apa
+adanya karena isinya sudah mandiri dan hanya memakai `postMessage`.
 
 ### Bentuk berkas mesin
 

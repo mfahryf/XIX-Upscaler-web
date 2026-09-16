@@ -1,0 +1,6 @@
+node_modules/
+dist/
+# Berkas mesin di src/engine adalah hasil salinan dari repo XIX-Vectorizer.
+# Berkas itu ikut disimpan supaya build image dapat berjalan tanpa repo sumber.
+# Kesegarannya dijaga oleh sidik jari di scripts/engine.lock.json, bukan oleh
+# larangan menyimpan. Jangan menyuntingnya langsung.

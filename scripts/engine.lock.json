@@ -1,0 +1,12 @@
+{
+  "note": "Sidik jari mesin. Dihasilkan oleh scripts/sync-engine.mjs.",
+  "sourceRepo": "XIX-Vectorizer/src-tauri/pngtosvg-runtime",
+  "sourceHashes": {
+    "worker.js": "c94fa9b0963711272e3ba7be9c2edaaef5fd99a2b52a71d7015e7e21f56eb43a",
+    "detect.js": "6080c1f6f8e22fadb2fe3704f795c809ff168047eb1c69f155360c1343245534"
+  },
+  "generated": {
+    "worker.js": "c94fa9b0963711272e3ba7be9c2edaaef5fd99a2b52a71d7015e7e21f56eb43a",
+    "detect.js": "5c5a23c70c1be6c47933485669c009fa3d39b6c44dff4a7f13bea57dcec76275"
+  }
+}
