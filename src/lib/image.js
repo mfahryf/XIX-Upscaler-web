@@ -61,10 +61,13 @@ export function checkFile(file) {
   }
 }
 
+// Kanvas untuk membaca piksel dan untuk menghasilkan data URL.
+//
+// Sengaja selalu memakai elemen <canvas>, bukan OffscreenCanvas. Alasannya,
+// OffscreenCanvas tidak memiliki toDataURL, sehingga gambar hasil tidak dapat
+// ditampilkan dan halaman gagal pada peramban yang menyediakan OffscreenCanvas.
+// Memakai satu jenis kanvas juga membuat perilakunya sama di semua peramban.
 function createCanvas(width, height) {
-  if (typeof OffscreenCanvas === "function") {
-    return new OffscreenCanvas(width, height);
-  }
   const canvas = document.createElement("canvas");
   canvas.width = width;
   canvas.height = height;
@@ -151,15 +154,18 @@ async function decodeFullThenScale(file, target) {
 
 function toImageData(decoded, target) {
   if (decoded instanceof ImageData) return decoded;
-  if (decoded instanceof HTMLImageElement) {
+  // Kanvas yang sudah berukuran benar cukup dibaca langsung, tanpa kanvas
+  // perantara tambahan.
+  if (decoded instanceof HTMLCanvasElement) {
+    return decoded.getContext("2d").getImageData(0, 0, decoded.width, decoded.height);
+  }
+  if (typeof HTMLImageElement !== "undefined" && decoded instanceof HTMLImageElement) {
     const canvas = createCanvas(decoded.naturalWidth, decoded.naturalHeight);
     const context = canvas.getContext("2d");
     context.drawImage(decoded, 0, 0);
     return context.getImageData(0, 0, canvas.width, canvas.height);
   }
-  if (typeof OffscreenCanvas === "function" && decoded instanceof OffscreenCanvas) {
-    return decoded.getContext("2d").getImageData(0, 0, decoded.width, decoded.height);
-  }
+  // ImageBitmap atau sumber lain: digambar ke kanvas berukuran target.
   const canvas = createCanvas(target.width, target.height);
   const context = canvas.getContext("2d");
   context.drawImage(decoded, 0, 0, target.width, target.height);
