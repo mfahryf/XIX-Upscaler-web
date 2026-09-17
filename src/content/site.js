@@ -38,7 +38,9 @@ export const PLAN_LABEL = (() => {
 // benar-benar dikerjakan aplikasi: tiga mesin (dua daring, satu lokal),
 // artboard yang dapat diatur, ekspor SVG/AI/DXF, keluaran siap spesifikasi
 // Adobe Stock, proses paralel, mode Tor bawaan, padding otomatis, dan
-// installer yang kecil.
+// installer yang kecil. Butir terakhir menyebut tampilannya: kerangka aplikasi
+// ini meniru pemutar musik Winamp klasik, tetapi digarap ulang dengan lapisan
+// kaca yang modern.
 export const HERO_HIGHLIGHTS = [
   "Three vector engines — two AI-powered online, one fully local and offline",
   "AI vectorizing that returns clean, tidy artwork",
@@ -49,6 +51,7 @@ export const HERO_HIGHLIGHTS = [
   "Built-in Tor mode — route the online engines through Tor when you need it",
   "Automatic padding: full-bleed, or +7% breathing room",
   "Lightweight — the installer is about 7 MB",
+  "A nostalgic Winamp-style shell, rebuilt with a modern glass finish",
 ];
 
 export const FEATURES = [

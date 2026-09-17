@@ -116,9 +116,9 @@ describe("VectorizerPage", () => {
     expect(butir).toHaveLength(HERO_HIGHLIGHTS.length);
     expect(butir.map((li) => li.textContent)).toEqual([...HERO_HIGHLIGHTS]);
 
-    // Sembilan keunggulan yang diminta pemilik produk: tiga mesin, hasil AI,
+    // Sepuluh keunggulan yang diminta pemilik produk: tiga mesin, hasil AI,
     // artboard, ekspor, keluaran siap spesifikasi Adobe Stock, konkurensi,
-    // mode Tor bawaan, padding otomatis, dan ukuran installer.
+    // mode Tor bawaan, padding otomatis, ukuran installer, dan tampilan.
     const teks = butir.map((li) => li.textContent).join(" | ");
     expect(teks).toMatch(/engines? — two AI-powered online, one fully local and offline/);
     expect(teks).toMatch(/clean, tidy artwork/);
@@ -129,6 +129,7 @@ describe("VectorizerPage", () => {
     expect(teks).toMatch(/Tor mode/);
     expect(teks).toMatch(/\+7% breathing room/);
     expect(teks).toMatch(/installer is about 7 MB/);
+    expect(teks).toMatch(/Winamp-style shell, rebuilt with a modern glass finish/);
 
     // Daftar lama yang berisi tiga keterangan pendek sudah tidak dipakai.
     expect(container.querySelector(".hero-facts")).toBeNull();
