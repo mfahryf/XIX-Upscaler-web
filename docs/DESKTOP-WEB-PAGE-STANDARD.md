@@ -346,6 +346,16 @@ dijual, dan menyisakan satu tombol pembelian.
 
 Aturan yang berlaku untuk setiap aplikasi:
 
+- **Hero menyediakan dua aksi, bukan satu.** Aksi pertama percobaan gratis
+  dengan gaya utama, aksi kedua unduh dengan gaya kedua di sebelah kanannya.
+  Tanpa aksi kedua, pengunjung yang datang memang untuk memasang aplikasinya
+  harus menggulir seluruh halaman lebih dulu. Hanya satu tombol yang boleh
+  bergaya utama di hero, supaya tidak ada dua hal yang tampak sama pentingnya;
+- **aksi unduh di hero menunjuk bagian unduhan, bukan berkas installer
+  langsung.** Alamat installer diisi dari konfigurasi saat build dan bisa
+  belum tersedia, sedangkan bagian unduhan sudah menangani keadaan itu dengan
+  tombol nonaktif dan penjelasannya. Tautan langsung ke berkas akan menjadi
+  tautan mati pada build yang belum punya alamat installer;
 - harga dan kuota hanya boleh muncul di kartu lisensi, bukan di kartu
   installer dan bukan di bagian lain;
 - setiap kartu memuat tepat satu tombol, dan tombolnya diletakkan di kaki
@@ -464,6 +474,11 @@ keduanya terbaca sebagai satu kolom isi.
 
 ### Bagian unduhan dan harga
 
+- [ ] Hero memuat dua aksi: percobaan gratis dengan gaya utama, unduh dengan
+      gaya kedua di sebelah kanannya, keduanya dalam satu baris pada layar
+      lebar.
+- [ ] Aksi unduh menunjuk bagian unduhan dan sampai ke sana saat diklik,
+      bukan menunjuk berkas installer yang mungkin belum ada.
 - [ ] Bagian unduhan berisi dua kartu: installer dan lisensi.
 - [ ] Harga dan kuota hanya muncul di kartu lisensi.
 - [ ] Tombol menuju checkout hanya muncul di menu header dan di kartu

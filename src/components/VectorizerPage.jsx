@@ -81,6 +81,14 @@ export function VectorizerPage() {
               <a className="button button-primary" href="#try">
                 Try it free
               </a>
+              {/* Tombol unduh di sebelah tombol coba gratis. yang ditunjuk
+                  adalah bagian unduhan, bukan berkas installer langsung, karena
+                  alamat installer diisi dari konfigurasi dan bisa belum tersedia.
+                  Bagian unduhan sudah menangani kedua keadaan itu. */}
+              <a className="button button-secondary" href="#download">
+                <Download className="nav-icon" aria-hidden="true" />
+                Download app
+              </a>
             </div>
           </div>
           {/* Kolom kanan hero menampilkan jendela aplikasi yang sebenarnya,

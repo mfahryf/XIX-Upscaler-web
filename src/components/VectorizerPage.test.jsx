@@ -72,6 +72,31 @@ describe("VectorizerPage", () => {
     expect(tujuan).toEqual(["#try", "#download"]);
   });
 
+  // Pengunjung yang sudah yakin ingin memasang aplikasinya tidak perlu
+  // menggulir seluruh halaman untuk menemukan unduhannya. Tombolnya
+  // diletakkan di sebelah tombol coba gratis, dan yang ditunjuk adalah bagian
+  // unduhan, bukan berkas installer langsung, karena alamat installer diisi
+  // dari konfigurasi dan bisa belum tersedia.
+  it("menyediakan tombol unduh di sebelah tombol coba gratis", () => {
+    const { container } = render(<VectorizerPage />);
+    const aksi = container.querySelector(".hero-actions");
+    expect(aksi, "elemen .hero-actions").not.toBeNull();
+
+    const tautan = [...aksi.querySelectorAll("a")];
+    expect(tautan).toHaveLength(2);
+
+    // Coba gratis dulu, unduh di sebelah kanannya.
+    expect(tautan[0]).toHaveTextContent("Try it free");
+    expect(tautan[0]).toHaveAttribute("href", "#try");
+    expect(tautan[0].className).toMatch(/button-primary/);
+
+    expect(tautan[1]).toHaveTextContent("Download app");
+    expect(tautan[1]).toHaveAttribute("href", "#download");
+    // Gaya kedua, supaya hanya ada satu tombol utama di hero.
+    expect(tautan[1].className).toMatch(/button-secondary/);
+    expect(tautan[1].querySelector("svg"), "ikon pada tombol unduh").not.toBeNull();
+  });
+
   // Bagian unduhan berisi dua kartu: satu menerangkan installer, satu
   // menerangkan lisensi. Harga dan tombol menuju checkout hanya boleh muncul di
   // kartu lisensi, supaya tidak ada dua tombol pembelian di satu halaman.

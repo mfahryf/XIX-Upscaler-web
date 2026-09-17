@@ -38,10 +38,17 @@ katalog gateway saat build, bukan ditulis di kode.
 
 Empat bagian, berurutan:
 
-1. **Hero.** Judul, daftar keunggulan aplikasi, satu tombol coba gratis, dan
+1. **Hero.** Judul, daftar keunggulan aplikasi, dua tombol berdampingan, dan
    pratinjau jendela aplikasi pada kolom kanan. Daftar keunggulan diletakkan
    di antara judul dan tombol, sehingga pengunjung membaca alasannya sebelum
-   diminta menekan apa pun.
+   diminta menekan apa pun. Tombolnya adalah **Try it free** (gaya utama,
+   menuju bagian percobaan gratis) dan **Download app** (gaya kedua, menuju
+   bagian unduhan). Tombol unduh ada di hero karena pengunjung yang sudah
+   yakin ingin memasang aplikasinya tidak perlu menggulir seluruh halaman
+   untuk menemukannya. Yang ditunjuk adalah bagian unduhan, bukan berkas
+   installer langsung, karena alamat installer diisi dari konfigurasi saat
+   build dan bisa belum tersedia; bagian unduhan sudah menangani kedua
+   keadaan itu.
 2. **Coba gratis.** Kotak unggah satu berkas, kemajuan per tahap, hasil
    sebelum-sesudah, tombol simpan SVG, tombol mulai ulang. Bagian ini tidak
    memakai judul sendiri: judul halaman di atasnya sudah menjelaskan isinya,
