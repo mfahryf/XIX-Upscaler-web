@@ -134,10 +134,6 @@ export function DemoPanel() {
         <div>
           <p className="section-label">Try free</p>
           <h2 id="demo-title">Vectorize one image, right here</h2>
-          <p className="demo-lede">
-            Nothing is uploaded anywhere. The V3 engine runs in your browser, and you can compare
-            the result against the original straight away.
-          </p>
         </div>
         <button
           type="button"
@@ -175,9 +171,7 @@ export function DemoPanel() {
           <span className="dropzone-mark" aria-hidden="true">SVG</span>
           <p className="dropzone-title">Drop one image here</p>
           <p className="dropzone-detail">
-            {DEMO_LIMITS.accepted}, up to {formatBytes(DEMO_LIMITS.fileBytes)}. Images above{" "}
-            {formatMegapixels(DEMO_LIMITS.maxPixels)} are scaled down, and the desktop app still
-            uses the full size.
+            {DEMO_LIMITS.accepted}, up to {formatBytes(DEMO_LIMITS.fileBytes)}.
           </p>
           <button type="button" className="button button-primary" onClick={() => inputRef.current?.click()}>
             Choose image

@@ -68,11 +68,9 @@ export function VectorizerPage() {
       <main className="page-shell">
         <section className="hero" aria-labelledby="hero-title">
           <div className="hero-copy">
-            <p className="section-label">{SITE.product}</p>
             <h1 id="hero-title">
               Turn images into SVG, <span className="hero-accent">without losing the shapes</span>
             </h1>
-            <p className="hero-lede">{SITE.tagline}</p>
             <div className="hero-actions">
               <a className="button button-primary" href="#try">
                 Try it free

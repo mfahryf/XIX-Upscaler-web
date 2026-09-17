@@ -4,7 +4,6 @@ export const SITE = {
   name: "XIXLabs",
   product: "XIX Vectorizer",
   byline: "by XIXLabs.net",
-  tagline: "Turn images into clean SVG with three vector engines, all running on your own computer.",
 };
 
 // Mirrors the gateway catalog for display copy. The gateway catalog stays the
