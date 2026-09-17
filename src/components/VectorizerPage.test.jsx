@@ -235,4 +235,29 @@ describe("VectorizerPage", () => {
     expect(wide, "blok media lebar").not.toBeNull();
     expect(wide[0]).not.toMatch(/\.app-footer\s*\{[^}]*padding-top/);
   });
+
+  // Berkas XIX.svg berisi gambar hitam dengan latar bening, bukan bentuk
+  // vektor yang dapat diwarnai. Di atas kerangka gelap halaman ini, logo hitam
+  // nyaris tidak terlihat: diukur langsung di peramban, rata-rata kecerahannya
+  // 27 dari 255 pada header dan 9 pada catatan kaki. Saringan di bawah
+  // memutihkan setiap piksel yang tergambar tanpa menyentuh bagian beningnya.
+  // Uji ini menjaga agar saringan itu tidak hilang pada salah satu tempat,
+  // karena logo yang kembali hitam tidak memicu kegagalan lain di halaman dan
+  // hanya akan disadari dengan melihatnya.
+  it("memutihkan logo XIX di header dan catatan kaki", () => {
+    const stylesheet = readFileSync("src/styles.css", "utf8");
+    for (const kelas of ["app-brand-logo", "footer-brand-logo"]) {
+      const aturan = stylesheet.match(new RegExp("\\." + kelas + "\\s*\\{[^}]*\\}"));
+      expect(aturan, "aturan ." + kelas + " di styles.css").not.toBeNull();
+      expect(aturan[0], "saringan pemutih pada ." + kelas).toMatch(
+        /filter:\s*brightness\(0\)\s*invert\(1\)/
+      );
+    }
+
+    // Berkas aslinya tidak disunting, karena favicon memakai berkas yang sama
+    // dan di sana latarnya terang.
+    const svg = readFileSync("public/XIX.svg", "utf8");
+    expect(svg).toMatch(/base64,/);
+    expect(svg).not.toMatch(/<rect[^>]*fill="#fff"/i);
+  });
 });

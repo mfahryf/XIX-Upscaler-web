@@ -169,11 +169,18 @@ input,
 }
 
 /* The mark is the shared XIX logo asset, not a drawn square, so the page and
-   the desktop app carry the same brand. */
+   the desktop app carry the same brand. The asset itself is a black mark on a
+   transparent background, which all but disappears against this page's dark
+   shell: measured on the running page the header averaged a luminance of 27
+   out of 255, and the footer only 9. The filter turns every drawn pixel white
+   while leaving the transparent areas alone, so the mark reads at full
+   strength without a second copy of the asset, and the favicon keeps using the
+   original file. */
 .app-brand-logo {
   width: 2.5rem;
   height: 1.75rem;
   object-fit: contain;
+  filter: brightness(0) invert(1);
 }
 
 .app-brand-wordmark {
@@ -1521,6 +1528,8 @@ h2 {
   width: 2.5rem;
   height: 1.75rem;
   object-fit: contain;
+  /* Same reason as the header mark: the raw asset is black. */
+  filter: brightness(0) invert(1);
 }
 
 .footer-brand-name {

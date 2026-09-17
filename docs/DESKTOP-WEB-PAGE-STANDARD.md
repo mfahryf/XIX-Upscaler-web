@@ -385,6 +385,25 @@ Setiap halaman wajib memiliki state loading, empty, error, dan success.
 Semua kontrol keyboard memiliki focus ring, dan gerakan animasi dapat
 dikurangi pada perangkat yang meminta `prefers-reduced-motion`.
 
+### Tanda merek di atas kerangka gelap
+
+Aset `XIX.svg` adalah gambar hitam dengan latar bening, bukan bentuk vektor
+yang dapat diwarnai lewat atribut. Di atas kerangka gelap halaman ini, logo
+seperti itu nyaris tidak terlihat: diukur langsung pada peramban, rata-rata
+kecerahannya 27 dari 255 pada header dan 9 pada catatan kaki, sementara
+latar di belakangnya 22 dari 255.
+
+Aturannya: di tempat yang latarnya gelap, tanda merek diputihkan dengan
+saringan CSS `brightness(0) invert(1)`, bukan dengan menggambar ulang
+berkasnya. Berkas aslinya dibiarkan apa adanya karena favicon memakai
+berkas yang sama dan di sana latarnya terang.
+
+Angka hasil sesudah perbaikan, pada halaman yang berjalan: header 82,
+catatan kaki 67, dengan piksel putih murni yang sebelumnya tidak ada sama
+sekali. Angka ini yang dipakai sebagai bukti, bukan pemeriksaan dengan
+mata, karena logo gelap di latar gelap tidak memicu kegagalan lain di
+halaman dan hanya akan disadari pada layar yang benar-benar dilihat.
+
 ### Irama jarak tegak
 
 Jarak antar bagian diatur oleh **satu** nilai pada pembungkus bagian, bukan
