@@ -224,7 +224,81 @@ Ketentuan tampilan:
 - disediakan tombol simpan SVG, dan ukuran berkasnya disebutkan;
 - disediakan tombol mulai ulang.
 
-## 8. Monetisasi dan tombol pembelian
+## 8. Pratinjau aplikasi desktop
+
+Aplikasi desktop tidak punya antarmuka web, sehingga pengunjung tidak dapat
+mencoba atau melihat bentuk aplikasinya sebelum memasang. Bagian unduhan
+karena itu memuat pratinjau jendela aplikasi. Tanpa pratinjau, satu-satunya
+gambaran yang dimiliki pengunjung adalah tulisan di halaman.
+
+Pratinjau bukan hiasan bebas. Ia disalin dari aplikasi, bukan digambar ulang
+dengan perkiraan. Pratinjau yang hanya "mirip" akan terbaca salah oleh orang
+yang sudah memakai aplikasinya, dan itulah kesan pertama yang mereka dapat.
+
+### Yang disalin, dan dari mana
+
+| Bagian | Sumber nilai |
+| --- | --- |
+| Ukuran dan sifat jendela | `src-tauri/tauri.conf.json` aplikasi |
+| Latar, sudut, bayangan, dan palet | Stylesheet tema aplikasi |
+| Tinggi bilah judul, lebar layar status | Stylesheet aplikasi |
+| Urutan bagian, dari judul sampai daftar berkas | Markup `index.html` aplikasi |
+| Tulisan pada setiap sel | Markup dan skrip aplikasi |
+
+Contoh nilai pada XIX-Vectorizer: jendela 300 x 600 tanpa bingkai sistem
+dengan margin 6 px, radius 18 px, bilah judul 34 px, layar status 122 px,
+tombol transportasi 30 x 24 px, dan sepuluh batang indikator aktivitas.
+
+### Ketentuan yang berlaku untuk setiap aplikasi
+
+- **Paletnya palet aplikasi, bukan palet halaman**, dan variabelnya dikurung
+  pada pembungkus pratinjau supaya tidak membocorkan warna ke bagian lain
+  halaman.
+- **Keadaan yang dipotret adalah saat aplikasi bekerja**, bukan saat kosong.
+  Jendela kosong tidak memperlihatkan apa pun tentang cara aplikasi dipakai,
+  termasuk kontrol yang dinonaktifkan selama proses berjalan.
+- **Angka yang tampil harus saling konsisten.** Layar status, baris
+  keterangan, bilah kemajuan, dan daftar berkas menceritakan proses yang
+  sama. Bila aplikasi menghitung kemajuan dari berkas yang sudah selesai,
+  pratinjau juga harus begitu.
+- **Tidak ada tanda kegagalan.** Baris yang gagal membuat produk terlihat
+  rusak bagi pengunjung yang belum pernah memakainya.
+- **Keunggulan aplikasi ditonjolkan.** Pada XIX-Vectorizer, daftar mesin
+  dibuka supaya pengunjung tahu aplikasi berisi tiga mesin dan mesin mana
+  yang sedang dipakai.
+- **Pratinjau bukan kontrol.** Seluruh isinya elemen bukan-interaktif dan
+  disembunyikan dari teknologi bantu, sedangkan pembungkusnya diumumkan
+  sebagai satu gambar dengan keterangan singkat. Tanpa aturan ini, pembaca
+  layar akan menemukan deretan tombol yang tidak dapat ditekan.
+- **Pada layar sangat sempit, pratinjau dikecilkan sebagai satu kesatuan,**
+  bukan dipotong dan bukan dibiarkan mendorong halaman melebar. Lebar 300 px
+  berasal dari jendela aslinya, jadi pratinjau tidak dapat dibuat lebih sempit
+  tanpa mengubah proporsinya. Yang dipakai adalah penskalaan seragam, sehingga
+  bentuknya tetap benar meski ukurannya mengecil. Pada XIX-Vectorizer ambangnya
+  359 px ke bawah.
+
+### Cara memverifikasi
+
+Membandingkan dua tangkapan layar dengan mata tidak cukup, karena mata
+memaklumi bentuk yang mirip. Yang dipakai:
+
+1. Jalankan berkas tampilan aplikasi apa adanya di peramban, dengan jembatan
+   Tauri tiruan. `invoke`, `listen`, dan pembungkus jendela dipalsukan
+   seadanya supaya skrip aplikasi hidup.
+2. Susun keadaan yang sama seperti pada pratinjau: jumlah berkas, kemajuan,
+   dan daftar mesin yang sedang dibuka.
+3. Ukur posisi, ukuran, dan nilai gaya terhitung setiap elemen pada kedua
+   sisi, lalu bandingkan per elemen.
+
+Yang memang tidak akan sama adalah fase animasi: batang indikator berdenyut
+terus, sehingga tingginya berbeda pada setiap potret. Tinggi dasar yang
+ditetapkan aplikasi tetap harus sama.
+
+Uji otomatis pada repo halaman tidak menyalin angka piksel, karena angka itu
+berubah setiap kali aplikasi berubah. Yang diuji adalah strukturnya: jumlah
+baris, urutan sel, penanda mesin terpilih, dan tidak adanya baris gagal.
+
+## 9. Monetisasi dan tombol pembelian
 
 Halaman tidak pernah menampilkan kunci API provider, tidak membuat
 invoice sendiri, dan tidak menebak status pembayaran. Tombol pembelian
@@ -238,7 +312,7 @@ lain, sehingga kode lisensi yang terbit tidak dikenali gateway. Ambil
 nilai itu dari katalog pada saat build, dan jangan menuliskannya di
 dalam kode.
 
-## 9. Palet dan UI
+## 10. Palet dan UI
 
 Halaman memakai shell dan komponen dasar yang sama dengan Animotion,
 sesuai `XIXLabs.net/docs/design-system.md`. Perbedaan antar aplikasi
@@ -253,7 +327,7 @@ Setiap halaman wajib memiliki state loading, empty, error, dan success.
 Semua kontrol keyboard memiliki focus ring, dan gerakan animasi dapat
 dikurangi pada perangkat yang meminta `prefers-reduced-motion`.
 
-## 10. Nilai yang perlu ditentukan per aplikasi
+## 11. Nilai yang perlu ditentukan per aplikasi
 
 | Nilai | Contoh | Catatan |
 | --- | --- | --- |
@@ -267,10 +341,11 @@ dikurangi pada perangkat yang meminta `prefers-reduced-motion`.
 | Batas ukuran berkas | 5 MB | Ditolak bila lebih |
 | Batas piksel | 2 MP | Diperkecil, bukan ditolak |
 | Palet | Sunset | Sama dengan aplikasi desktop |
+| Pratinjau jendela | `src/components/AppPreview.jsx` | Angka disalin dari aplikasi, bukan dikarang |
 | URL checkout | Dari katalog gateway | Jangan ditulis di kode |
 | Halaman bantuan setelah bayar | `/payment/complete` | Milik landing pusat |
 
-## 11. Checklist QA sebelum produksi
+## 12. Checklist QA sebelum produksi
 
 ### Percobaan gratis
 
@@ -284,6 +359,19 @@ dikurangi pada perangkat yang meminta `prefers-reduced-motion`.
 - [ ] Hasil sama dengan hasil aplikasi desktop pada berkas yang sama.
 - [ ] Penggeser bekerja dengan tetikus, sentuhan, dan tombol panah.
 - [ ] Tombol simpan menghasilkan SVG yang dapat dibuka ulang.
+
+### Pratinjau aplikasi
+
+- [ ] Pratinjau dibandingkan dengan jendela aplikasi yang sedang berjalan,
+      bukan hanya dilihat sekilas.
+- [ ] Angka pada layar status, bilah kemajuan, dan daftar berkas saling
+      konsisten dengan aturan aplikasi.
+- [ ] Tidak ada baris maupun penanda kegagalan pada daftar berkas.
+- [ ] Daftar mesin terbuka bila aplikasi memang punya lebih dari satu mesin.
+- [ ] Pratinjau tetap utuh pada layar sempit, tanpa mendorong isi halaman
+      keluar dari batasnya.
+- [ ] Pada lebar layar terkecil yang didukung, pratinjau masih menampilkan
+      seluruh isinya, bukan terpotong.
 
 ### Deployment
 
@@ -302,7 +390,7 @@ dikurangi pada perangkat yang meminta `prefers-reduced-motion`.
 - [ ] Halaman tidak menampilkan atau menerima kode lisensi.
 - [ ] Entri registry aplikasi diperbarui.
 
-## 12. Kegagalan yang sudah pernah terjadi
+## 13. Kegagalan yang sudah pernah terjadi
 
 Bagian ini mencatat kejadian nyata pada integrasi XIX-Vectorizer supaya
 tidak terulang, dan supaya halaman aplikasi desktop berikutnya mengenali
@@ -317,6 +405,8 @@ gejalanya lebih cepat.
 | Vektor kosong tanpa pesan kesalahan | Canvas gagal pada gambar sangat besar, dan kegagalannya senyap | Kecilkan saat decode, dan pasang batas luas keras |
 | Halaman berat setelah menampilkan hasil | SVG berisi ribuan potongan disisipkan langsung ke halaman | Rasterisasi untuk tampilan, dan sediakan SVG lewat tombol simpan |
 | Waktu tunggu jauh lebih lama dari perkiraan | Kerapatan gambar, bukan ukurannya, yang menentukan biaya | Ukur dengan gambar bertekstur, bukan hanya foto halus |
+| Pratinjau jendela tidak mirip aplikasinya | Pratinjau digambar dari perkiraan, bukan disalin dari aplikasi | Ambil ukuran, urutan bagian, dan tulisan dari berkas aplikasi, lalu ukur kedua sisi |
+| Angka pada pratinjau saling bertentangan | Kemajuan, jumlah berkas, dan tulisan daftar diisi terpisah | Turunkan semuanya dari satu keadaan proses yang sama |
 
 ### Catatan waktu proses
 

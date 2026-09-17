@@ -1746,6 +1746,17 @@ h2 {
   }
 }
 
+/* The window is 300 px wide by nature, because that is the width of the real
+   application. Below the point where that no longer fits between the page
+   gutters, it is scaled down as one piece: the proportions stay right and the
+   page keeps its own width, instead of the window being cropped or pushing the
+   whole page sideways. */
+@media (max-width: 359px) {
+  .app-preview {
+    zoom: 0.94;
+  }
+ }
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

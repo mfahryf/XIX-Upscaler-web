@@ -44,7 +44,8 @@ Enam bagian, berurutan:
    tanpa watermark, proses borongan ada di aplikasi.
 4. **Yang Anda dapat.** Harga, kuota lima berkas berhasil per mesin, satu
    perangkat aktif, penggunaan offline sampai 14 hari.
-5. **Unduh.** Tombol installer beserta syarat komputernya.
+5. **Unduh.** Tombol installer, syarat komputernya, dan pratinjau jendela
+   aplikasi.
 6. **Catatan kaki.** Bantuan, privasi, status layanan.
 
 ### Dasar tampilan
@@ -59,6 +60,23 @@ Isinya diganti seluruhnya.
 Sunset, dengan nilai yang sama seperti aplikasi desktop: aksen `#ffb36b`,
 aksen kedua `#ff6b9d`, aksen ketiga `#ffd166`. Warna biru dan violet
 tidak dipakai karena sudah menjadi identitas Animotion.
+
+### Pratinjau jendela aplikasi
+
+Aplikasi desktop tidak punya antarmuka web, jadi bagian unduhan memuat
+pratinjau jendela aplikasi. Pratinjau disalin dari aplikasi, bukan digambar
+ulang: ukuran jendela, warna, tinggi bilah, urutan bagian, dan tulisan setiap
+sel diambil dari berkas aplikasi. Paletnya palet aplikasi, bukan palet
+halaman, dan variabelnya dikurung pada pembungkus pratinjau supaya tidak
+membocorkan warna ke bagian halaman yang lain.
+
+Keadaan yang dipotret adalah saat aplikasi bekerja, dengan daftar mesin
+terbuka supaya pengunjung tahu aplikasi berisi tiga mesin. Angka pada layar
+status, bilah kemajuan, dan daftar berkas menceritakan proses yang sama, dan
+tidak ada baris gagal. Pratinjau bukan kontrol: isinya disembunyikan dari
+teknologi bantu dan pembungkusnya diumumkan sebagai satu gambar. Aturan
+lengkapnya di `docs/DESKTOP-WEB-PAGE-STANDARD.md` bagian Pratinjau aplikasi
+desktop.
 
 ## 4. Aturan percobaan gratis
 
@@ -134,8 +152,10 @@ diasumsikan:
 7. SVG hasil dapat disimpan dan dibuka ulang.
 8. Seluruh test lulus, dan halaman dijalankan serta dicoba langsung pada
    lebih dari satu ukuran layar.
-9. `xixlabs.net/vectorizer` membuka halaman, dan halaman Animotion serta
-   landing pusat tidak terganggu.
+9. Pratinjau jendela aplikasi sama dengan jendela aslinya pada ukuran,
+   susunan bagian, dan tulisan setiap sel, serta tidak memuat baris gagal.
+10. `xixlabs.net/vectorizer` membuka halaman, dan halaman Animotion serta
+    landing pusat tidak terganggu.
 
 ## 7. Pekerjaan deployment
 
