@@ -568,7 +568,7 @@ h2 {
 }
 
 .compare {
-  margin: 0;
+  margin: 0 auto;
 }
 
 .compare-frame {
@@ -885,4 +885,3 @@ h2 {
     transition-duration: 0.001ms !important;
   }
 }
-

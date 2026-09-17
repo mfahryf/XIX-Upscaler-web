@@ -1,6 +1,6 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { BeforeAfterSlider } from "./BeforeAfterSlider";
+import { BeforeAfterSlider, DISPLAY_MAX_HEIGHT } from "./BeforeAfterSlider";
 import {
   ImageInputError,
   checkFile,
@@ -13,7 +13,20 @@ import { vectorize } from "../lib/engineRunner";
 import { byteLength, downloadSvg, outputName, rasterize, readSize } from "../lib/svg";
 import { DEMO_LIMITS } from "../content/site";
 
-const PREVIEW_WIDTH = 1200;
+// Lebar gambar yang disiapkan untuk ditampilkan. Batasnya diturunkan dari
+// batas tinggi tampilan, bukan dari lebar panel, supaya hasil tidak dibuat
+// jauh lebih besar daripada ukuran yang benar-benar terlihat.
+const PREVIEW_MAX_WIDTH = 1200;
+const PREVIEW_MIN_WIDTH = 320;
+// Tampilan pada layar rapat piksel tetap tajam dengan cadangan ini, tanpa
+// membuat gambar menjadi berat.
+const PREVIEW_SHARPNESS = 1.5;
+
+function previewWidthFor(ratio) {
+  if (!(ratio > 0)) return PREVIEW_MIN_WIDTH;
+  const byHeight = Math.round(DISPLAY_MAX_HEIGHT * ratio * PREVIEW_SHARPNESS);
+  return Math.min(PREVIEW_MAX_WIDTH, Math.max(PREVIEW_MIN_WIDTH, byHeight));
+}
 
 // Kotak percobaan gratis. Satu berkas per percobaan, diproses di komputer
 // pengunjung, dengan kemajuan yang ditampilkan apa adanya dari tahap yang
@@ -71,9 +84,10 @@ export function DemoPanel() {
       const elapsed = Date.now() - started;
 
       const size = readSize(output.svg) || { width: image.width, height: image.height };
-      const previewHeight = Math.max(1, Math.round((PREVIEW_WIDTH * size.height) / size.width));
-      const beforeSrc = imageDataToDataUrl(image, PREVIEW_WIDTH);
-      const afterSrc = await rasterize(output.svg, PREVIEW_WIDTH, previewHeight);
+      const previewWidth = previewWidthFor(size.width / size.height);
+      const previewHeight = Math.max(1, Math.round((previewWidth * size.height) / size.width));
+      const beforeSrc = imageDataToDataUrl(image, previewWidth);
+      const afterSrc = await rasterize(output.svg, previewWidth, previewHeight);
       if (!alive()) return;
 
       setResult({
@@ -279,4 +293,3 @@ export function DemoPanel() {
 }
 
 export default DemoPanel;
-

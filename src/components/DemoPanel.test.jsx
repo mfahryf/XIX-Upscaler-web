@@ -23,7 +23,8 @@ vi.mock("../lib/image", async (importOriginal) => {
 });
 
 const { vectorize } = await import("../lib/engineRunner");
-const { loadImage } = await import("../lib/image");
+const { loadImage, imageDataToDataUrl } = await import("../lib/image");
+const { rasterize } = await import("../lib/svg");
 
 const IMAGE = {
   data: new Uint8ClampedArray(4),
@@ -70,6 +71,34 @@ describe("DemoPanel", () => {
     expect(screen.getByText(/^1 KB$/)).toBeInTheDocument();
     expect(screen.getByText(/Warna/)).toBeInTheDocument();
     expect(screen.getByText(/ukuran aslinya/)).toBeInTheDocument();
+  });
+
+  it("menyiapkan gambar hasil pada ukuran tampilan, bukan ukuran aslinya", async () => {
+    // Gambar persegi 3000 px: tanpa batas, hasilnya akan memenuhi layar.
+    loadImage.mockResolvedValue({
+      data: new Uint8ClampedArray(4),
+      width: 1414,
+      height: 1414,
+      downscaled: true,
+      originalWidth: 3000,
+      originalHeight: 3000,
+    });
+    vectorize.mockResolvedValue({
+      svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3000 3000"></svg>',
+      stats: { bytes: 900 },
+      settings: { colors: 24 },
+    });
+    const { container } = render(<DemoPanel />);
+    pickFile(container);
+
+    await waitFor(() => expect(screen.getByText("Simpan SVG")).toBeInTheDocument());
+
+    // 630 = batas tinggi tampilan 420 px dikali cadangan ketajaman 1,5.
+    expect(rasterize).toHaveBeenCalledWith(expect.stringContaining("<svg"), 630, 630);
+    expect(imageDataToDataUrl).toHaveBeenCalledWith(expect.anything(), 630);
+    // Ukuran tampilan tidak mengubah keterangan dimensi vektor, yang tetap
+    // melaporkan ukuran sesungguhnya.
+    expect(screen.getByText(/3000 x 3000 px/)).toBeInTheDocument();
   });
 
   it("menjelaskan saat gambar dikecilkan", async () => {

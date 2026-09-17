@@ -9,6 +9,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 // Selain tetikus dan sentuhan, penggeser dapat dioperasikan dengan tombol
 // panah. Tombol tahan-untuk-melihat-asli disediakan karena menggeser garis
 // pembatas di layar sentuh tidak nyaman.
+//
+// Ukuran tampilan dibatasi tinggi, bukan mengikuti lebar panel. Tanpa batas
+// itu, gambar persegi akan memenuhi layar dan mendorong bagian lain halaman
+// keluar dari pandangan, padahal gambar hanya perlu dilihat, bukan diukur.
+export const DISPLAY_MAX_HEIGHT = 420;
+
 export function BeforeAfterSlider({
   beforeSrc,
   afterSrc,
@@ -17,11 +23,15 @@ export function BeforeAfterSlider({
   width,
   height,
   showOriginal = false,
+  maxHeight = DISPLAY_MAX_HEIGHT,
 }) {
   const [position, setPosition] = useState(50);
   const [dragging, setDragging] = useState(false);
   const frameRef = useRef(null);
   const ratio = height > 0 ? width / height : 1;
+  // Lebar maksimum dihitung dari batas tinggi dan bentuk gambar, sehingga
+  // bingkai tetap persis mengikuti bentuk aslinya tanpa rongga di sisi.
+  const maxWidth = ratio > 0 ? Math.round(maxHeight * ratio) : maxHeight;
 
   const positionFromEvent = useCallback((clientX) => {
     const frame = frameRef.current;
@@ -83,7 +93,7 @@ export function BeforeAfterSlider({
   }, [dragging]);
 
   return (
-    <div className="compare">
+    <div className="compare" style={{ maxWidth: "min(100%, " + maxWidth + "px)" }}>
       <div
         ref={frameRef}
         className="compare-frame"
@@ -134,4 +144,3 @@ export function BeforeAfterSlider({
 }
 
 export default BeforeAfterSlider;
-
