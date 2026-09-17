@@ -77,5 +77,18 @@ describe("VectorizerPage", () => {
     expect(heroRule, "aturan .hero di styles.css").not.toBeNull();
     expect(heroRule[0]).toMatch(/grid-template-columns:\s*minmax\(0,\s*1fr\)\s*auto/);
     expect(stylesheet).not.toMatch(/\.hero-card\s*\{/);
+
+    // Dua sifat berikut diukur langsung di peramban pada 1440, 1280, 1024, dan
+    // 900 px. Sebelum diperbaiki, judul jatuh 187 px di bawah ujung atas
+    // pratinjau karena kedua kolom ditengahkan terhadap jendela setinggi 600 px,
+    // dan jarak dari header mencapai 86 px karena padding atas bagian
+    // ditambahkan pada padding atas pembungkus. Nilai di bawah ini yang
+    // menghasilkan jarak 33-38 px dan selisih 0 px antara judul dan pratinjau.
+    expect(heroRule[0]).toMatch(/align-items:\s*start/);
+
+    const padding = heroRule[0].match(/padding:\s*clamp\(([^)]*)\)\s+0\s+clamp\(/);
+    expect(padding, "padding atas hero").not.toBeNull();
+    const padTopMax = parseFloat(padding[1].split(",").pop().trim());
+    expect(padTopMax, "batas atas padding atas hero dalam rem").toBeLessThanOrEqual(1);
   });
 });

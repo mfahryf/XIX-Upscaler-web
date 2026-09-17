@@ -316,8 +316,13 @@ h2 {
   /* Kolom kanan selebar jendela pratinjau, kolom kiri mengambil sisanya. */
   grid-template-columns: minmax(0, 1fr) auto;
   gap: clamp(1.5rem, 5vw, 4rem);
-  align-items: center;
-  padding: clamp(2.25rem, 6vw, 4rem) 0 clamp(1.5rem, 4vw, 2.5rem);
+  /* Teks dan jendela mulai dari garis atas yang sama. Sebelumnya keduanya
+     ditengahkan terhadap jendela setinggi 600 px, sehingga judul jatuh
+     hampir 190 px lebih rendah daripada ujung atas jendela. */
+  align-items: start;
+  /* Jarak dari header dijaga tetap dekat. Sebelumnya jarak ini mencapai
+     86 px karena padding atas bagian ditambah padding atas pembungkus. */
+  padding: clamp(0.5rem, 1.25vw, 1rem) 0 clamp(1.5rem, 4vw, 2.5rem);
 }
 
 .hero h1 {
