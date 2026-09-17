@@ -1,15 +1,14 @@
-
-// Isi teks dan nilai tampilan halaman.
+// Page copy and display values.
 
 export const SITE = {
   name: "XIXLabs",
   product: "XIX Vectorizer",
   byline: "by XIXLabs.net",
-  tagline: "Ubah gambar menjadi SVG dengan tiga mesin vektor, semuanya berjalan di komputer Anda.",
+  tagline: "Turn images into clean SVG with three vector engines, all running on your own computer.",
 };
 
-// Disalin dari katalog gateway untuk keperluan teks. Sumber kebenarannya tetap
-// katalog gateway; bila harga atau kuota berubah di sana, samakan di sini.
+// Mirrors the gateway catalog for display copy. The gateway catalog stays the
+// source of truth; when price or quota changes there, match it here.
 export const CATALOG = {
   productId: "xix-vectorizer",
   priceAmount: 99000,
@@ -21,51 +20,51 @@ export const CATALOG = {
   engines: ["Vectorize V1", "Vectorize V2", "Vectorize V3"],
 };
 
-// Tautan pembelian diambil dari konfigurasi, bukan ditulis di kode, supaya
-// halaman dan katalog tidak pernah menunjuk produk yang berbeda. Nilainya
-// diisi saat build dari katalog gateway.
+// The purchase link comes from configuration rather than source, so the page
+// and the catalog can never point at different products. It is filled at build
+// time from the gateway catalog.
 export const CHECKOUT_URL = (import.meta.env?.VITE_CHECKOUT_URL || "").trim();
 
-// Installer belum punya tempat penyimpanan. Selama kosong, bagian unduh
-// menampilkan penjelasan singkat, bukan tombol yang tidak punya tujuan.
+// The installer has no hosting yet. While this is empty the download section
+// explains that, instead of showing a button that leads nowhere.
 export const DOWNLOAD_URL = (import.meta.env?.VITE_DOWNLOAD_URL || "").trim();
 
 export const PLAN_LABEL = (() => {
-  const amount = CATALOG.priceAmount.toLocaleString("id-ID");
-  return "Rp" + amount + " / bulan";
+  const amount = CATALOG.priceAmount.toLocaleString("en-US");
+  return "IDR " + amount + " / month";
 })();
 
 export const FEATURES = [
   {
-    title: "Tiga mesin vektor",
+    title: "Three vector engines",
     detail:
-      "Pilih mesin sesuai kebutuhan: V1 dan V2 untuk pemrosesan online, V3 untuk hasil paling halus dan sepenuhnya offline.",
+      "Pick the engine that fits the job: V1 and V2 process online, V3 gives the smoothest result and runs fully offline.",
   },
   {
-    title: "Hasil bersih",
+    title: "Clean output",
     detail:
-      "SVG tanpa watermark, dengan latar transparan dan jalur yang bisa langsung disunting di aplikasi desain.",
+      "SVG without watermarks, on a transparent background, with paths you can edit straight in a design app.",
   },
   {
-    title: "Proses borongan di aplikasi",
+    title: "Batch work lives in the app",
     detail:
-      "Halaman ini memproses satu berkas untuk dicoba. Aplikasi desktop menangani antrean banyak berkas dengan jeda, lanjut, dan berhenti.",
+      "This page processes a single file as a trial. The desktop app handles long queues with pause, resume, and stop.",
   },
 ];
 
 export const PLAN_POINTS = [
-  "Tiga mesin vektor, masing-masing " + CATALOG.filesPerEngine + " berkas berhasil sebelum lisensi aktif",
-  "Berlaku " + CATALOG.durationDays + " hari sejak pembayaran",
-  "Satu lisensi aktif pada " + CATALOG.maxActiveDevices + " perangkat",
-  "Setelah aktivasi, aplikasi tetap dapat dipakai tanpa internet sampai " + CATALOG.offlineLeaseDays + " hari",
-  "Pemrosesan borongan tanpa batas selama langganan aktif",
+  "Three vector engines, each with " + CATALOG.filesPerEngine + " successful files before a licence is required",
+  "Valid for " + CATALOG.durationDays + " days from payment",
+  "One licence active on " + CATALOG.maxActiveDevices + " device",
+  "After activation the app keeps working without internet for up to " + CATALOG.offlineLeaseDays + " days",
+  "Unlimited batch processing while the subscription is active",
 ];
 
-// Gambar contoh yang diukur halaman saat pertamakali dibuka tidak dipakai.
-// Percobaan selalu berawal dari berkas pilihan pengunjung.
+// No sample image is shipped with the page. Every trial starts from a file the
+// visitor chooses.
 export const DEMO_LIMITS = {
   fileBytes: 5 * 1024 * 1024,
   maxPixels: 2_000_000,
-  accepted: "PNG, JPG, atau WebP",
+  accepted: "PNG, JPG, or WebP",
 };
 

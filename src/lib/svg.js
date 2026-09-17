@@ -51,7 +51,7 @@ export async function rasterize(svg, width, height) {
     const image = await new Promise((resolve, reject) => {
       const element = new Image();
       element.onload = () => resolve(element);
-      element.onerror = () => reject(new Error("Hasil vektor tidak dapat ditampilkan."));
+      element.onerror = () => reject(new Error("The vector result could not be displayed."));
       element.src = url;
     });
     const canvas = document.createElement("canvas");
@@ -80,7 +80,6 @@ export function downloadSvg(svg, filename) {
 }
 
 export function outputName(originalName) {
-  const base = String(originalName || "gambar").replace(/\.[^.]+$/, "") || "gambar";
+  const base = String(originalName || "image").replace(/\.[^.]+$/, "") || "image";
   return base + "-vectorizer.svg";
 }
-

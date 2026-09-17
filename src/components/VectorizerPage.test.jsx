@@ -12,25 +12,25 @@ describe("VectorizerPage", () => {
     render(<VectorizerPage />);
     expect(screen.getByRole("heading", { level: 1 })).toBeInTheDocument();
     expect(screen.getByTestId("demo-panel")).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /Dibuat untuk pekerjaan nyata/ })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /Satu lisensi, tiga mesin/ })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /Aplikasi desktop/ })).toBeInTheDocument();
-    expect(screen.getByText(/Bantuan/)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /Built for real work/ })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /One licence, three engines/ })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /Desktop app/ })).toBeInTheDocument();
+    expect(screen.getByText(/Support/)).toBeInTheDocument();
   });
 
   it("menampilkan harga dan kuota dari katalog", () => {
     render(<VectorizerPage />);
-    expect(screen.getByText(/Rp99.000 \/ bulan/)).toBeInTheDocument();
-    expect(screen.getByText(/5 berkas berhasil sebelum lisensi aktif/)).toBeInTheDocument();
+    expect(screen.getByText(/IDR 99,000 \/ month/)).toBeInTheDocument();
+    expect(screen.getByText(/5 successful files before a licence is required/)).toBeInTheDocument();
     // Muncul dua kali dengan sengaja: sekali di daftar keuntungan lisensi,
     // sekali di syarat unduhan.
-    expect(screen.getAllByText(/14 hari/)).toHaveLength(2);
+    expect(screen.getAllByText(/14 days/)).toHaveLength(2);
   });
 
   it("tidak menawarkan tombol pembelian palsu saat tautan belum diisi", () => {
     render(<VectorizerPage />);
-    expect(screen.getByRole("button", { name: /Tautan pembelian belum siap/ })).toBeDisabled();
-    expect(screen.getByText(/Installer belum tersedia untuk diunduh/)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Purchase link not configured/ })).toBeDisabled();
+    expect(screen.getByText(/installer is not available for download yet/)).toBeInTheDocument();
   });
 
   it("tidak menampilkan atau menerima kode lisensi", () => {

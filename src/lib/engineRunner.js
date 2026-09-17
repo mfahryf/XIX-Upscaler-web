@@ -9,10 +9,10 @@ import workerUrl from "../engine/worker.js?url";
 
 // Tahap yang dilaporkan mesin, diterjemahkan untuk tampilan.
 const STAGE_LABELS = {
-  "Analyzing colors": "Membaca warna",
-  "Segmenting regions": "Memisahkan bidang",
-  "Tracing boundaries": "Menelusuri garis",
-  "Building SVG": "Menyusun SVG",
+  "Analyzing colors": "Reading colours",
+  "Segmenting regions": "Separating regions",
+  "Tracing boundaries": "Tracing outlines",
+  "Building SVG": "Building SVG",
 };
 
 const IDLE = 30_000;
@@ -71,7 +71,7 @@ export function vectorize(image, { onProgress, colors = 0, detail = 60, smoothin
     };
     const bumpIdle = () => {
       clearTimeout(idleTimer);
-      idleTimer = setTimeout(() => fail(new Error("Mesin berhenti merespons.")), IDLE);
+      idleTimer = setTimeout(() => fail(new Error("The engine stopped responding.")), IDLE);
     };
 
     const onMessage = (event) => {
@@ -83,7 +83,7 @@ export function vectorize(image, { onProgress, colors = 0, detail = 60, smoothin
         return;
       }
       if (message.type === "error") {
-        fail(new Error(message.message || "Mesin gagal memproses gambar."));
+        fail(new Error(message.message || "The engine failed to process the image."));
         return;
       }
       if (message.type === "done") {
@@ -91,17 +91,17 @@ export function vectorize(image, { onProgress, colors = 0, detail = 60, smoothin
         const svg = typeof message.result?.svg === "string" ? message.result.svg : String(message.result?.svg ?? "");
         if (!svg.trim()) {
           terminate();
-          reject(new Error("Mesin tidak menghasilkan SVG."));
+          reject(new Error("The engine produced no SVG."));
           return;
         }
         resolve({ svg, stats: message.result?.stats || null, settings });
       }
     };
-    const onError = () => fail(new Error("Mesin tidak dapat dijalankan."));
+    const onError = () => fail(new Error("The engine could not be started."));
 
     target.addEventListener("message", onMessage);
     target.addEventListener("error", onError);
-    hardTimer = setTimeout(() => fail(new Error("Pemrosesan melewati batas waktu.")), HARD_TIMEOUT);
+    hardTimer = setTimeout(() => fail(new Error("Processing timed out.")), HARD_TIMEOUT);
     bumpIdle();
 
     try {

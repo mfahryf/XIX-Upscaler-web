@@ -27,36 +27,36 @@ export class ImageInputError extends Error {
 }
 
 export function formatMegapixels(pixels) {
-  return (pixels / 1_000_000).toFixed(2).replace(".", ",") + " MP";
+  return (pixels / 1_000_000).toFixed(2) + " MP";
 }
 
 export function formatBytes(bytes) {
   if (!Number.isFinite(bytes) || bytes <= 0) return "0 KB";
   if (bytes < 1024 * 1024) return Math.max(1, Math.round(bytes / 1024)) + " KB";
-  return (bytes / (1024 * 1024)).toFixed(1).replace(".", ",") + " MB";
+  return (bytes / (1024 * 1024)).toFixed(1) + " MB";
 }
 
 // Diperiksa sebelum gambar dibuka, supaya berkas yang jelas tidak sesuai
 // tidak memakan waktu decode.
 export function checkFile(file) {
   if (!file) {
-    throw new ImageInputError("empty", "Belum ada berkas yang dipilih.");
+    throw new ImageInputError("empty", "No file selected yet.");
   }
   const type = (file.type || "").toLowerCase();
   if (type && !ACCEPTED_TYPES.includes(type)) {
     throw new ImageInputError(
       "unsupported_type",
-      "Format " + type + " belum didukung. Gunakan PNG, JPG, atau WebP."
+      "Format " + type + " is not supported. Use PNG, JPG, or WebP."
     );
   }
   if (file.size > MAX_FILE_BYTES) {
     throw new ImageInputError(
       "file_too_large",
-      "Berkas " +
+      "The file is " +
         formatBytes(file.size) +
-        " melewati batas " +
+        ", above the " +
         formatBytes(MAX_FILE_BYTES) +
-        ". Pilih berkas yang lebih kecil."
+        " limit. Choose a smaller file."
     );
   }
 }
@@ -78,14 +78,14 @@ function createCanvas(width, height) {
 export function targetSize(width, height, maxPixels = MAX_PIXELS) {
   const pixels = width * height;
   if (!Number.isFinite(pixels) || pixels <= 0) {
-    throw new ImageInputError("decode_failed", "Ukuran gambar tidak terbaca.");
+    throw new ImageInputError("decode_failed", "The image size could not be read.");
   }
   if (pixels > HARD_MAX_PIXELS) {
     throw new ImageInputError(
       "too_many_pixels",
-      "Gambar " +
+      "The image is " +
         formatMegapixels(pixels) +
-        " melewati batas keras " +
+        ", above the hard limit of " +
         formatMegapixels(HARD_MAX_PIXELS) +
         "."
     );
@@ -125,7 +125,7 @@ async function decode(file, target) {
     } catch (error) {
       // Opsi kedua tidak dikenal, atau pengecilan saat decode tidak didukung.
       if (target) return decodeFullThenScale(file, target);
-      throw new ImageInputError("decode_failed", "Gambar tidak dapat dibaca.");
+      throw new ImageInputError("decode_failed", "The image could not be read.");
     }
   }
   return decodeFullThenScale(file, target);
@@ -138,7 +138,7 @@ async function decodeFullThenScale(file, target) {
       const element = new Image();
       element.onload = () => resolve(element);
       element.onerror = () =>
-        reject(new ImageInputError("decode_failed", "Gambar tidak dapat dibaca."));
+        reject(new ImageInputError("decode_failed", "The image could not be read."));
       element.src = url;
     });
     const natural = { width: image.naturalWidth, height: image.naturalHeight };
@@ -186,7 +186,7 @@ export async function loadImage(file, maxPixels = MAX_PIXELS) {
   }
   const image = toImageData(decoded, size);
   if (!image || !image.width || !image.height) {
-    throw new ImageInputError("decode_failed", "Gambar tidak dapat dibaca.");
+    throw new ImageInputError("decode_failed", "The image could not be read.");
   }
   if (typeof decoded.close === "function") decoded.close();
   return {

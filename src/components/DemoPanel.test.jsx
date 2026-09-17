@@ -55,22 +55,22 @@ beforeEach(() => {
 describe("DemoPanel", () => {
   it("menampilkan kotak unggah pada keadaan awal", () => {
     render(<DemoPanel />);
-    expect(screen.getByText(/Letakkan satu gambar di sini/)).toBeInTheDocument();
-    expect(screen.getByText(/maksimal 5,0 MB/)).toBeInTheDocument();
+    expect(screen.getByText(/Drop one image here/)).toBeInTheDocument();
+    expect(screen.getByText(/up to 5.0 MB/)).toBeInTheDocument();
   });
 
   it("memproses satu berkas lalu menampilkan pembanding dan keterangan hasil", async () => {
     const { container } = render(<DemoPanel />);
     pickFile(container, "logo.png");
 
-    await waitFor(() => expect(screen.getByText("Simpan SVG")).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText("Save SVG")).toBeInTheDocument());
 
     expect(vectorize).toHaveBeenCalledTimes(1);
     expect(screen.getByRole("slider")).toBeInTheDocument();
-    expect(screen.getByText("Ukuran berkas")).toBeInTheDocument();
+    expect(screen.getByText("File size")).toBeInTheDocument();
     expect(screen.getByText(/^1 KB$/)).toBeInTheDocument();
-    expect(screen.getByText(/Warna/)).toBeInTheDocument();
-    expect(screen.getByText(/ukuran aslinya/)).toBeInTheDocument();
+    expect(screen.getByText(/Colours/)).toBeInTheDocument();
+    expect(screen.getByText(/full size/)).toBeInTheDocument();
   });
 
   it("menyiapkan gambar hasil pada ukuran tampilan, bukan ukuran aslinya", async () => {
@@ -91,7 +91,7 @@ describe("DemoPanel", () => {
     const { container } = render(<DemoPanel />);
     pickFile(container);
 
-    await waitFor(() => expect(screen.getByText("Simpan SVG")).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText("Save SVG")).toBeInTheDocument());
 
     // 630 = batas tinggi tampilan 420 px dikali cadangan ketajaman 1,5.
     expect(rasterize).toHaveBeenCalledWith(expect.stringContaining("<svg"), 630, 630);
@@ -113,36 +113,36 @@ describe("DemoPanel", () => {
     const { container } = render(<DemoPanel />);
     pickFile(container);
 
-    await waitFor(() => expect(screen.getByText("Simpan SVG")).toBeInTheDocument());
-    expect(screen.getByText(/diproses pada 0,40 MP/)).toBeInTheDocument();
-    expect(screen.getByText(/10,00 MP/)).toBeInTheDocument();
+    await waitFor(() => expect(screen.getByText("Save SVG")).toBeInTheDocument());
+    expect(screen.getByText(/processed at 0.40 MP/)).toBeInTheDocument();
+    expect(screen.getByText(/10.00 MP/)).toBeInTheDocument();
   });
 
   it("menampilkan pesan ketika berkas ditolak", async () => {
     loadImage.mockRejectedValue(
-      new ImageInputError("file_too_large", "Berkas 6,0 MB melewati batas 5,0 MB.")
+      new ImageInputError("file_too_large", "The file is 6.0 MB, above the 5.0 MB limit.")
     );
     const { container } = render(<DemoPanel />);
     pickFile(container);
 
     await waitFor(() => expect(screen.getByRole("alert")).toBeInTheDocument());
-    expect(screen.getByText(/melewati batas 5,0 MB/)).toBeInTheDocument();
-    expect(screen.queryByText("Simpan SVG")).not.toBeInTheDocument();
+    expect(screen.getByText(/above the 5.0 MB limit/)).toBeInTheDocument();
+    expect(screen.queryByText("Save SVG")).not.toBeInTheDocument();
   });
 
   it("dapat diulang setelah gagal", async () => {
-    loadImage.mockRejectedValue(new ImageInputError("decode_failed", "Gambar tidak dapat dibaca."));
+    loadImage.mockRejectedValue(new ImageInputError("decode_failed", "The image could not be read."));
     const { container } = render(<DemoPanel />);
     pickFile(container);
     await waitFor(() => expect(screen.getByRole("alert")).toBeInTheDocument());
 
-    fireEvent.click(screen.getByText("Coba lagi"));
-    expect(screen.getByText(/Letakkan satu gambar di sini/)).toBeInTheDocument();
+    fireEvent.click(screen.getByText("Try again"));
+    expect(screen.getByText(/Drop one image here/)).toBeInTheDocument();
   });
 
   it("menyebut tahap kemajuan dari mesin", async () => {
     vectorize.mockImplementation(async (_image, { onProgress }) => {
-      onProgress?.({ stage: "Tracing boundaries", label: "Menelusuri garis", fraction: 0.55 });
+      onProgress?.({ stage: "Tracing boundaries", label: "Tracing outlines", fraction: 0.55 });
       await new Promise((resolve) => setTimeout(resolve, 0));
       return {
         svg: '<svg viewBox="0 0 10 10"></svg>',
@@ -153,7 +153,7 @@ describe("DemoPanel", () => {
     const { container } = render(<DemoPanel />);
     pickFile(container);
 
-    await waitFor(() => expect(screen.getByText("Menelusuri garis")).toBeInTheDocument());
-    await waitFor(() => expect(screen.getByText("Simpan SVG")).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText("Tracing outlines")).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText("Save SVG")).toBeInTheDocument());
   });
 });

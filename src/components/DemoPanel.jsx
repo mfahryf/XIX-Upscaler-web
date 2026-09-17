@@ -1,5 +1,6 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Download, Eye, RotateCcw, Upload } from "lucide-react";
 import { BeforeAfterSlider, DISPLAY_MAX_HEIGHT } from "./BeforeAfterSlider";
 import {
   ImageInputError,
@@ -13,13 +14,12 @@ import { vectorize } from "../lib/engineRunner";
 import { byteLength, downloadSvg, outputName, rasterize, readSize } from "../lib/svg";
 import { DEMO_LIMITS } from "../content/site";
 
-// Lebar gambar yang disiapkan untuk ditampilkan. Batasnya diturunkan dari
-// batas tinggi tampilan, bukan dari lebar panel, supaya hasil tidak dibuat
-// jauh lebih besar daripada ukuran yang benar-benar terlihat.
+// Width of the image prepared for display. It is derived from the display
+// height limit rather than the panel width, so the result is never rendered
+// far larger than what can actually be seen.
 const PREVIEW_MAX_WIDTH = 1200;
 const PREVIEW_MIN_WIDTH = 320;
-// Tampilan pada layar rapat piksel tetap tajam dengan cadangan ini, tanpa
-// membuat gambar menjadi berat.
+// Keeps the preview sharp on high-density screens without making it heavy.
 const PREVIEW_SHARPNESS = 1.5;
 
 function previewWidthFor(ratio) {
@@ -28,9 +28,8 @@ function previewWidthFor(ratio) {
   return Math.min(PREVIEW_MAX_WIDTH, Math.max(PREVIEW_MIN_WIDTH, byHeight));
 }
 
-// Kotak percobaan gratis. Satu berkas per percobaan, diproses di komputer
-// pengunjung, dengan kemajuan yang ditampilkan apa adanya dari tahap yang
-// dilaporkan mesin.
+// Free trial panel. One file per run, processed on the visitor's own computer,
+// with progress shown honestly from the stages the engine reports.
 export function DemoPanel() {
   const [state, setState] = useState("idle");
   const [message, setMessage] = useState("");
@@ -71,7 +70,7 @@ export function DemoPanel() {
       if (!alive()) return;
 
       setState("processing");
-      setStage("Menyiapkan berkas");
+      setStage("Preparing file");
       const started = Date.now();
       const output = await vectorize(image, {
         onProgress: ({ label, fraction: value }) => {
@@ -98,7 +97,6 @@ export function DemoPanel() {
         svgBytes: byteLength(output.svg),
         svg: output.svg,
         sourceName: file.name,
-        sourceBytes: file.size,
         sourcePixels: image.originalWidth * image.originalHeight,
         processedPixels: image.width * image.height,
         downscaled: image.downscaled,
@@ -112,7 +110,7 @@ export function DemoPanel() {
       const text =
         error instanceof ImageInputError || typeof error?.message === "string"
           ? error.message
-          : "Berkas tidak dapat diproses.";
+          : "The file could not be processed.";
       setMessage(text);
       setState("error");
     }
@@ -131,14 +129,14 @@ export function DemoPanel() {
   const busy = state === "reading" || state === "processing";
 
   return (
-    <section className="panel demo" id="coba" aria-labelledby="demo-title">
+    <section className="panel demo" id="try" aria-labelledby="demo-title">
       <div className="demo-head">
         <div>
-          <p className="section-label">Coba gratis</p>
-          <h2 id="demo-title">Vektorkan satu gambar, langsung di sini</h2>
+          <p className="section-label">Try free</p>
+          <h2 id="demo-title">Vectorize one image, right here</h2>
           <p className="demo-lede">
-            Berkas tidak diunggah ke mana pun. Mesin V3 berjalan di peramban Anda, dan hasilnya
-            bisa langsung dibandingkan dengan gambar aslinya.
+            Nothing is uploaded anywhere. The V3 engine runs in your browser, and you can compare
+            the result against the original straight away.
           </p>
         </div>
         <button
@@ -147,7 +145,8 @@ export function DemoPanel() {
           onClick={() => inputRef.current?.click()}
           disabled={busy}
         >
-          Pilih gambar
+          <Upload className="nav-icon" aria-hidden="true" />
+          Choose image
         </button>
       </div>
 
@@ -174,14 +173,14 @@ export function DemoPanel() {
           onDrop={onDrop}
         >
           <span className="dropzone-mark" aria-hidden="true">SVG</span>
-          <p className="dropzone-title">Letakkan satu gambar di sini</p>
+          <p className="dropzone-title">Drop one image here</p>
           <p className="dropzone-detail">
-            {DEMO_LIMITS.accepted}, maksimal {formatBytes(DEMO_LIMITS.fileBytes)}. Gambar di atas{" "}
-            {formatMegapixels(DEMO_LIMITS.maxPixels)} dikecilkan otomatis, dan ukuran aslinya tetap
-            dipakai oleh aplikasi desktop.
+            {DEMO_LIMITS.accepted}, up to {formatBytes(DEMO_LIMITS.fileBytes)}. Images above{" "}
+            {formatMegapixels(DEMO_LIMITS.maxPixels)} are scaled down, and the desktop app still
+            uses the full size.
           </p>
           <button type="button" className="button button-primary" onClick={() => inputRef.current?.click()}>
-            Pilih gambar
+            Choose image
           </button>
         </div>
       )}
@@ -189,7 +188,7 @@ export function DemoPanel() {
       {busy && (
         <div className="progress" role="status" aria-live="polite">
           <div className="progress-head">
-            <span className="progress-stage">{state === "reading" ? "Membaca berkas" : stage}</span>
+            <span className="progress-stage">{state === "reading" ? "Reading file" : stage}</span>
             <span className="progress-value">
               {state === "reading" ? "" : Math.round(fraction * 100) + "%"}
             </span>
@@ -202,18 +201,19 @@ export function DemoPanel() {
             />
           </div>
           <p className="progress-note">
-            Gambar yang rapat garis dan teksturnya memerlukan waktu paling lama. Biarkan halaman ini
-            terbuka sampai selesai.
+            Images with dense lines and texture take the longest. Keep this page open until it
+            finishes.
           </p>
         </div>
       )}
 
       {state === "error" && (
         <div className="alert" role="alert">
-          <strong>Gambar belum bisa diproses.</strong>
+          <strong>The image could not be processed.</strong>
           <p>{message}</p>
           <button type="button" className="button button-secondary" onClick={reset}>
-            Coba lagi
+            <RotateCcw className="nav-icon" aria-hidden="true" />
+            Try again
           </button>
         </div>
       )}
@@ -233,7 +233,8 @@ export function DemoPanel() {
               className="button button-primary"
               onClick={() => downloadSvg(result.svg, outputName(result.sourceName))}
             >
-              Simpan SVG
+              <Download className="nav-icon" aria-hidden="true" />
+              Save SVG
             </button>
             <button
               type="button"
@@ -249,42 +250,44 @@ export function DemoPanel() {
               }}
               onBlur={() => setShowOriginal(false)}
             >
-              Tahan untuk lihat asli
+              <Eye className="nav-icon" aria-hidden="true" />
+              Hold to see original
             </button>
             <button type="button" className="button button-secondary" onClick={reset}>
-              Mulai ulang
+              <RotateCcw className="nav-icon" aria-hidden="true" />
+              Start over
             </button>
           </div>
           <dl className="result-stats">
             <div>
-              <dt>Ukuran berkas</dt>
+              <dt>File size</dt>
               <dd>{formatBytes(result.svgBytes)}</dd>
             </div>
             <div>
-              <dt>Waktu proses</dt>
-              <dd>{(result.elapsed / 1000).toFixed(1).replace(".", ",")} detik</dd>
+              <dt>Processing time</dt>
+              <dd>{(result.elapsed / 1000).toFixed(1)} s</dd>
             </div>
             <div>
-              <dt>Dimensi vektor</dt>
+              <dt>Vector dimensions</dt>
               <dd>
                 {Math.round(result.width)} x {Math.round(result.height)} px
               </dd>
             </div>
             <div>
-              <dt>Warna</dt>
-              <dd>{result.colors ?? "otomatis"}</dd>
+              <dt>Colours</dt>
+              <dd>{result.colors ?? "auto"}</dd>
             </div>
           </dl>
           <p className="result-note">
             {result.downscaled
-              ? "Gambar Anda " +
+              ? "Your image is " +
                 formatMegapixels(result.sourcePixels) +
-                " dan diproses pada " +
+                " and was processed at " +
                 formatMegapixels(result.processedPixels) +
-                " supaya selesai cepat. Aplikasi desktop memakai ukuran aslinya."
-              : "Gambar diproses pada ukuran aslinya (" +
+                " to keep it quick. The desktop app uses the full size."
+              : "The image was processed at full size (" +
                 formatMegapixels(result.processedPixels) +
-                "), sama seperti aplikasi desktop."}
+                "), the same as the desktop app."}
           </p>
         </div>
       )}

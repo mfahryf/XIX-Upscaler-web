@@ -39,7 +39,7 @@ describe("outputName", () => {
   });
 
   it("memakai nama cadangan bila kosong", () => {
-    expect(outputName("")).toBe("gambar-vectorizer.svg");
+    expect(outputName("")).toBe("image-vectorizer.svg");
   });
 });
 
@@ -48,4 +48,3 @@ describe("byteLength", () => {
     expect(byteLength("<svg></svg>")).toBe(11);
   });
 });
-

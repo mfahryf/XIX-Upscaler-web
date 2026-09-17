@@ -1,61 +1,79 @@
 
+import { Download, Sparkles, Wand2 } from "lucide-react";
 import { DemoPanel } from "./DemoPanel";
 import { CATALOG, CHECKOUT_URL, DOWNLOAD_URL, FEATURES, PLAN_LABEL, PLAN_POINTS, SITE } from "../content/site";
 
-// Halaman publik XIX Vectorizer.
+// Public XIX Vectorizer page.
 //
-// Perannya: penjelasan produk, percobaan gratis, dan unduhan. Urusan kode
-// lisensi dan aktivasi setelah pembayaran tetap berada di halaman
-// /payment/complete milik landing pusat, sehingga tidak ada dua halaman yang
-// mengerjakan hal yang sama.
+// Its job: explain the product, offer a free trial, and provide the download.
+// Licence codes and post-purchase activation stay on the central landing page's
+// /payment/complete route, so no two pages do the same work.
+const NAV_ITEMS = [
+  { id: "try", href: "#try", label: "Try free", Icon: Wand2 },
+  { id: "pricing", href: "#pricing", label: "Pricing", Icon: Sparkles },
+  { id: "download", href: "#download", label: "Download", Icon: Download },
+];
+
 export function VectorizerPage() {
   const checkoutReady = CHECKOUT_URL.length > 0;
 
   return (
-    <div className="shell" id="atas">
-      <div className="aurora" aria-hidden="true">
-        <span className="aurora-blob aurora-blob-one" />
-        <span className="aurora-blob aurora-blob-two" />
-        <span className="aurora-blob aurora-blob-three" />
+    <div className="app-shell" id="top">
+      <div className="app-shell-backdrop" aria-hidden="true">
+        <span className="ambient-blob ambient-blob-one" />
+        <span className="ambient-blob ambient-blob-two" />
+        <span className="ambient-blob ambient-blob-three" />
       </div>
 
-      <header className="page-header">
-        <a className="brand" href="#atas" aria-label="XIXLabs">
-          <span className="brand-mark" aria-hidden="true">XIX</span>
-          <span className="brand-name">{SITE.name}</span>
-        </a>
-        <nav className="page-nav" aria-label="Navigasi halaman">
-          <a href="#coba">Coba gratis</a>
-          <a href="#harga">Harga</a>
-          <a href="#unduh">Unduh</a>
-          {checkoutReady && (
-            <a className="button button-primary button-compact" href={CHECKOUT_URL} rel="noreferrer">
-              Beli lisensi
-            </a>
-          )}
-        </nav>
+      <header className="app-header" data-testid="nav-header">
+        <div className="app-header-inner">
+          <a className="app-brand" href="#top" aria-label="XIXLabs home">
+            <img className="app-brand-logo" src="XIX.svg" alt="" />
+            <span className="app-brand-wordmark">Vectorizer</span>
+          </a>
+
+          <nav className="app-nav" aria-label="Page navigation">
+            {NAV_ITEMS.map(({ id, href, label, Icon }) => (
+              <a className="app-nav-link" href={href} key={id} data-testid={"nav-tab-" + id}>
+                <Icon className="nav-icon" aria-hidden="true" />
+                {label}
+              </a>
+            ))}
+          </nav>
+
+          <div className="app-header-actions">
+            {checkoutReady ? (
+              <a className="button button-primary button-compact" href={CHECKOUT_URL} rel="noreferrer">
+                <Sparkles className="nav-icon" aria-hidden="true" />
+                Get licence
+              </a>
+            ) : (
+              <span className="header-note">Purchase link not configured</span>
+            )}
+          </div>
+        </div>
       </header>
 
-      <main className="page-main">
+      <main className="page-shell">
         <section className="hero" aria-labelledby="hero-title">
           <div className="hero-copy">
             <p className="section-label">{SITE.product}</p>
             <h1 id="hero-title">
-              Ubah gambar menjadi SVG, <span className="hero-accent">tanpa kehilangan bentuk</span>
+              Turn images into SVG, <span className="hero-accent">without losing the shapes</span>
             </h1>
             <p className="hero-lede">{SITE.tagline}</p>
             <div className="hero-actions">
-              <a className="button button-primary" href="#coba">
-                Coba gratis sekarang
+              <a className="button button-primary" href="#try">
+                Try it free
               </a>
-              <a className="text-link" href="#harga">
-                Lihat harga
+              <a className="text-link" href="#pricing">
+                See pricing
               </a>
             </div>
             <ul className="hero-facts">
-              <li>Tiga mesin vektor</li>
-              <li>Tanpa watermark</li>
-              <li>Bisa dipakai offline</li>
+              <li>Three vector engines</li>
+              <li>No watermark</li>
+              <li>Works offline</li>
             </ul>
           </div>
           <div className="hero-card" aria-hidden="true">
@@ -65,16 +83,16 @@ export function VectorizerPage() {
               <span />
             </div>
             <p className="hero-card-caption">
-              Vektor hasil mesin V3, siap disunting di aplikasi desain.
+              Vector output from the V3 engine, ready to edit in a design app.
             </p>
           </div>
         </section>
 
         <DemoPanel />
 
-        <section className="panel" aria-labelledby="kenapa-title">
-          <p className="section-label">Kenapa Vectorizer</p>
-          <h2 id="kenapa-title">Dibuat untuk pekerjaan nyata</h2>
+        <section className="panel" aria-labelledby="why-title">
+          <p className="section-label">Why Vectorizer</p>
+          <h2 id="why-title">Built for real work</h2>
           <div className="feature-grid">
             {FEATURES.map((feature) => (
               <article className="feature" key={feature.title}>
@@ -85,15 +103,14 @@ export function VectorizerPage() {
           </div>
         </section>
 
-        <section className="panel" id="harga" aria-labelledby="harga-title">
-          <p className="section-label">Yang Anda dapat</p>
-          <h2 id="harga-title">Satu lisensi, tiga mesin</h2>
+        <section className="panel" id="pricing" aria-labelledby="pricing-title">
+          <p className="section-label">What you get</p>
+          <h2 id="pricing-title">One licence, three engines</h2>
           <div className="plan">
             <div className="plan-price">
               <p className="plan-amount">{PLAN_LABEL}</p>
               <p className="plan-note">
-                Berlaku {CATALOG.durationDays} hari, lalu dapat diperpanjang dengan pembayaran
-                berikutnya.
+                Valid for {CATALOG.durationDays} days, then renewable with the next payment.
               </p>
             </div>
             <ul className="plan-points">
@@ -104,48 +121,49 @@ export function VectorizerPage() {
             <div className="plan-actions">
               {checkoutReady ? (
                 <a className="button button-primary" href={CHECKOUT_URL} rel="noreferrer">
-                  Beli lisensi
+                  Get licence
                 </a>
               ) : (
                 <button type="button" className="button button-primary" disabled>
-                  Tautan pembelian belum siap
+                  Purchase link not configured
                 </button>
               )}
               <p className="plan-footnote">
-                Setelah membayar, kode lisensi diterbitkan penyedia pembayaran dan langkah
-                aktivasinya ada di halaman hasil pembayaran.
+                After payment the licence code is issued by the payment provider, and the
+                activation steps are on the payment result page.
               </p>
             </div>
           </div>
         </section>
 
-        <section className="panel" id="unduh" aria-labelledby="unduh-title">
-          <p className="section-label">Unduh</p>
-          <h2 id="unduh-title">Aplikasi desktop</h2>
+        <section className="panel" id="download" aria-labelledby="download-title">
+          <p className="section-label">Download</p>
+          <h2 id="download-title">Desktop app</h2>
           {DOWNLOAD_URL ? (
             <a className="button button-primary" href={DOWNLOAD_URL} rel="noreferrer">
-              Unduh installer Windows
+              <Download className="nav-icon" aria-hidden="true" />
+              Download Windows installer
             </a>
           ) : (
             <p className="plan-footnote">
-              Installer belum tersedia untuk diunduh. Percobaan di halaman ini sudah memakai mesin
-              yang sama, sehingga hasilnya dapat dinilai lebih dulu.
+              The installer is not available for download yet. The trial on this page already uses
+              the same engine, so you can judge the output first.
             </p>
           )}
           <ul className="download-points">
-            <li>Windows 10 atau lebih baru</li>
-            <li>Pemrosesan gambar berjalan di komputer Anda</li>
-            <li>Setelah aktivasi, dapat dipakai tanpa internet sampai {CATALOG.offlineLeaseDays} hari</li>
+            <li>Windows 10 or newer</li>
+            <li>Image processing runs on your own computer</li>
+            <li>After activation it works without internet for up to {CATALOG.offlineLeaseDays} days</li>
           </ul>
         </section>
       </main>
 
-      <footer className="page-footer">
-        <span>(c) {SITE.name}</span>
+      <footer className="app-footer">
+        <span>&copy; {SITE.name}</span>
         <span className="footer-links">
-          <a href="mailto:hello@xixlabs.net">Bantuan</a>
-          <a href="/healthz">Status layanan</a>
-          <a href="#atas">Kembali ke atas</a>
+          <a href="mailto:hello@xixlabs.net">Support</a>
+          <a href="/healthz">Service status</a>
+          <a href="#top">Back to top</a>
         </span>
       </footer>
     </div>

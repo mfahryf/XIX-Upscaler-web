@@ -18,8 +18,8 @@ export const DISPLAY_MAX_HEIGHT = 420;
 export function BeforeAfterSlider({
   beforeSrc,
   afterSrc,
-  beforeLabel = "Asli",
-  afterLabel = "Vektor",
+  beforeLabel = "Original",
+  afterLabel = "Vector",
   width,
   height,
   showOriginal = false,
@@ -100,26 +100,24 @@ export function BeforeAfterSlider({
         style={{ aspectRatio: ratio > 0 ? ratio : 1 }}
         role="slider"
         tabIndex={0}
-        aria-label="Pembanding gambar asli dan hasil vektor"
+        aria-label="Comparison of the original image and the vector result"
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={Math.round(position)}
-        aria-valuetext={
-          "Hasil vektor " + Math.round(position) + " persen dari kiri"
-        }
+        aria-valuetext={"Vector result " + Math.round(position) + " percent from the left"}
         data-dragging={dragging ? "true" : "false"}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onKeyDown={onKeyDown}
       >
-        <img className="compare-layer" src={afterSrc} alt={"Hasil vektor dari gambar yang diproses"} />
+        <img className="compare-layer" src={afterSrc} alt="Vector result of the processed image" />
         <div
           className="compare-before"
           style={{ clipPath: "inset(0 " + (100 - position) + "% 0 0)" }}
           data-hidden={showOriginal ? "false" : "true"}
         >
-          <img className="compare-layer" src={beforeSrc} alt="Gambar asli sebelum divektor" />
+          <img className="compare-layer" src={beforeSrc} alt="Original image before vectorizing" />
         </div>
         {showOriginal && (
           <div className="compare-original" aria-hidden="true">
@@ -137,7 +135,7 @@ export function BeforeAfterSlider({
         <span className="compare-label compare-label-after">{afterLabel}</span>
       </div>
       <p className="compare-hint">
-        Geser garis pembatas, atau fokuskan pembanding lalu gunakan tombol panah.
+        Drag the divider, or focus the comparison and use the arrow keys.
       </p>
     </div>
   );

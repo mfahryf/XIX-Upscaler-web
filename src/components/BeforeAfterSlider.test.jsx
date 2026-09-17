@@ -58,8 +58,7 @@ describe("BeforeAfterSlider", () => {
 
   it("menampilkan label sebelum dan sesudah", () => {
     renderSlider();
-    expect(screen.getByText("Asli")).toBeInTheDocument();
-    expect(screen.getByText("Vektor")).toBeInTheDocument();
+    expect(screen.getByText("Original")).toBeInTheDocument();
+    expect(screen.getByText("Vector")).toBeInTheDocument();
   });
 });
-

@@ -18,15 +18,15 @@ describe("checkFile", () => {
   });
 
   it("menolak berkas tanpa berkas", () => {
-    expect(() => checkFile(null)).toThrowError(/Belum ada berkas/);
+    expect(() => checkFile(null)).toThrowError(/No file selected/);
   });
 
   it("menolak format yang belum didukung", () => {
-    expect(() => checkFile({ type: "image/gif", size: 1024 })).toThrowError(/belum didukung/);
+    expect(() => checkFile({ type: "image/gif", size: 1024 })).toThrowError(/is not supported/);
   });
 
   it("menolak berkas di atas 5 MB dan menyebut batasnya", () => {
-    expect(() => checkFile({ type: "image/png", size: MAX_FILE_BYTES + 1 })).toThrowError(/5,0 MB/);
+    expect(() => checkFile({ type: "image/png", size: MAX_FILE_BYTES + 1 })).toThrowError(/5.0 MB/);
     expect(() => checkFile({ type: "image/png", size: MAX_FILE_BYTES })).not.toThrow();
   });
 });
@@ -57,11 +57,11 @@ describe("targetSize", () => {
 
   it("menolak gambar di atas batas keras", () => {
     const side = Math.ceil(Math.sqrt(HARD_MAX_PIXELS)) + 200;
-    expect(() => targetSize(side, side)).toThrowError(/batas keras/);
+    expect(() => targetSize(side, side)).toThrowError(/hard limit/);
   });
 
   it("menolak ukuran yang tidak masuk akal", () => {
-    expect(() => targetSize(0, 0)).toThrowError(/tidak terbaca/);
+    expect(() => targetSize(0, 0)).toThrowError(/could not be read/);
   });
 });
 
@@ -69,10 +69,10 @@ describe("format", () => {
   it("membaca ukuran berkas", () => {
     expect(formatBytes(0)).toBe("0 KB");
     expect(formatBytes(2048)).toBe("2 KB");
-    expect(formatBytes(5 * 1024 * 1024)).toBe("5,0 MB");
+    expect(formatBytes(5 * 1024 * 1024)).toBe("5.0 MB");
   });
 
   it("membaca megapiksel dengan koma", () => {
-    expect(formatMegapixels(2_000_000)).toBe("2,00 MP");
-});
+    expect(formatMegapixels(2_000_000)).toBe("2.00 MP");
+  });
 });

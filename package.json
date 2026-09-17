@@ -3,7 +3,9 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "engine:sync": "node scripts/sync-engine.mjs",
     "engine:verify": "node scripts/sync-engine.mjs --verify",
@@ -14,6 +16,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "lucide-react": "^1.46.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
