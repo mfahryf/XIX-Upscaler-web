@@ -313,7 +313,8 @@ h2 {
 
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 1.25fr) minmax(15rem, 0.75fr);
+  /* Kolom kanan selebar jendela pratinjau, kolom kiri mengambil sisanya. */
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: clamp(1.5rem, 5vw, 4rem);
   align-items: center;
   padding: clamp(2.25rem, 6vw, 4rem) 0 clamp(1.5rem, 4vw, 2.5rem);
@@ -353,67 +354,6 @@ h2 {
   margin-right: 0.45rem;
   color: var(--accent-3);
   content: "\2022";
-}
-
-.hero-card {
-  position: relative;
-  min-height: 15rem;
-  padding: 1.4rem;
-  overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: 1.2rem;
-  background: linear-gradient(150deg, rgba(70, 22, 38, 0.72), rgba(26, 10, 16, 0.66));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1.2rem 3rem rgba(0, 0, 0, 0.26);
-  backdrop-filter: blur(16px) saturate(140%);
-}
-
-.hero-card::after {
-  position: absolute;
-  top: 1.5rem;
-  right: -3rem;
-  width: 11rem;
-  height: 11rem;
-  border-radius: 50%;
-  background: rgba(255, 138, 90, 0.22);
-  filter: blur(3rem);
-  content: "";
-}
-
-.hero-card-lines {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  gap: 0.65rem;
-  margin-top: 3rem;
-}
-
-.hero-card-lines span {
-  height: 0.4rem;
-  border-radius: 99px;
-  background: linear-gradient(90deg, var(--accent), transparent);
-}
-
-.hero-card-lines span:nth-child(2) {
-  width: 74%;
-  background: linear-gradient(90deg, var(--accent-2), transparent);
-}
-
-.hero-card-lines span:nth-child(3) {
-  width: 52%;
-  background: linear-gradient(90deg, var(--accent-3), transparent);
-}
-
-.hero-card-caption {
-  position: absolute;
-  right: 1.4rem;
-  bottom: 1.2rem;
-  left: 1.4rem;
-  z-index: 1;
-  margin: 0;
-  padding-top: 0.9rem;
-  border-top: 1px solid var(--line);
-  color: var(--muted);
-  font-size: 0.76rem;
 }
 
 /* ---------------------------------------------------------------- panel */
@@ -820,22 +760,6 @@ h2 {
 }
 
 /* ------------------------------------------------------------ app preview */
-
-.download-grid {
-  display: grid;
-  gap: clamp(1.75rem, 5vw, 3rem);
-  /* Jendela dan teks unduhan berdiri sejajar di baris yang sama. Sebelumnya
-     jendela ditengahkan secara vertikal pada baris setinggi 600 px, sehingga
-     teks unduhan terdorong lebih dari 200 px di bawah judul bagiannya dan
-     satu baris itu terbaca sebagai dua baris terpisah. */
-  align-items: start;
-}
-
-@media (min-width: 768px) {
-  .download-grid {
-    grid-template-columns: minmax(0, 1fr) auto;
-  }
-}
 
 /* The window below is the desktop app itself rather than a drawing of it: the
    same 300 x 600 shell with its 6 px transparent margin, the 34 px title bar,
@@ -1698,14 +1622,6 @@ h2 {
 @media (max-width: 880px) {
   .hero {
     grid-template-columns: minmax(0, 1fr);
-  }
-
-  .hero-card {
-    min-height: 10rem;
-  }
-
-  .hero-card-lines {
-    margin-top: 1.5rem;
   }
 
   .plan {

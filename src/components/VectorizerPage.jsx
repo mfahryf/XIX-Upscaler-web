@@ -86,16 +86,10 @@ export function VectorizerPage() {
               <li>Works offline</li>
             </ul>
           </div>
-          <div className="hero-card" aria-hidden="true">
-            <div className="hero-card-lines">
-              <span />
-              <span />
-              <span />
-            </div>
-            <p className="hero-card-caption">
-              Vector output from the V3 engine, ready to edit in a design app.
-            </p>
-          </div>
+          {/* Kolom kanan hero menampilkan jendela aplikasi yang sebenarnya,
+              bukan gambar bentuknya. Pengunjung melihat wujud produk pada
+              layar pertama, tanpa harus sampai ke bagian unduhan. */}
+          <AppPreview />
         </section>
 
         <DemoPanel />
@@ -149,30 +143,25 @@ export function VectorizerPage() {
         <section className="panel" id="download" aria-labelledby="download-title">
           <p className="section-label">Download</p>
           <h2 id="download-title">Desktop app</h2>
-          <div className="download-grid">
-            <div className="download-copy">
-              {DOWNLOAD_URL ? (
-                <a className="button button-primary" href={DOWNLOAD_URL} rel="noreferrer">
-                  <Download className="nav-icon" aria-hidden="true" />
-                  Download Windows installer
-                </a>
-              ) : (
-                <p className="plan-footnote">
-                  The installer is not available for download yet. The trial on this page already
-                  uses the same engine, so you can judge the output first.
-                </p>
-              )}
-              <ul className="download-points">
-                <li>Windows 10 or newer</li>
-                <li>Image processing runs on your own computer</li>
-                <li>
-                  After activation it works without internet for up to {CATALOG.offlineLeaseDays}{" "}
-                  days
-                </li>
-              </ul>
-            </div>
-            <AppPreview />
-          </div>
+          {DOWNLOAD_URL ? (
+            <a className="button button-primary" href={DOWNLOAD_URL} rel="noreferrer">
+              <Download className="nav-icon" aria-hidden="true" />
+              Download Windows installer
+            </a>
+          ) : (
+            <p className="plan-footnote">
+              The installer is not available for download yet. The trial on this page already
+              uses the same engine, so you can judge the output first.
+            </p>
+          )}
+          <ul className="download-points">
+            <li>Windows 10 or newer</li>
+            <li>Image processing runs on your own computer</li>
+            <li>
+              After activation it works without internet for up to {CATALOG.offlineLeaseDays}{" "}
+              days
+            </li>
+          </ul>
         </section>
       </main>
 

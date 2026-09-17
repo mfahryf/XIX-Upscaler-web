@@ -56,26 +56,26 @@ describe("VectorizerPage", () => {
     expect(rule[0]).toMatch(/gap:/);
   });
 
-  // Bagian unduhan menampilkan jendela aplikasi di samping teksnya, dan dua
-  // aturan yang membuatnya terbaca sebagai satu baris: jendela serta teks mulai
-  // dari garis atas yang sama, dan dua kolom itu baru ditumpuk di bawah lebar
-  // tempat jendela selebar 300 px masih muat. Sebelumnya jendela ditengahkan
-  // secara vertikal pada baris setinggi 600 px, sehingga teks unduhan jatuh
-  // lebih dari 200 px di bawah judul bagiannya dan bagian itu terbaca sebagai
-  // dua baris yang berjarak jauh.
-  it("menyejajarkan jendela pratinjau dengan teks unduhan pada satu baris", () => {
+  // Jendela pratinjau berdiri di kolom kanan hero, menggantikan kartu hiasan
+  // yang hanya memuat tiga garis dan satu kalimat. Bagian unduhan kembali
+  // berisi tombol dan syarat saja, sehingga tidak ada dua bagian yang
+  // menampilkan hal yang sama. Uji ini menjaga agar pratinjau tidak diam-diam
+  // turun kembali ke bagian unduhan dan kartu hiasan lama tidak hidup lagi.
+  it("menempatkan jendela pratinjau di hero dan membersihkan bagian unduhan", () => {
     const { container } = render(<VectorizerPage />);
-    const grid = container.querySelector(".download-grid");
-    expect(grid, "elemen .download-grid").not.toBeNull();
-    expect(grid.querySelector(".download-copy"), "teks unduhan").not.toBeNull();
-    expect(grid.querySelector(".app-preview"), "jendela pratinjau").not.toBeNull();
+
+    const hero = container.querySelector(".hero");
+    expect(hero, "elemen .hero").not.toBeNull();
+    expect(hero.querySelector(".app-preview"), "pratinjau di hero").not.toBeNull();
+
+    const download = container.querySelector("#download");
+    expect(download.querySelector(".app-preview"), "pratinjau di bagian unduhan").toBeNull();
+    expect(container.querySelector(".hero-card"), "kartu hiasan lama").toBeNull();
 
     const stylesheet = readFileSync("src/styles.css", "utf8");
-    const rule = stylesheet.match(/\.download-grid\s*\{[^}]*\}/);
-    expect(rule, "aturan .download-grid di styles.css").not.toBeNull();
-    expect(rule[0]).toMatch(/align-items:\s*start/);
-
-    const wide = stylesheet.match(/@media\s*\(min-width:\s*768px\)\s*\{\s*\.download-grid/);
-    expect(wide, "dua kolom sejak 768 px").not.toBeNull();
+    const heroRule = stylesheet.match(/\.hero\s*\{[^}]*\}/);
+    expect(heroRule, "aturan .hero di styles.css").not.toBeNull();
+    expect(heroRule[0]).toMatch(/grid-template-columns:\s*minmax\(0,\s*1fr\)\s*auto/);
+    expect(stylesheet).not.toMatch(/\.hero-card\s*\{/);
   });
 });

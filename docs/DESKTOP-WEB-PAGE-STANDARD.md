@@ -228,8 +228,11 @@ Ketentuan tampilan:
 
 Aplikasi desktop tidak punya antarmuka web, sehingga pengunjung tidak dapat
 mencoba atau melihat bentuk aplikasinya sebelum memasang. Bagian unduhan
-karena itu memuat pratinjau jendela aplikasi. Tanpa pratinjau, satu-satunya
-gambaran yang dimiliki pengunjung adalah tulisan di halaman.
+tidak dapat menutup celah itu sendirian, karena pengunjung harus sampai ke
+bawah halaman lebih dulu. Pratinjau jendela aplikasi karena itu diletakkan
+pada hero, di kolom kanan, sehingga wujud produk terlihat pada layar pertama.
+Tanpa pratinjau, satu-satunya gambaran yang dimiliki pengunjung adalah
+tulisan di halaman.
 
 Pratinjau bukan hiasan bebas. Ia disalin dari aplikasi, bukan digambar ulang
 dengan perkiraan. Pratinjau yang hanya "mirip" akan terbaca salah oleh orang
@@ -270,6 +273,13 @@ tombol transportasi 30 x 24 px, dan sepuluh batang indikator aktivitas.
   disembunyikan dari teknologi bantu, sedangkan pembungkusnya diumumkan
   sebagai satu gambar dengan keterangan singkat. Tanpa aturan ini, pembaca
   layar akan menemukan deretan tombol yang tidak dapat ditekan.
+ - **Pratinjau diletakkan di hero, bukan di bagian unduhan.** Bagian unduhan
+   berisi tombol dan syarat komputernya saja. Bila pratinjau ditaruh di sana,
+   pengunjung baru melihatnya setelah menggulir melewati seluruh halaman, dan
+   bagian unduhan berubah menjadi dua kolom yang salah satunya setinggi 600 px
+   sehingga isinya terbaca sebagai dua baris berjarak jauh. Kolom kanan hero
+   sudah disediakan untuk gambar, jadi tempat itu dipakai untuk jendela yang
+   sebenarnya.
 - **Pada layar sangat sempit, pratinjau dikecilkan sebagai satu kesatuan,**
   bukan dipotong dan bukan dibiarkan mendorong halaman melebar. Lebar 300 px
   berasal dari jendela aslinya, jadi pratinjau tidak dapat dibuat lebih sempit

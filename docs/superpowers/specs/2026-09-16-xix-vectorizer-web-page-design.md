@@ -37,15 +37,16 @@ katalog gateway saat build, bukan ditulis di kode.
 
 Enam bagian, berurutan:
 
-1. **Header.** Nama XIXLabs, menu ringkas, tombol menuju pembelian.
+1. **Hero.** Judul, tombol coba gratis dan lihat harga, tiga keterangan
+   singkat, dan pratinjau jendela aplikasi pada kolom kanan.
 2. **Coba gratis.** Kotak unggah satu berkas, kemajuan per tahap, hasil
    sebelum-sesudah, tombol simpan SVG, tombol mulai ulang.
 3. **Kenapa Vectorizer.** Tiga kartu: tiga mesin vektor, hasil bersih
    tanpa watermark, proses borongan ada di aplikasi.
 4. **Yang Anda dapat.** Harga, kuota lima berkas berhasil per mesin, satu
    perangkat aktif, penggunaan offline sampai 14 hari.
-5. **Unduh.** Tombol installer, syarat komputernya, dan pratinjau jendela
-   aplikasi.
+5. **Unduh.** Tombol installer dan syarat komputernya. Pratinjau jendela
+   aplikasi sudah tampil di hero, sehingga bagian ini tidak mengulangnya.
 6. **Catatan kaki.** Bantuan, privasi, status layanan.
 
 ### Dasar tampilan
@@ -64,9 +65,11 @@ tidak dipakai karena sudah menjadi identitas Animotion.
 ### Pratinjau jendela aplikasi
 
 Aplikasi desktop tidak punya antarmuka web, jadi bagian unduhan memuat
-pratinjau jendela aplikasi. Pratinjau disalin dari aplikasi, bukan digambar
-ulang: ukuran jendela, warna, tinggi bilah, urutan bagian, dan tulisan setiap
-sel diambil dari berkas aplikasi. Paletnya palet aplikasi, bukan palet
+pratinjau jendela aplikasi. Pratinjau ditempatkan pada kolom kanan hero,
+bukan di bagian unduhan, supaya wujud produk terlihat pada layar pertama.
+Pratinjau disalin dari aplikasi, bukan digambar ulang: ukuran jendela,
+warna, tinggi bilah, urutan bagian, dan tulisan setiap sel diambil dari
+berkas aplikasi. Paletnya palet aplikasi, bukan palet
 halaman, dan variabelnya dikurung pada pembungkus pratinjau supaya tidak
 membocorkan warna ke bagian halaman yang lain.
 
