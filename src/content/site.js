@@ -68,3 +68,27 @@ export const DEMO_LIMITS = {
   accepted: "PNG, JPG, or WebP",
 };
 
+// Footer destinations. Only links that actually resolve are listed, so nothing
+// in the footer leads nowhere.
+//
+// The social row is empty until XIXLabs has accounts to point at. The footer
+// hides the row while the list is empty, and it takes the same shape the shared
+// footer uses, so filling it in later needs no layout change.
+export const FOOTER_LINKS = {
+  social: [],
+  main: [
+    { href: "#try", label: "Try free" },
+    { href: "#pricing", label: "Pricing" },
+    { href: "#download", label: "Download" },
+    { href: "mailto:hello@xixlabs.net", label: "Support" },
+  ],
+  legal: [
+    { href: "/healthz", label: "Service status" },
+    { href: "https://xixlabs.net", label: "XIXLabs" },
+  ],
+};
+
+export const COPYRIGHT = {
+  text: "\u00a9 " + new Date().getFullYear() + " XIXLabs",
+  license: "All rights reserved",
+};

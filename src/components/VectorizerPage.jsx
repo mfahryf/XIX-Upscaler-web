@@ -1,7 +1,18 @@
 
 import { Download, Sparkles, Wand2 } from "lucide-react";
 import { DemoPanel } from "./DemoPanel";
-import { CATALOG, CHECKOUT_URL, DOWNLOAD_URL, FEATURES, PLAN_LABEL, PLAN_POINTS, SITE } from "../content/site";
+import { Footer } from "./Footer";
+import {
+  CATALOG,
+  CHECKOUT_URL,
+  COPYRIGHT,
+  DOWNLOAD_URL,
+  FEATURES,
+  FOOTER_LINKS,
+  PLAN_LABEL,
+  PLAN_POINTS,
+  SITE,
+} from "../content/site";
 
 // Public XIX Vectorizer page.
 //
@@ -158,17 +169,16 @@ export function VectorizerPage() {
         </section>
       </main>
 
-      <footer className="app-footer">
-        <span>&copy; {SITE.name}</span>
-        <span className="footer-links">
-          <a href="mailto:hello@xixlabs.net">Support</a>
-          <a href="/healthz">Service status</a>
-          <a href="#top">Back to top</a>
-        </span>
-      </footer>
+      <Footer
+        brandName={SITE.name}
+        logo={<img className="footer-brand-logo" src="XIX.svg" alt="" />}
+        socialLinks={FOOTER_LINKS.social}
+        mainLinks={FOOTER_LINKS.main}
+        legalLinks={FOOTER_LINKS.legal}
+        copyright={COPYRIGHT}
+      />
     </div>
   );
 }
 
 export default VectorizerPage;
-
