@@ -66,7 +66,7 @@ export function VectorizerPage() {
         </div>
       </header>
 
-      <main className="page-shell">
+      <main className="page-shell page-main">
         <section className="hero" aria-labelledby="hero-title">
           <div className="hero-copy">
             <h1 id="hero-title">

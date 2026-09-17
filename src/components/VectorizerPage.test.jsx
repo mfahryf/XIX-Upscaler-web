@@ -1,6 +1,7 @@
 
 import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
+import { readFileSync } from "node:fs";
 import { VectorizerPage } from "./VectorizerPage";
 
 vi.mock("./DemoPanel", () => ({
@@ -37,5 +38,21 @@ describe("VectorizerPage", () => {
     render(<VectorizerPage />);
     expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
     expect(screen.queryByText(/license key/i)).not.toBeInTheDocument();
+  });
+
+  // Jarak antar bagian diatur oleh satu kelas yang dipasang pada elemen yang
+  // menampung seluruh bagian. Kelas itu pernah tertulis di stylesheet tetapi
+  // tidak pernah dipakai di halaman, sehingga bagian-bagian saling menempel
+  // tanpa ada yang menyadarinya: tidak ada yang rusak secara teknis, jadi tidak
+  // ada uji lain yang menangkapnya. Uji ini menjaga sambungan itu.
+  it("memasang kelas jarak antar bagian pada elemen yang menampungnya", () => {
+    render(<VectorizerPage />);
+    const main = screen.getByRole("main");
+    expect(main).toHaveClass("page-main");
+
+    const stylesheet = readFileSync("src/styles.css", "utf8");
+    const rule = stylesheet.match(/\.page-main\s*\{[^}]*\}/);
+    expect(rule, "aturan .page-main di styles.css").not.toBeNull();
+    expect(rule[0]).toMatch(/gap:/);
   });
 });
