@@ -850,7 +850,11 @@ h2 {
    then a bordered row holding the main links, the legal links, and the
    copyright block. */
 .app-footer {
-  margin-top: clamp(2.5rem, 7vw, 4.5rem);
+  /* The footer sits outside the content wrapper, so it carries the same width
+     limit and side gap as the header and the main content. Without this its
+     text would run to the edges of the screen. */
+  width: min(100% - 32px, 1160px);
+  margin: clamp(2.5rem, 7vw, 4.5rem) auto 0;
   padding: 3.5rem 0 1.5rem;
   color: var(--muted);
 }
@@ -1024,6 +1028,10 @@ h2 {
      brand and the action button keep the full width. */
   .app-nav {
     display: none;
+  }
+
+  .app-footer {
+    width: min(100% - 24px, 1160px);
   }
 
   .demo-head {
