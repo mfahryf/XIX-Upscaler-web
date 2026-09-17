@@ -344,21 +344,32 @@ h2 {
   margin-top: 1.5rem;
 }
 
-.hero-facts {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem 1.25rem;
-  margin: 1.5rem 0 0;
+/* Keunggulan aplikasi desktop: tujuh butir, satu baris masing-masing, di
+   antara judul dan tombol. Tanda centangnya sama dengan daftar keuntungan
+   lisensi supaya bahasa visualnya tetap satu, dan jaraknya lebih rapat
+   karena butirnya lebih banyak daripada daftar lain di halaman ini. */
+.hero-highlights {
+  display: grid;
+  gap: 0.45rem;
+  margin: 1.4rem 0 0;
   padding: 0;
-  color: var(--muted);
-  font-size: 0.82rem;
+  color: var(--text);
+  font-size: 0.9rem;
   list-style: none;
 }
 
-.hero-facts li::before {
-  margin-right: 0.45rem;
+.hero-highlights li {
+  position: relative;
+  padding-left: 1.5rem;
+  line-height: 1.5;
+}
+
+.hero-highlights li::before {
+  position: absolute;
+  left: 0;
   color: var(--accent-3);
-  content: "\2022";
+  content: "\2713";
+  font-weight: 800;
 }
 
 /* ---------------------------------------------------------------- panel */

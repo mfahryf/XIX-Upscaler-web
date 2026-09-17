@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { readFileSync } from "node:fs";
 import { VectorizerPage } from "./VectorizerPage";
+import { HERO_HIGHLIGHTS } from "../content/site";
 
 vi.mock("./DemoPanel", () => ({
   DemoPanel: () => <div data-testid="demo-panel" />,
@@ -90,5 +91,43 @@ describe("VectorizerPage", () => {
     expect(padding, "padding atas hero").not.toBeNull();
     const padTopMax = parseFloat(padding[1].split(",").pop().trim());
     expect(padTopMax, "batas atas padding atas hero dalam rem").toBeLessThanOrEqual(1);
+  });
+
+  // Keunggulan aplikasi desktop dibaca sebelum pengunjung diminta menekan
+  // tombol, jadi urutannya judul, daftar keunggulan, baru tombol. Uji ini
+  // menjaga urutan itu dan menjaga isinya tetap berbahasa Inggris, karena
+  // sisa halaman memakai bahasa Inggris dan daftar ini pernah menjadi daftar
+  // tiga keterangan pendek yang isinya tumpang tindih dengan daftar baru.
+  it("menampilkan keunggulan aplikasi di antara judul dan tombol", () => {
+    const { container } = render(<VectorizerPage />);
+    const copy = container.querySelector(".hero-copy");
+    expect(copy, "elemen .hero-copy").not.toBeNull();
+
+    const urutan = [...copy.children].map((el) => el.tagName + "." + el.className);
+    const iJudul = urutan.findIndex((s) => s.startsWith("H1"));
+    const iDaftar = urutan.findIndex((s) => s.includes("hero-highlights"));
+    const iTombol = urutan.findIndex((s) => s.includes("hero-actions"));
+    expect(iJudul, "judul hero").toBeGreaterThanOrEqual(0);
+    expect(iDaftar, "daftar keunggulan").toBeGreaterThan(iJudul);
+    expect(iTombol, "tombol di bawah daftar").toBeGreaterThan(iDaftar);
+
+    const daftar = copy.querySelector(".hero-highlights");
+    const butir = [...daftar.querySelectorAll("li")];
+    expect(butir).toHaveLength(HERO_HIGHLIGHTS.length);
+    expect(butir.map((li) => li.textContent)).toEqual([...HERO_HIGHLIGHTS]);
+
+    // Tujuh keunggulan yang diminta pemilik produk: tiga mesin, hasil AI,
+    // artboard, ekspor, konkurensi, padding otomatis, dan ukuran installer.
+    const teks = butir.map((li) => li.textContent).join(" | ");
+    expect(teks).toMatch(/engines? — two AI-powered online, one fully local and offline/);
+    expect(teks).toMatch(/clean, tidy artwork/);
+    expect(teks).toMatch(/Artboard size/);
+    expect(teks).toMatch(/SVG, AI, and DXF/);
+    expect(teks).toMatch(/several files at once/);
+    expect(teks).toMatch(/\+7% breathing room/);
+    expect(teks).toMatch(/installer is about 7 MB/);
+
+    // Daftar lama yang berisi tiga keterangan pendek sudah tidak dipakai.
+    expect(container.querySelector(".hero-facts")).toBeNull();
   });
 });

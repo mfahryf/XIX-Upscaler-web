@@ -10,6 +10,7 @@ import {
   DOWNLOAD_URL,
   FEATURES,
   FOOTER_LINKS,
+  HERO_HIGHLIGHTS,
   PLAN_LABEL,
   PLAN_POINTS,
   SITE,
@@ -72,6 +73,13 @@ export function VectorizerPage() {
             <h1 id="hero-title">
               Turn images into SVG, <span className="hero-accent">without losing the shapes</span>
             </h1>
+            {/* Keunggulan aplikasi diletakkan di antara judul dan tombol, jadi
+                pengunjung membaca alasannya sebelum diminta menekan apa pun. */}
+            <ul className="hero-highlights">
+              {HERO_HIGHLIGHTS.map((highlight) => (
+                <li key={highlight}>{highlight}</li>
+              ))}
+            </ul>
             <div className="hero-actions">
               <a className="button button-primary" href="#try">
                 Try it free
@@ -80,11 +88,6 @@ export function VectorizerPage() {
                 See pricing
               </a>
             </div>
-            <ul className="hero-facts">
-              <li>Three vector engines</li>
-              <li>No watermark</li>
-              <li>Works offline</li>
-            </ul>
           </div>
           {/* Kolom kanan hero menampilkan jendela aplikasi yang sebenarnya,
               bukan gambar bentuknya. Pengunjung melihat wujud produk pada

@@ -33,6 +33,21 @@ export const PLAN_LABEL = (() => {
   return "IDR " + amount + " / month";
 })();
 
+// Keunggulan aplikasi desktop, ditampilkan di hero tepat setelah judul dan
+// sebelum tombol percobaan gratis. Setiap butir hanya menyebut hal yang
+// benar-benar dikerjakan aplikasi: tiga mesin (dua daring, satu lokal),
+// artboard yang dapat diatur, ekspor SVG/AI/DXF, proses paralel, padding
+// otomatis, dan installer yang kecil.
+export const HERO_HIGHLIGHTS = [
+  "Three vector engines — two AI-powered online, one fully local and offline",
+  "AI vectorizing that returns clean, tidy artwork",
+  "Artboard size you set yourself, or fitted to the artwork",
+  "Export to SVG, AI, and DXF",
+  "Runs several files at once instead of one by one",
+  "Automatic padding: full-bleed, or +7% breathing room",
+  "Lightweight — the installer is about 7 MB",
+];
+
 export const FEATURES = [
   {
     title: "Three vector engines",
