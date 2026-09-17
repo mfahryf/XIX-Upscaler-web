@@ -1,6 +1,7 @@
 
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { readFileSync } from "node:fs";
 import { DemoPanel } from "./DemoPanel";
 import { ImageInputError } from "../lib/image";
 
@@ -67,10 +68,6 @@ describe("DemoPanel", () => {
 
     expect(vectorize).toHaveBeenCalledTimes(1);
     expect(screen.getByRole("slider")).toBeInTheDocument();
-    expect(screen.getByText("File size")).toBeInTheDocument();
-    expect(screen.getByText(/^1 KB$/)).toBeInTheDocument();
-    expect(screen.getByText(/Colours/)).toBeInTheDocument();
-    expect(screen.getByText(/Download the XIX Vectorizer/)).toBeInTheDocument();
   });
 
   it("menyiapkan gambar hasil pada ukuran tampilan, bukan ukuran aslinya", async () => {
@@ -96,32 +93,34 @@ describe("DemoPanel", () => {
     // 630 = batas tinggi tampilan 420 px dikali cadangan ketajaman 1,5.
     expect(rasterize).toHaveBeenCalledWith(expect.stringContaining("<svg"), 630, 630);
     expect(imageDataToDataUrl).toHaveBeenCalledWith(expect.anything(), 630);
-    // Ukuran tampilan tidak mengubah keterangan dimensi vektor, yang tetap
-    // melaporkan ukuran sesungguhnya.
-    expect(screen.getByText(/3000 x 3000 px/)).toBeInTheDocument();
   });
 
-  // Keterangan tentang gambar yang dikecilkan digantikan ajakan mengunduh
-  // aplikasi desktop. Halaman ini menjalankan mesin dasar di peramban, dan
-  // yang berbasis AI ada di aplikasi desktop, jadi teksnya menyebut alasan itu.
-  it("mengajak mengunduh aplikasi desktop untuk hasil terbaik", async () => {
-    loadImage.mockResolvedValue({
-      data: new Uint8ClampedArray(4),
-      width: 800,
-      height: 500,
-      downscaled: true,
-      originalWidth: 4000,
-      originalHeight: 2500,
-    });
+  // Kotak hasil sengaja hanya memuat pembanding dan tombol. Ringkasan angka
+  // (ukuran berkas, waktu proses, dimensi, jumlah warna) dihapus karena
+  // angkanya hanya menambah keramaian di sebelah gambar, dan ajakannya sudah
+  // dipindahkan ke bawah pembanding. Uji ini menjaga agar keduanya tidak
+  // diam-diam hidup kembali.
+  it("tidak lagi menampilkan ringkasan angka maupun catatan hasil", async () => {
     const { container } = render(<DemoPanel />);
     pickFile(container);
 
     await waitFor(() => expect(screen.getByText("Save SVG")).toBeInTheDocument());
-    const ajakan = screen.getByText(/Download the XIX Vectorizer/);
-    expect(ajakan.textContent).toMatch(/powered by AI/);
-    // Keterangan ukuran proses yang lama sudah tidak ditampilkan lagi.
-    expect(screen.queryByText(/full size/)).not.toBeInTheDocument();
-    expect(screen.queryByText(/MP\)/)).not.toBeInTheDocument();
+    expect(container.querySelector(".result-stats")).toBeNull();
+    expect(container.querySelector(".result-note")).toBeNull();
+    expect(screen.queryByText("File size")).not.toBeInTheDocument();
+    expect(screen.queryByText("Processing time")).not.toBeInTheDocument();
+    expect(screen.queryByText("Colours")).not.toBeInTheDocument();
+
+    // Kotak hasil hanya berisi pembanding dan deretan tombol.
+    const result = container.querySelector(".result");
+    expect([...result.children].map((el) => el.className)).toEqual([
+      "compare",
+      "result-actions",
+    ]);
+
+    const stylesheet = readFileSync("src/styles.css", "utf8");
+    expect(stylesheet).not.toMatch(/\.result-stats\s*\{/);
+    expect(stylesheet).not.toMatch(/\.result-note\s*\{/);
   });
 
   it("menampilkan pesan ketika berkas ditolak", async () => {

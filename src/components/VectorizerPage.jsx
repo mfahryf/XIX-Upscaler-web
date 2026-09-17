@@ -4,7 +4,6 @@ import { AppPreview } from "./AppPreview";
 import { DemoPanel } from "./DemoPanel";
 import { Footer } from "./Footer";
 import {
-  CATALOG,
   CHECKOUT_URL,
   COPYRIGHT,
   DOWNLOAD_URL,
@@ -22,7 +21,6 @@ import {
 // /payment/complete route, so no two pages do the same work.
 const NAV_ITEMS = [
   { id: "try", href: "#try", label: "Try free", Icon: Wand2 },
-  { id: "pricing", href: "#pricing", label: "Pricing", Icon: Sparkles },
   { id: "download", href: "#download", label: "Download", Icon: Download },
 ];
 
@@ -83,9 +81,6 @@ export function VectorizerPage() {
               <a className="button button-primary" href="#try">
                 Try it free
               </a>
-              <a className="text-link" href="#pricing">
-                See pricing
-              </a>
             </div>
           </div>
           {/* Kolom kanan hero menampilkan jendela aplikasi yang sebenarnya,
@@ -96,24 +91,54 @@ export function VectorizerPage() {
 
         <DemoPanel />
 
-        <section className="panel" id="pricing" aria-labelledby="pricing-title">
-          <p className="section-label">What you get</p>
-          <h2 id="pricing-title">One licence, three engines</h2>
-          <div className="plan">
-            <div className="plan-price">
-              <p className="plan-amount">{PLAN_LABEL}</p>
-              <p className="plan-note">
-                Valid for {CATALOG.durationDays} days, then renewable with the next payment.
+        <section className="panel" id="download" aria-labelledby="download-title">
+          <p className="section-label">Download</p>
+          <h2 id="download-title">Desktop app and licence</h2>
+          {/* Dua kartu berdampingan: satu menerangkan berkas yang diunduh, satu
+              menerangkan lisensi yang membukanya. Harga dan kuota ikut pindah ke
+              kartu lisensi, sehingga bagian harga tersendiri tidak diperlukan
+              lagi dan hanya ada satu tombol menuju checkout. */}
+          <div className="download-cards">
+            <article className="download-card">
+              <p className="section-label">Installer</p>
+              <h3 className="card-title">Windows desktop app</h3>
+              <p className="card-note">
+                The full program: AI-powered vectorizing, three engines, batch runs, and export
+                to SVG, AI, and DXF.
               </p>
-            </div>
-            <ul className="plan-points">
-              {PLAN_POINTS.map((point) => (
-                <li key={point}>{point}</li>
-              ))}
-            </ul>
-            <div className="plan-actions">
+              <ul className="download-points">
+                <li>Windows 10 or newer</li>
+                <li>Each file is processed on your own computer</li>
+                <li>Free trial on all three engines, with no payment up front</li>
+              </ul>
+              {DOWNLOAD_URL ? (
+                <a className="button button-primary" href={DOWNLOAD_URL} rel="noreferrer">
+                  <Download className="nav-icon" aria-hidden="true" />
+                  Download Windows installer
+                </a>
+              ) : (
+                <button type="button" className="button button-primary" disabled>
+                  Download link not configured
+                </button>
+              )}
+            </article>
+
+            <article className="download-card">
+              <p className="section-label">Licence</p>
+              <h3 className="card-title">One licence, three engines</h3>
+              <p className="plan-amount">{PLAN_LABEL}</p>
+              <ul className="plan-points">
+                {PLAN_POINTS.map((point) => (
+                  <li key={point}>{point}</li>
+                ))}
+              </ul>
+              <p className="plan-footnote">
+                After payment the licence code is issued by the payment provider, and the
+                activation steps are on the payment result page.
+              </p>
               {checkoutReady ? (
                 <a className="button button-primary" href={CHECKOUT_URL} rel="noreferrer">
+                  <Sparkles className="nav-icon" aria-hidden="true" />
                   Get licence
                 </a>
               ) : (
@@ -121,36 +146,8 @@ export function VectorizerPage() {
                   Purchase link not configured
                 </button>
               )}
-              <p className="plan-footnote">
-                After payment the licence code is issued by the payment provider, and the
-                activation steps are on the payment result page.
-              </p>
-            </div>
+            </article>
           </div>
-        </section>
-
-        <section className="panel" id="download" aria-labelledby="download-title">
-          <p className="section-label">Download</p>
-          <h2 id="download-title">Desktop app</h2>
-          {DOWNLOAD_URL ? (
-            <a className="button button-primary" href={DOWNLOAD_URL} rel="noreferrer">
-              <Download className="nav-icon" aria-hidden="true" />
-              Download Windows installer
-            </a>
-          ) : (
-            <p className="plan-footnote">
-              The installer is not available for download yet. The trial on this page already
-              uses the same engine, so you can judge the output first.
-            </p>
-          )}
-          <ul className="download-points">
-            <li>Windows 10 or newer</li>
-            <li>Image processing runs on your own computer</li>
-            <li>
-              After activation it works without internet for up to {CATALOG.offlineLeaseDays}{" "}
-              days
-            </li>
-          </ul>
         </section>
       </main>
 

@@ -80,7 +80,6 @@ export const FOOTER_LINKS = {
   social: [],
   main: [
     { href: "#try", label: "Try free" },
-    { href: "#pricing", label: "Pricing" },
     { href: "#download", label: "Download" },
     { href: "mailto:hello@xixlabs.net", label: "Support" },
   ],

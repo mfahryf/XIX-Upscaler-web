@@ -100,7 +100,7 @@ export function BeforeAfterSlider({
         style={{ aspectRatio: ratio > 0 ? ratio : 1 }}
         role="slider"
         tabIndex={0}
-        aria-label="Comparison of the original image and the vector result"
+        aria-label="Comparison of the original image and the vector result. Drag the divider, or focus this comparison and use the arrow keys."
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={Math.round(position)}
@@ -135,7 +135,10 @@ export function BeforeAfterSlider({
         <span className="compare-label compare-label-after">{afterLabel}</span>
       </div>
       <p className="compare-hint">
-        Drag the divider, or focus the comparison and use the arrow keys.
+        <a className="compare-hint-link" href="#download">
+          <strong>Download XIX Vectorizer Desktop</strong>
+        </a>{" "}
+        — AI-powered, detail-preserving, and built for batch processing.
       </p>
     </div>
   );

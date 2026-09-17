@@ -177,9 +177,9 @@ ditolak. Alasan memilih memperkecil daripada menolak: pengunjung yang
 ditolak akan pergi, sedangkan pengunjung yang gambarnya dikecilkan tetap
 mendapat hasil yang baik. Untuk dilihat di layar, hasil vektor pada 2
 megapiksel tidak kehilangan ketajaman saat diperbesar.
- Pengecilan ini tidak diumumkan sebagai pesan tersendiri. Keterangan hasil
- justru dipakai untuk mengajak mengunduh aplikasi desktop, karena yang
- memakai mesin berbasis AI ada di sana, dan di sana pula ukuran penuh
+ Pengecilan ini tidak diumumkan sebagai pesan tersendiri. Ajakan mengunduh
+ aplikasi desktop diletakkan di bawah pembanding sebelum-sesudah, karena
+ yang memakai mesin berbasis AI ada di sana, dan di sana pula ukuran penuh
  dipakai. Percobaan di halaman berfungsi sebagai contoh rasa, bukan sebagai
  pengganti aplikasinya.
 
@@ -226,7 +226,13 @@ Ketentuan tampilan:
   panah, dengan peran pembaca layar yang benar;
 - disediakan tombol tahan-untuk-melihat-asli, karena menggeser garis
   pembatas di layar sentuh tidak nyaman;
-- disediakan tombol simpan SVG, dan ukuran berkasnya disebutkan;
+- disediakan tombol simpan SVG;
+- di bawah pembanding disediakan satu kalimat ajakan mengunduh aplikasi
+  desktop, dengan bagian "Download XIX Vectorizer Desktop" dicetak tebal dan
+  menunjuk bagian unduhan;
+- ringkasan angka hasil (ukuran berkas, waktu proses, dimensi, jumlah warna)
+  tidak ditampilkan, karena angkanya hanya menambah keramaian di sebelah
+  gambar yang sudah dapat dinilai sendiri oleh pengunjung;
 - disediakan tombol mulai ulang.
 
 ## 8. Pratinjau aplikasi desktop
@@ -322,7 +328,31 @@ Uji otomatis pada repo halaman tidak menyalin angka piksel, karena angka itu
 berubah setiap kali aplikasi berubah. Yang diuji adalah strukturnya: jumlah
 baris, urutan sel, penanda mesin terpilih, dan tidak adanya baris gagal.
 
-## 9. Monetisasi dan tombol pembelian
+## 9. Bagian unduhan
+
+Bagian unduhan adalah satu bagian dengan **dua kartu berdampingan**, bukan
+dua bagian terpisah dan bukan satu blok panjang. Kartu pertama menerangkan
+installer beserta syarat komputernya; kartu kedua menerangkan lisensi
+beserta harga, kuota, dan jalan menuju checkout.
+
+Alasan bentuk ini: harga yang berdiri sebagai bagian tersendiri membuat
+tombol menuju checkout muncul dua kali di satu halaman, yaitu di bagian
+harga dan di menu header. Dua kartu menyatukan harga dengan barang yang
+dijual, dan menyisakan satu tombol pembelian.
+
+Aturan yang berlaku untuk setiap aplikasi:
+
+- harga dan kuota hanya boleh muncul di kartu lisensi, bukan di kartu
+  installer dan bukan di bagian lain;
+- setiap kartu memuat tepat satu tombol, dan tombolnya diletakkan di kaki
+  kartu supaya kedua tombol berdiri pada garis yang sama meskipun panjang
+  isi kartunya berbeda;
+- pada layar sempit kedua kartu ditumpuk menjadi satu kolom;
+- bagian harga tidak dibuat sebagai bagian tersendiri. Bila halaman
+  memerlukan penjelasan harga yang lebih panjang, gunakan kartu lisensi,
+  bukan bagian baru.
+
+## 10. Monetisasi dan tombol pembelian
 
 Halaman tidak pernah menampilkan kunci API provider, tidak membuat
 invoice sendiri, dan tidak menebak status pembayaran. Tombol pembelian
@@ -336,7 +366,7 @@ lain, sehingga kode lisensi yang terbit tidak dikenali gateway. Ambil
 nilai itu dari katalog pada saat build, dan jangan menuliskannya di
 dalam kode.
 
-## 10. Palet dan UI
+## 11. Palet dan UI
 
 Halaman memakai shell dan komponen dasar yang sama dengan Animotion,
 sesuai `XIXLabs.net/docs/design-system.md`. Perbedaan antar aplikasi
@@ -351,7 +381,7 @@ Setiap halaman wajib memiliki state loading, empty, error, dan success.
 Semua kontrol keyboard memiliki focus ring, dan gerakan animasi dapat
 dikurangi pada perangkat yang meminta `prefers-reduced-motion`.
 
-## 11. Nilai yang perlu ditentukan per aplikasi
+## 12. Nilai yang perlu ditentukan per aplikasi
 
 | Nilai | Contoh | Catatan |
 | --- | --- | --- |
@@ -369,7 +399,7 @@ dikurangi pada perangkat yang meminta `prefers-reduced-motion`.
 | URL checkout | Dari katalog gateway | Jangan ditulis di kode |
 | Halaman bantuan setelah bayar | `/payment/complete` | Milik landing pusat |
 
-## 12. Checklist QA sebelum produksi
+## 13. Checklist QA sebelum produksi
 
 ### Percobaan gratis
 
@@ -383,6 +413,18 @@ dikurangi pada perangkat yang meminta `prefers-reduced-motion`.
 - [ ] Hasil sama dengan hasil aplikasi desktop pada berkas yang sama.
 - [ ] Penggeser bekerja dengan tetikus, sentuhan, dan tombol panah.
 - [ ] Tombol simpan menghasilkan SVG yang dapat dibuka ulang.
+
+### Bagian unduhan dan harga
+
+- [ ] Bagian unduhan berisi dua kartu: installer dan lisensi.
+- [ ] Harga dan kuota hanya muncul di kartu lisensi.
+- [ ] Tombol menuju checkout hanya muncul di menu header dan di kartu
+      lisensi. Tidak ada bagian lain yang menawarkannya.
+- [ ] Setiap kartu memuat tepat satu tombol, dan kedua tombol berdiri pada
+      garis yang sama pada layar lebar.
+- [ ] Pada layar sempit kedua kartu ditumpuk dan isinya tetap terbaca penuh.
+- [ ] Tidak ada tautan yang menunjuk bagian harga lama, karena bagian itu
+      sudah tidak ada.
 
 ### Pratinjau aplikasi
 
@@ -414,7 +456,7 @@ dikurangi pada perangkat yang meminta `prefers-reduced-motion`.
 - [ ] Halaman tidak menampilkan atau menerima kode lisensi.
 - [ ] Entri registry aplikasi diperbarui.
 
-## 13. Kegagalan yang sudah pernah terjadi
+## 14. Kegagalan yang sudah pernah terjadi
 
 Bagian ini mencatat kejadian nyata pada integrasi XIX-Vectorizer supaya
 tidak terulang, dan supaya halaman aplikasi desktop berikutnya mengenali

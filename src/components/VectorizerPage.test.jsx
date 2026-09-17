@@ -10,13 +10,15 @@ vi.mock("./DemoPanel", () => ({
 }));
 
 describe("VectorizerPage", () => {
-  // Section Why Vectorizer dihapus, jadi halaman kini memuat lima bagian.
-  it("menampilkan kelima bagian halaman", () => {
+  // Section Why Vectorizer, lalu section Pricing, dihapus. Halaman kini memuat
+  // empat bagian: hero, coba gratis, unduh, catatan kaki.
+  it("menampilkan keempat bagian halaman", () => {
     render(<VectorizerPage />);
     expect(screen.getByRole("heading", { level: 1 })).toBeInTheDocument();
     expect(screen.getByTestId("demo-panel")).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /One licence, three engines/ })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /Desktop app/ })).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: /Desktop app and licence/ })
+    ).toBeInTheDocument();
     expect(screen.getByText(/Support/)).toBeInTheDocument();
   });
 
@@ -24,21 +26,71 @@ describe("VectorizerPage", () => {
     render(<VectorizerPage />);
     expect(screen.getByText(/IDR 99,000 \/ month/)).toBeInTheDocument();
     expect(screen.getByText(/5 successful files before a licence is required/)).toBeInTheDocument();
-    // Muncul dua kali dengan sengaja: sekali di daftar keuntungan lisensi,
-    // sekali di syarat unduhan.
-    expect(screen.getAllByText(/14 days/)).toHaveLength(2);
+    expect(screen.getByText(/Valid for 30 days/)).toBeInTheDocument();
+    // Muncul sekali saja sekarang. Sebelumnya syarat unduhan mengulang angka
+    // yang sama, sehingga kalimatnya muncul dua kali di satu halaman.
+    expect(screen.getAllByText(/14 days/)).toHaveLength(1);
   });
 
-  it("tidak menawarkan tombol pembelian palsu saat tautan belum diisi", () => {
+  it("tidak menawarkan tombol unduh atau beli palsu saat tautannya belum diisi", () => {
     render(<VectorizerPage />);
     expect(screen.getByRole("button", { name: /Purchase link not configured/ })).toBeDisabled();
-    expect(screen.getByText(/installer is not available for download yet/)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Download link not configured/ })).toBeDisabled();
   });
 
   it("tidak menampilkan atau menerima kode lisensi", () => {
     render(<VectorizerPage />);
     expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
     expect(screen.queryByText(/license key/i)).not.toBeInTheDocument();
+  });
+
+  // Bagian harga berdiri sendiri dihapus, dan harga pindah ke kartu lisensi di
+  // bagian unduhan. Karena itu tidak boleh ada satu pun tautan yang masih
+  // menunjuk #pricing: tautan seperti itu akan menggulir ke tempat yang tidak
+  // ada dan tidak melakukan apa pun saat diklik. Tautan yang wajib absen
+  // terletak di tiga tempat, yaitu menu header, tombol di hero, dan catatan
+  // kaki.
+  it("tidak meninggalkan tautan ke bagian harga yang sudah dihapus", () => {
+    const { container } = render(<VectorizerPage />);
+
+    expect(container.querySelector("#pricing")).toBeNull();
+    expect(container.querySelectorAll('a[href="#pricing"]')).toHaveLength(0);
+    expect(screen.queryByRole("link", { name: /Pricing/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /See pricing/ })).not.toBeInTheDocument();
+
+    // Menu header menyisakan dua tujuan, dan keduanya menunjuk bagian yang ada.
+    const nav = screen.getByRole("navigation", { name: "Page navigation" });
+    const tujuan = [...nav.querySelectorAll("a")].map((a) => a.getAttribute("href"));
+    expect(tujuan).toEqual(["#try", "#download"]);
+  });
+
+  // Bagian unduhan berisi dua kartu: satu menerangkan installer, satu
+  // menerangkan lisensi. Harga dan tombol menuju checkout hanya boleh muncul di
+  // kartu lisensi, supaya tidak ada dua tombol pembelian di satu halaman.
+  it("memisahkan bagian unduhan menjadi kartu installer dan kartu lisensi", () => {
+    const { container } = render(<VectorizerPage />);
+    const download = container.querySelector("#download");
+    expect(download, "bagian unduhan").not.toBeNull();
+
+    const kartu = [...download.querySelectorAll(".download-card")];
+    expect(kartu).toHaveLength(2);
+    expect(kartu[0].querySelector(".section-label").textContent).toBe("Installer");
+    expect(kartu[1].querySelector(".section-label").textContent).toBe("Licence");
+
+    // Harga duduk di kartu lisensi, bukan di kartu installer.
+    expect(kartu[0].querySelector(".plan-amount")).toBeNull();
+    expect(kartu[1].querySelector(".plan-amount").textContent).toMatch(/IDR 99,000/);
+
+    // Kedua kartu sama-sama memuat satu tombol di kakinya.
+    expect(kartu[0].querySelectorAll(".button")).toHaveLength(1);
+    expect(kartu[1].querySelectorAll(".button")).toHaveLength(1);
+    expect(download.querySelector(".plan-points")).not.toBeNull();
+    expect(download.querySelector(".download-points")).not.toBeNull();
+
+    const stylesheet = readFileSync("src/styles.css", "utf8");
+    const grid = stylesheet.match(/\.download-cards\s*\{[^}]*\}/);
+    expect(grid, "aturan .download-cards di styles.css").not.toBeNull();
+    expect(grid[0]).toMatch(/grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/);
   });
 
   // Jarak antar bagian diatur oleh satu kelas yang dipasang pada elemen yang

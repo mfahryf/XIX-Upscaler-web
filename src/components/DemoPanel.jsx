@@ -10,7 +10,7 @@ import {
   loadImage,
 } from "../lib/image";
 import { vectorize } from "../lib/engineRunner";
-import { byteLength, downloadSvg, outputName, rasterize, readSize } from "../lib/svg";
+import { downloadSvg, outputName, rasterize, readSize } from "../lib/svg";
 import { DEMO_LIMITS } from "../content/site";
 
 // Width of the image prepared for display. It is derived from the display
@@ -70,7 +70,6 @@ export function DemoPanel() {
 
       setState("processing");
       setStage("Preparing file");
-      const started = Date.now();
       const output = await vectorize(image, {
         onProgress: ({ label, fraction: value }) => {
           if (!alive()) return;
@@ -79,7 +78,6 @@ export function DemoPanel() {
         },
       });
       if (!alive()) return;
-      const elapsed = Date.now() - started;
 
       const size = readSize(output.svg) || { width: image.width, height: image.height };
       const previewWidth = previewWidthFor(size.width / size.height);
@@ -93,11 +91,8 @@ export function DemoPanel() {
         afterSrc,
         width: size.width,
         height: size.height,
-        svgBytes: byteLength(output.svg),
         svg: output.svg,
         sourceName: file.name,
-        elapsed,
-        colors: output.settings?.colors ?? null,
       });
       setFraction(1);
       setState("done");
@@ -243,31 +238,6 @@ export function DemoPanel() {
               Start over
             </button>
           </div>
-          <dl className="result-stats">
-            <div>
-              <dt>File size</dt>
-              <dd>{formatBytes(result.svgBytes)}</dd>
-            </div>
-            <div>
-              <dt>Processing time</dt>
-              <dd>{(result.elapsed / 1000).toFixed(1)} s</dd>
-            </div>
-            <div>
-              <dt>Vector dimensions</dt>
-              <dd>
-                {Math.round(result.width)} x {Math.round(result.height)} px
-              </dd>
-            </div>
-            <div>
-              <dt>Colours</dt>
-              <dd>{result.colors ?? "auto"}</dd>
-            </div>
-          </dl>
-          <p className="result-note">
-            This free page runs a basic engine in your browser. Download the XIX Vectorizer
-            desktop app for the best results: its vectorizing is powered by AI, so it keeps
-            fine detail, handles big batches, and exports SVG, AI, and DXF.
-          </p>
         </div>
       )}
     </section>

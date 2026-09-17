@@ -1,6 +1,7 @@
 # Desain halaman web XIX Vectorizer
 
-Status: rancangan v1, 16 September 2026. Belum diimplementasikan.
+Status: rancangan v2, 17 September 2026. Sudah diimplementasikan, dan bagian
+harga serta ringkasan angka hasil disesuaikan pada revisi ini.
 
 Acuan proses: `docs/DESKTOP-WEB-PAGE-STANDARD.md`.
 
@@ -35,19 +36,26 @@ katalog gateway saat build, bukan ditulis di kode.
 
 ## 3. Bagian halaman
 
-Lima bagian, berurutan:
+Empat bagian, berurutan:
 
-1. **Hero.** Judul, tombol coba gratis dan lihat harga, tiga keterangan
-   singkat, dan pratinjau jendela aplikasi pada kolom kanan.
+1. **Hero.** Judul, daftar keunggulan aplikasi, satu tombol coba gratis, dan
+   pratinjau jendela aplikasi pada kolom kanan. Daftar keunggulan diletakkan
+   di antara judul dan tombol, sehingga pengunjung membaca alasannya sebelum
+   diminta menekan apa pun.
 2. **Coba gratis.** Kotak unggah satu berkas, kemajuan per tahap, hasil
    sebelum-sesudah, tombol simpan SVG, tombol mulai ulang. Bagian ini tidak
    memakai judul sendiri: judul halaman di atasnya sudah menjelaskan isinya,
    dan tombol unggahnya cukup satu, yaitu yang ada di dalam kotak unggah.
-3. **Yang Anda dapat.** Harga, kuota lima berkas berhasil per mesin, satu
-   perangkat aktif, penggunaan offline sampai 14 hari.
-4. **Unduh.** Tombol installer dan syarat komputernya. Pratinjau jendela
-   aplikasi sudah tampil di hero, sehingga bagian ini tidak mengulangnya.
-5. **Catatan kaki.** Bantuan, privasi, status layanan.
+3. **Unduh.** Dua kartu berdampingan. Kartu pertama menerangkan installer
+   beserta syarat komputernya, kartu kedua menerangkan lisensi beserta harga,
+   kuota, dan jalan menuju checkout. Pratinjau jendela aplikasi sudah tampil
+   di hero, sehingga bagian ini tidak mengulangnya.
+4. **Catatan kaki.** Bantuan, privasi, status layanan.
+
+Harga tidak berdiri sebagai bagian tersendiri. Sebelumnya ada bagian "Yang
+Anda dapat" di atas bagian unduhan, dan akibatnya tombol menuju checkout
+muncul dua kali di satu halaman. Harga kini tinggal di kartu lisensi, di
+dalam bagian unduhan, sehingga hanya ada satu jalan menuju checkout.
 
 ### Dasar tampilan
 
@@ -112,9 +120,13 @@ tampilan.
 - bentuk bingkai mengikuti bentuk gambar asli;
 - penggeser dapat dioperasikan dengan tetikus, sentuhan, dan tombol panah;
 - tombol tahan-untuk-melihat-asli disediakan untuk layar sentuh;
-- tombol simpan SVG menyebutkan ukuran berkasnya;
-- selisih dengan versi berbayar disebutkan jujur: aplikasi memproses
-  sampai ukuran gambar asli.
+- tombol simpan SVG tersedia, dan ringkasan angka hasil (ukuran berkas, waktu
+  proses, dimensi, dan jumlah warna) tidak lagi ditampilkan karena hanya
+  menambah keramaian di sebelah gambar;
+- di bawah pembanding ada satu kalimat ajakan mengunduh aplikasi desktop,
+  dengan bagian "Download XIX Vectorizer Desktop" dicetak tebal dan menunjuk
+  bagian unduhan. Kalimat ini menggantikan petunjuk menggeser pembatas, yang
+  pindah ke label pembaca layar pada bingkainya.
 
 ### Mesin sebagai satu sumber
 
@@ -132,7 +144,7 @@ tiga kasus uji, tetapi ukuran berkas naik dari 38.914 byte menjadi
 | --- | --- |
 | Belum ada berkas | Petunjuk singkat dan tombol pilih berkas |
 | Sedang membaca berkas | Indikator, dan penolakan bila format tidak dikenal |
-| Gambar diperkecil | Dikerjakan tanpa pemberitahuan tersendiri. Keterangan hasil justru mengajak mengunduh aplikasi desktop, karena yang berbasis AI ada di sana dan di sanalah ukuran penuh dipakai. |
+| Gambar diperkecil | Dikerjakan tanpa pemberitahuan tersendiri. Ajakan mengunduh aplikasi desktop di bawah pembanding menyebut keunggulan mesin berbasis AI di sana, tempat ukuran penuh dipakai. |
 | Sedang memproses | Nama tahap dan kemajuan sebenarnya |
 | Selesai | Pembanding sebelum-sesudah, tombol simpan dan mulai ulang |
 | Berkas terlalu besar | Pesan yang menyebut batas 5 MB |

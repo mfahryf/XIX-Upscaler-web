@@ -277,13 +277,6 @@ input,
   font-size: 0.82rem;
 }
 
-.text-link {
-  color: var(--accent);
-  font-size: 0.9rem;
-  font-weight: 700;
-  text-decoration: none;
-}
-
 /* ------------------------------------------------------------ typography */
 
 .section-label {
@@ -344,10 +337,10 @@ h2 {
   margin-top: 1.5rem;
 }
 
-/* Keunggulan aplikasi desktop: tujuh butir, satu baris masing-masing, di
-   antara judul dan tombol. Tanda centangnya sama dengan daftar keuntungan
-   lisensi supaya bahasa visualnya tetap satu, dan jaraknya lebih rapat
-   karena butirnya lebih banyak daripada daftar lain di halaman ini. */
+/* Keunggulan aplikasi desktop: sepuluh butir, di antara judul dan tombol.
+   Tanda centangnya sama dengan daftar keuntungan lisensi supaya bahasa
+   visualnya tetap satu, dan jaraknya lebih rapat karena butirnya lebih banyak
+   daripada daftar lain di halaman ini. */
 .hero-highlights {
   display: grid;
   gap: 0.45rem;
@@ -618,7 +611,20 @@ h2 {
 .compare-hint {
   margin: 0.7rem 0 0;
   color: var(--muted);
-  font-size: 0.8rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* Kalimat ajakan di bawah pembanding. Tautannya dibuat sewarna halaman alih-alih
+   biru bawaan peramban, supaya tetap terbaca sebagai satu kalimat utuh. */
+.compare-hint-link {
+  color: var(--accent);
+  text-decoration: none;
+  text-underline-offset: 3px;
+}
+
+.compare-hint-link:hover {
+  text-decoration: underline;
 }
 
 .result-actions {
@@ -628,57 +634,61 @@ h2 {
   margin-top: 0.9rem;
 }
 
-/* Kotak hasil dibuat lebih rapat daripada blok lain di halaman: isinya berupa
-   ringkasan angka yang dibaca sekilas, bukan bagian yang perlu ruang besar. */
+/* Tombol pada kotak hasil dibuat lebih rapat daripada tombol di bagian lain:
+   ketiganya berdampingan di bawah gambar, dan tombol setinggi tombol utama
+   akan menarik perhatian lebih besar daripada gambar yang mereka dampingi. */
 .result-actions .button {
   min-height: 2.4rem;
   padding: 0.5rem 0.85rem;
   font-size: 0.85rem;
 }
 
-.result-stats {
+/* ------------------------------------------------- kartu unduh dan lisensi */
+
+/* Bagian unduhan memuat dua kartu berdampingan: satu untuk installer, satu
+   untuk lisensi. Sebelumnya harga dan kuota berdiri di bagian tersendiri di
+   atasnya, sehingga tombol menuju checkout muncul dua kali di satu halaman.
+   Grid dua kolom dipakai agar keduanya sama tinggi pada layar lebar, lalu
+   ditumpuk menjadi satu kolom pada layar sempit. */
+.download-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
-  gap: 0.5rem;
-  margin: 0.9rem 0 0;
-  padding: 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1rem, 2.5vw, 1.5rem);
+  align-items: stretch;
 }
 
-.result-stats div {
-  padding: 0.5rem 0.65rem;
+.download-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding: clamp(1rem, 2.2vw, 1.4rem);
   border: 1px solid var(--line);
-  border-radius: 0.7rem;
+  border-radius: 1rem;
   background: var(--surface-inset);
 }
 
-.result-stats dt {
-  color: var(--muted);
-  font-size: 0.66rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+/* Isi kartu dirapatkan ke atas, sedangkan tombolnya didorong ke dasar kartu
+   supaya kedua tombol berdiri pada garis yang sama meskipun panjang isinya
+   berbeda. */
+.download-card .button {
+  align-self: flex-start;
+  margin-top: auto;
 }
 
-.result-stats dd {
-  margin: 0.2rem 0 0;
-  font-family: "Courier New", Consolas, monospace;
-  font-size: 0.82rem;
-  font-weight: 700;
+.download-card .section-label {
+  margin: 0;
 }
 
-.result-note {
-  margin: 0.8rem 0 0;
+.card-title {
+  font-size: 1.1rem;
+  line-height: 1.25;
+}
+
+.card-note {
+  margin: 0;
   color: var(--muted);
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   line-height: 1.65;
-}
-
-/* ----------------------------------------------------------------- plan */
-
-.plan {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
-  gap: clamp(1.25rem, 4vw, 2.5rem);
-  align-items: start;
 }
 
 .plan-amount {
@@ -689,9 +699,8 @@ h2 {
   color: var(--accent);
 }
 
-.plan-note,
 .plan-footnote {
-  margin: 0.7rem 0 0;
+  margin: 0;
   color: var(--muted);
   font-size: 0.85rem;
   line-height: 1.65;
@@ -721,23 +730,10 @@ h2 {
   font-weight: 800;
 }
 
-.plan-actions {
-  grid-column: 1 / -1;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 1rem;
-}
-
-.plan-actions .plan-footnote {
-  flex: 1 1 18rem;
-  margin: 0;
-}
-
 .download-points {
   display: grid;
   gap: 0.5rem;
-  margin: 1.1rem 0 0;
+  margin: 0;
   padding: 0;
   color: var(--muted);
   font-size: 0.88rem;
@@ -1669,7 +1665,9 @@ h2 {
     height: 588px;
   }
 
-  .plan {
+  /* Dua kartu unduhan tidak lagi muat berdampingan; pada satu kolom keduanya
+     ditumpuk supaya isinya tetap terbaca penuh. */
+  .download-cards {
     grid-template-columns: minmax(0, 1fr);
   }
 }
