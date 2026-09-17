@@ -233,7 +233,11 @@ Ketentuan tampilan:
 - ringkasan angka hasil (ukuran berkas, waktu proses, dimensi, jumlah warna)
   tidak ditampilkan, karena angkanya hanya menambah keramaian di sebelah
   gambar yang sudah dapat dinilai sendiri oleh pengunjung;
-- disediakan tombol mulai ulang.
+- disediakan tombol mulai ulang;
+- deretan tombol itu diletakkan **di tengah**, sejajar dengan gambar
+  pembanding di atasnya. Deretan yang rata kiri pada layar lebar terbaca
+  menempel di sisi kiri saja, padahal gambarnya di tengah, sehingga keduanya
+  tampak bukan satu kolom isi.
 
 ## 8. Pratinjau aplikasi desktop
 
@@ -381,6 +385,31 @@ Setiap halaman wajib memiliki state loading, empty, error, dan success.
 Semua kontrol keyboard memiliki focus ring, dan gerakan animasi dapat
 dikurangi pada perangkat yang meminta `prefers-reduced-motion`.
 
+### Irama jarak tegak
+
+Jarak antar bagian diatur oleh **satu** nilai pada pembungkus bagian, bukan
+oleh margin atau padding tambahan pada setiap bagian. Pada XIX-Vectorizer
+nilainya `gap: clamp(2.5rem, 7vw, 4.5rem)` pada `.page-main`.
+
+Jarak dari bagian terakhir ke catatan kaki adalah pengecualian yang mudah
+salah. Catatan kaki berdiri di luar pembungkus bagian, dan jarak itu
+terbentuk dari tiga tempat sekaligus: padding bawah pembungkus, margin atas
+catatan kaki, dan padding atas catatan kaki. Ketiganya pernah terisi
+sekaligus, sehingga jaraknya mencapai 144 px sementara jarak antar bagian
+hanya 72 px, dan lubang sebesar itu terbaca sebagai bagian yang hilang.
+
+Aturannya:
+
+- padding bawah pembungkus bagian untuk halaman ber-catatan kaki adalah nol;
+- margin atas catatan kaki seukuran jarak antar bagian atau lebih kecil;
+- padding atas catatan kaki tidak ditambah lagi pada layar lebar;
+- jumlah margin atas dan padding atas tidak boleh melebihi jarak antar
+  bagian. Angka ini diukur di peramban, bukan diperkirakan dari lembar gaya.
+
+Hal yang sama berlaku untuk deretan kontrol di dalam satu bagian: kontrol
+yang berdampingan dengan gambar yang ditengahkan ikut ditengahkan, supaya
+keduanya terbaca sebagai satu kolom isi.
+
 ## 12. Nilai yang perlu ditentukan per aplikasi
 
 | Nilai | Contoh | Catatan |
@@ -447,6 +476,16 @@ dikurangi pada perangkat yang meminta `prefers-reduced-motion`.
 - [ ] Aset yang tidak ada mengembalikan `404`, bukan fallback HTML.
 - [ ] Health check aplikasi mengembalikan `200`.
 - [ ] Halaman Animotion dan landing pusat tidak terganggu.
+
+### Irama jarak
+
+- [ ] Jarak antar bagian seragam, dan berasal dari satu nilai pada pembungkus
+      bagian.
+- [ ] Jarak dari bagian terakhir ke catatan kaki tidak lebih besar daripada
+      jarak antar bagian. Diukur di peramban pada lebar layar lebar dan
+      sempit, bukan diperkirakan dari lembar gaya.
+- [ ] Deretan tombol yang berdampingan dengan gambar yang ditengahkan ikut
+      ditengahkan, dan sisa ruang di kiri dan kanannya seimbang.
 
 ### Keamanan dan isi
 

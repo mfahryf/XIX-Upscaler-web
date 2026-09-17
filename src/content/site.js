@@ -15,6 +15,9 @@ export const CATALOG = {
   durationDays: 30,
   filesPerEngine: 5,
   maxActiveDevices: 1,
+  // Ikut dicatat karena gateway memilikinya, tetapi tidak lagi ditampilkan di
+  // halaman: keterangan masa pakai tanpa internet di daftar keuntungan lisensi
+  // dihapus agar daftarnya tidak memuat urusan teknis aktivasi.
   offlineLeaseDays: 14,
   engines: ["Vectorize V1", "Vectorize V2", "Vectorize V3"],
 };
@@ -58,7 +61,6 @@ export const PLAN_POINTS = [
   "Three vector engines, each with " + CATALOG.filesPerEngine + " successful files before a licence is required",
   "Valid for " + CATALOG.durationDays + " days from payment",
   "One licence active on " + CATALOG.maxActiveDevices + " device",
-  "After activation the app keeps working without internet for up to " + CATALOG.offlineLeaseDays + " days",
   "Unlimited batch processing while the subscription is active",
 ];
 

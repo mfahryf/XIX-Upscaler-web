@@ -57,6 +57,21 @@ Anda dapat" di atas bagian unduhan, dan akibatnya tombol menuju checkout
 muncul dua kali di satu halaman. Harga kini tinggal di kartu lisensi, di
 dalam bagian unduhan, sehingga hanya ada satu jalan menuju checkout.
 
+Isi kartu lisensi menyebut harga, kuota lima berkas berhasil per mesin, masa
+berlaku tiga puluh hari, satu perangkat aktif, dan pemrosesan borongan tanpa
+batas. Keterangan masa pakai tanpa internet selama 14 hari **dihapus** dari
+daftar ini, karena urusan teknis aktivasi bukan alasan membeli dan
+penjelasannya sudah ada di dalam aplikasi saat dijalankan. Nilainya tetap
+tercatat di katalog, jadi menghapusnya dari halaman tidak mengubah perilaku
+aplikasi.
+
+Jarak tegak halaman diatur satu nilai pada pembungkus bagian. Catatan kaki
+berdiri di luar pembungkus itu, dan jaraknya pernah terbentuk dari tiga
+tempat sekaligus sehingga mencapai 144 px, dua kali jarak antar bagian.
+Padding bawah pembungkus, margin atas catatan kaki, dan padding atasnya kini
+saling menyesuaikan, dengan hasil 64 px pada layar lebar. Aturan umumnya di
+`docs/DESKTOP-WEB-PAGE-STANDARD.md` bagian Irama jarak tegak.
+
 ### Dasar tampilan
 
 Halaman memakai shell halaman dashboard Animotion tanpa bagian sambutan

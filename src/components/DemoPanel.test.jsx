@@ -123,6 +123,16 @@ describe("DemoPanel", () => {
     expect(stylesheet).not.toMatch(/\.result-note\s*\{/);
   });
 
+  // Deretan tombol hasil diletakkan di tengah, sejajar dengan gambar pembanding
+  // di atasnya. Sebelumnya rata kiri, sehingga pada layar lebar tombolnya
+  // terlihat menempel di sisi kiri sementara gambarnya di tengah.
+  it("meletakkan tombol hasil di tengah", () => {
+    const stylesheet = readFileSync("src/styles.css", "utf8");
+    const aturan = stylesheet.match(/\.result-actions\s*\{[^}]*\}/);
+    expect(aturan, "aturan .result-actions di styles.css").not.toBeNull();
+    expect(aturan[0]).toMatch(/justify-content:\s*center/);
+  });
+
   it("menampilkan pesan ketika berkas ditolak", async () => {
     loadImage.mockRejectedValue(
       new ImageInputError("file_too_large", "The file is 6.0 MB, above the 5.0 MB limit.")

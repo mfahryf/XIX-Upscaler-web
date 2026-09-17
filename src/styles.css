@@ -81,7 +81,10 @@ input,
   z-index: 1;
   width: min(100% - 32px, 1160px);
   margin: 0 auto;
-  padding: 22px 0 48px;
+  /* Tidak ada padding bawah: catatan kaki berdiri di luar pembungkus ini dan
+     membawa sendiri jarak atasnya, sehingga padding di sini akan menambah
+     jarak yang sama untuk kedua kalinya. */
+  padding: 22px 0 0;
 }
 
 /* The header stays visible while the page scrolls, matching the app shell. */
@@ -630,6 +633,10 @@ h2 {
 .result-actions {
   display: flex;
   flex-wrap: wrap;
+  /* Tombolnya diletakkan di tengah karena gambar pembanding di atasnya juga
+     berada di tengah; deretan tombol yang rata kiri terbaca seperti menempel
+     pada sisi kiri saja. */
+  justify-content: center;
   gap: 0.5rem;
   margin-top: 0.9rem;
 }
@@ -1487,8 +1494,12 @@ h2 {
      limit and side gap as the header and the main content. Without this its
      text would run to the edges of the screen. */
   width: min(100% - 32px, 1160px);
-  margin: clamp(2.5rem, 7vw, 4.5rem) auto 0;
-  padding: 3.5rem 0 1.5rem;
+  /* Jarak dari bagian unduhan dibuat seukuran jarak antar bagian, bukan dua
+     kali lipatnya. Sebelumnya jarak ini berasal dari margin atas ditambah
+     padding atas, sehingga mencapai 144 px pada layar lebar sementara jarak
+     antar bagian hanya 72 px. */
+  margin: clamp(1.5rem, 3vw, 2rem) auto 0;
+  padding: 2rem 0 1.5rem;
   color: var(--muted);
 }
 
@@ -1588,7 +1599,6 @@ h2 {
    link groups sit right-aligned beside it. */
 @media (min-width: 1024px) {
   .app-footer {
-    padding-top: 4.5rem;
     padding-bottom: 2rem;
   }
 

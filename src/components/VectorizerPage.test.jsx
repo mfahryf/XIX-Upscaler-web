@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { readFileSync } from "node:fs";
 import { VectorizerPage } from "./VectorizerPage";
-import { HERO_HIGHLIGHTS } from "../content/site";
+import { HERO_HIGHLIGHTS, PLAN_POINTS } from "../content/site";
 
 vi.mock("./DemoPanel", () => ({
   DemoPanel: () => <div data-testid="demo-panel" />,
@@ -27,9 +27,17 @@ describe("VectorizerPage", () => {
     expect(screen.getByText(/IDR 99,000 \/ month/)).toBeInTheDocument();
     expect(screen.getByText(/5 successful files before a licence is required/)).toBeInTheDocument();
     expect(screen.getByText(/Valid for 30 days/)).toBeInTheDocument();
-    // Muncul sekali saja sekarang. Sebelumnya syarat unduhan mengulang angka
-    // yang sama, sehingga kalimatnya muncul dua kali di satu halaman.
-    expect(screen.getAllByText(/14 days/)).toHaveLength(1);
+    expect(screen.getByText(/Unlimited batch processing/)).toBeInTheDocument();
+
+    // Keterangan masa pakai tanpa internet dihapus dari daftar keuntungan
+    // lisensi, karena urusan aktivasi bukan alasan membeli dan penjelasannya
+    // sudah ada di aplikasi. Uji ini menjaga agar kalimatnya tidak kembali
+    // tanpa disadari.
+    expect(screen.queryByText(/without internet/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/14 days/)).not.toBeInTheDocument();
+
+    const daftar = document.querySelectorAll(".plan-points li");
+    expect(daftar).toHaveLength(PLAN_POINTS.length);
   });
 
   it("tidak menawarkan tombol unduh atau beli palsu saat tautannya belum diisi", () => {
@@ -185,5 +193,46 @@ describe("VectorizerPage", () => {
 
     // Daftar lama yang berisi tiga keterangan pendek sudah tidak dipakai.
     expect(container.querySelector(".hero-facts")).toBeNull();
+  });
+
+  // Jarak dari bagian unduhan ke catatan kaki harus seukuran jarak antar bagian,
+  // bukan dua kali lipatnya. Sebelumnya jarak itu berasal dari margin atas
+  // ditambah padding atas, sehingga pada layar lebar mencapai 144 px sementara
+  // jarak antar bagian hanya 72 px, dan lubang itu terbaca sebagai bagian yang
+  // hilang. Uji ini menjaga agar kedua angka itu tidak kembali terpisah.
+  it("menjaga jarak catatan kaki seukuran jarak antar bagian", () => {
+    const stylesheet = readFileSync("src/styles.css", "utf8");
+
+    const main = stylesheet.match(/\.page-main\s*\{[^}]*\}/);
+    expect(main, "aturan .page-main").not.toBeNull();
+    const gapMax = parseFloat(main[0].match(/gap:\s*clamp\([^,]+,\s*[^,]+,\s*([\d.]+)rem\)/)[1]);
+    expect(gapMax, "batas atas jarak antar bagian dalam rem").toBeGreaterThan(0);
+
+    const footer = stylesheet.match(/\.app-footer\s*\{[^}]*\}/);
+    expect(footer, "aturan .app-footer").not.toBeNull();
+    const marginMax = parseFloat(
+      footer[0].match(/margin:\s*clamp\([^,]+,\s*[^,]+,\s*([\d.]+)rem\)/)[1]
+    );
+    const padTop = parseFloat(footer[0].match(/padding:\s*([\d.]+)rem 0/)[1]);
+
+    // Jarak mata pembaca adalah margin atas ditambah padding atas, dan jumlah
+    // itu tidak boleh melebihi jarak antar bagian.
+    expect(marginMax + padTop, "jarak ke isi catatan kaki dalam rem").toBeLessThanOrEqual(gapMax);
+
+    // Pembungkus bagian tidak boleh menambah padding bawah sendiri. Padding itu
+    // pernah terisi 48 px dan ikut terhitung, sehingga jaraknya membengkak
+    // tanpa terlihat di aturan catatan kaki.
+    const shell = stylesheet.match(/\.page-shell\s*\{[^}]*\}/);
+    expect(shell, "aturan .page-shell").not.toBeNull();
+    const pad = shell[0].match(/padding:\s*([^;]+);/);
+    expect(pad, "padding .page-shell").not.toBeNull();
+    const padBottom = pad[1].trim().split(/\s+/).pop();
+    expect(padBottom, "padding bawah .page-shell").toBe("0");
+
+    // Pada layar lebar tidak boleh ada padding atas tambahan yang mengembalikan
+    // jarak jauh itu.
+    const wide = stylesheet.match(/@media \(min-width: 1024px\) \{[\s\S]*?\n\}/);
+    expect(wide, "blok media lebar").not.toBeNull();
+    expect(wide[0]).not.toMatch(/\.app-footer\s*\{[^}]*padding-top/);
   });
 });
