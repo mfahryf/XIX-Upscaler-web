@@ -55,4 +55,27 @@ describe("VectorizerPage", () => {
     expect(rule, "aturan .page-main di styles.css").not.toBeNull();
     expect(rule[0]).toMatch(/gap:/);
   });
+
+  // Bagian unduhan menampilkan jendela aplikasi di samping teksnya, dan dua
+  // aturan yang membuatnya terbaca sebagai satu baris: jendela serta teks mulai
+  // dari garis atas yang sama, dan dua kolom itu baru ditumpuk di bawah lebar
+  // tempat jendela selebar 300 px masih muat. Sebelumnya jendela ditengahkan
+  // secara vertikal pada baris setinggi 600 px, sehingga teks unduhan jatuh
+  // lebih dari 200 px di bawah judul bagiannya dan bagian itu terbaca sebagai
+  // dua baris yang berjarak jauh.
+  it("menyejajarkan jendela pratinjau dengan teks unduhan pada satu baris", () => {
+    const { container } = render(<VectorizerPage />);
+    const grid = container.querySelector(".download-grid");
+    expect(grid, "elemen .download-grid").not.toBeNull();
+    expect(grid.querySelector(".download-copy"), "teks unduhan").not.toBeNull();
+    expect(grid.querySelector(".app-preview"), "jendela pratinjau").not.toBeNull();
+
+    const stylesheet = readFileSync("src/styles.css", "utf8");
+    const rule = stylesheet.match(/\.download-grid\s*\{[^}]*\}/);
+    expect(rule, "aturan .download-grid di styles.css").not.toBeNull();
+    expect(rule[0]).toMatch(/align-items:\s*start/);
+
+    const wide = stylesheet.match(/@media\s*\(min-width:\s*768px\)\s*\{\s*\.download-grid/);
+    expect(wide, "dua kolom sejak 768 px").not.toBeNull();
+  });
 });

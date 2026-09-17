@@ -824,10 +824,14 @@ h2 {
 .download-grid {
   display: grid;
   gap: clamp(1.75rem, 5vw, 3rem);
-  align-items: center;
+  /* Jendela dan teks unduhan berdiri sejajar di baris yang sama. Sebelumnya
+     jendela ditengahkan secara vertikal pada baris setinggi 600 px, sehingga
+     teks unduhan terdorong lebih dari 200 px di bawah judul bagiannya dan
+     satu baris itu terbaca sebagai dua baris terpisah. */
+  align-items: start;
 }
 
-@media (min-width: 900px) {
+@media (min-width: 768px) {
   .download-grid {
     grid-template-columns: minmax(0, 1fr) auto;
   }
