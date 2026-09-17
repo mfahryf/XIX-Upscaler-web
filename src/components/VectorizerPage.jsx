@@ -8,7 +8,6 @@ import {
   CHECKOUT_URL,
   COPYRIGHT,
   DOWNLOAD_URL,
-  FEATURES,
   FOOTER_LINKS,
   HERO_HIGHLIGHTS,
   PLAN_LABEL,
@@ -96,19 +95,6 @@ export function VectorizerPage() {
         </section>
 
         <DemoPanel />
-
-        <section className="panel" aria-labelledby="why-title">
-          <p className="section-label">Why Vectorizer</p>
-          <h2 id="why-title">Built for real work</h2>
-          <div className="feature-grid">
-            {FEATURES.map((feature) => (
-              <article className="feature" key={feature.title}>
-                <h3>{feature.title}</h3>
-                <p>{feature.detail}</p>
-              </article>
-            ))}
-          </div>
-        </section>
 
         <section className="panel" id="pricing" aria-labelledby="pricing-title">
           <p className="section-label">What you get</p>

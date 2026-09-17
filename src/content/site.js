@@ -54,24 +54,6 @@ export const HERO_HIGHLIGHTS = [
   "A nostalgic Winamp-style shell, rebuilt with a modern glass finish",
 ];
 
-export const FEATURES = [
-  {
-    title: "Three vector engines",
-    detail:
-      "Pick the engine that fits the job: V1 and V2 process online, V3 gives the smoothest result and runs fully offline.",
-  },
-  {
-    title: "Clean output",
-    detail:
-      "SVG without watermarks, on a transparent background, with paths you can edit straight in a design app.",
-  },
-  {
-    title: "Batch work lives in the app",
-    detail:
-      "This page processes a single file as a trial. The desktop app handles long queues with pause, resume, and stop.",
-  },
-];
-
 export const PLAN_POINTS = [
   "Three vector engines, each with " + CATALOG.filesPerEngine + " successful files before a licence is required",
   "Valid for " + CATALOG.durationDays + " days from payment",

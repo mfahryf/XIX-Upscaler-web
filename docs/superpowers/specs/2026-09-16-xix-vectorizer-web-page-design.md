@@ -35,19 +35,19 @@ katalog gateway saat build, bukan ditulis di kode.
 
 ## 3. Bagian halaman
 
-Enam bagian, berurutan:
+Lima bagian, berurutan:
 
 1. **Hero.** Judul, tombol coba gratis dan lihat harga, tiga keterangan
    singkat, dan pratinjau jendela aplikasi pada kolom kanan.
 2. **Coba gratis.** Kotak unggah satu berkas, kemajuan per tahap, hasil
-   sebelum-sesudah, tombol simpan SVG, tombol mulai ulang.
-3. **Kenapa Vectorizer.** Tiga kartu: tiga mesin vektor, hasil bersih
-   tanpa watermark, proses borongan ada di aplikasi.
-4. **Yang Anda dapat.** Harga, kuota lima berkas berhasil per mesin, satu
+   sebelum-sesudah, tombol simpan SVG, tombol mulai ulang. Bagian ini tidak
+   memakai judul sendiri: judul halaman di atasnya sudah menjelaskan isinya,
+   dan tombol unggahnya cukup satu, yaitu yang ada di dalam kotak unggah.
+3. **Yang Anda dapat.** Harga, kuota lima berkas berhasil per mesin, satu
    perangkat aktif, penggunaan offline sampai 14 hari.
-5. **Unduh.** Tombol installer dan syarat komputernya. Pratinjau jendela
+4. **Unduh.** Tombol installer dan syarat komputernya. Pratinjau jendela
    aplikasi sudah tampil di hero, sehingga bagian ini tidak mengulangnya.
-6. **Catatan kaki.** Bantuan, privasi, status layanan.
+5. **Catatan kaki.** Bantuan, privasi, status layanan.
 
 ### Dasar tampilan
 
@@ -132,7 +132,7 @@ tiga kasus uji, tetapi ukuran berkas naik dari 38.914 byte menjadi
 | --- | --- |
 | Belum ada berkas | Petunjuk singkat dan tombol pilih berkas |
 | Sedang membaca berkas | Indikator, dan penolakan bila format tidak dikenal |
-| Gambar diperkecil | Keterangan bahwa gambar dikecilkan ke 2 MP |
+| Gambar diperkecil | Dikerjakan tanpa pemberitahuan tersendiri. Keterangan hasil justru mengajak mengunduh aplikasi desktop, karena yang berbasis AI ada di sana dan di sanalah ukuran penuh dipakai. |
 | Sedang memproses | Nama tahap dan kemajuan sebenarnya |
 | Selesai | Pembanding sebelum-sesudah, tombol simpan dan mulai ulang |
 | Berkas terlalu besar | Pesan yang menyebut batas 5 MB |

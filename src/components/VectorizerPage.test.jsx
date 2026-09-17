@@ -10,11 +10,11 @@ vi.mock("./DemoPanel", () => ({
 }));
 
 describe("VectorizerPage", () => {
-  it("menampilkan keenam bagian halaman", () => {
+  // Section Why Vectorizer dihapus, jadi halaman kini memuat lima bagian.
+  it("menampilkan kelima bagian halaman", () => {
     render(<VectorizerPage />);
     expect(screen.getByRole("heading", { level: 1 })).toBeInTheDocument();
     expect(screen.getByTestId("demo-panel")).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /Built for real work/ })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /One licence, three engines/ })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /Desktop app/ })).toBeInTheDocument();
     expect(screen.getByText(/Support/)).toBeInTheDocument();

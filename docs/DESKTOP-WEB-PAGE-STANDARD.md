@@ -177,6 +177,11 @@ ditolak. Alasan memilih memperkecil daripada menolak: pengunjung yang
 ditolak akan pergi, sedangkan pengunjung yang gambarnya dikecilkan tetap
 mendapat hasil yang baik. Untuk dilihat di layar, hasil vektor pada 2
 megapiksel tidak kehilangan ketajaman saat diperbesar.
+ Pengecilan ini tidak diumumkan sebagai pesan tersendiri. Keterangan hasil
+ justru dipakai untuk mengajak mengunduh aplikasi desktop, karena yang
+ memakai mesin berbasis AI ada di sana, dan di sana pula ukuran penuh
+ dipakai. Percobaan di halaman berfungsi sebagai contoh rasa, bukan sebagai
+ pengganti aplikasinya.
 
 Patokan 2 megapiksel:
 

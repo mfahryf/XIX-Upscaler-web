@@ -70,7 +70,7 @@ describe("DemoPanel", () => {
     expect(screen.getByText("File size")).toBeInTheDocument();
     expect(screen.getByText(/^1 KB$/)).toBeInTheDocument();
     expect(screen.getByText(/Colours/)).toBeInTheDocument();
-    expect(screen.getByText(/full size/)).toBeInTheDocument();
+    expect(screen.getByText(/Download the XIX Vectorizer/)).toBeInTheDocument();
   });
 
   it("menyiapkan gambar hasil pada ukuran tampilan, bukan ukuran aslinya", async () => {
@@ -101,7 +101,10 @@ describe("DemoPanel", () => {
     expect(screen.getByText(/3000 x 3000 px/)).toBeInTheDocument();
   });
 
-  it("menjelaskan saat gambar dikecilkan", async () => {
+  // Keterangan tentang gambar yang dikecilkan digantikan ajakan mengunduh
+  // aplikasi desktop. Halaman ini menjalankan mesin dasar di peramban, dan
+  // yang berbasis AI ada di aplikasi desktop, jadi teksnya menyebut alasan itu.
+  it("mengajak mengunduh aplikasi desktop untuk hasil terbaik", async () => {
     loadImage.mockResolvedValue({
       data: new Uint8ClampedArray(4),
       width: 800,
@@ -114,8 +117,11 @@ describe("DemoPanel", () => {
     pickFile(container);
 
     await waitFor(() => expect(screen.getByText("Save SVG")).toBeInTheDocument());
-    expect(screen.getByText(/processed at 0.40 MP/)).toBeInTheDocument();
-    expect(screen.getByText(/10.00 MP/)).toBeInTheDocument();
+    const ajakan = screen.getByText(/Download the XIX Vectorizer/);
+    expect(ajakan.textContent).toMatch(/powered by AI/);
+    // Keterangan ukuran proses yang lama sudah tidak ditampilkan lagi.
+    expect(screen.queryByText(/full size/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/MP\)/)).not.toBeInTheDocument();
   });
 
   it("menampilkan pesan ketika berkas ditolak", async () => {

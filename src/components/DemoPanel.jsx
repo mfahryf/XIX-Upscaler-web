@@ -1,12 +1,11 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Download, Eye, RotateCcw, Upload } from "lucide-react";
+import { Download, Eye, RotateCcw } from "lucide-react";
 import { BeforeAfterSlider, DISPLAY_MAX_HEIGHT } from "./BeforeAfterSlider";
 import {
   ImageInputError,
   checkFile,
   formatBytes,
-  formatMegapixels,
   imageDataToDataUrl,
   loadImage,
 } from "../lib/image";
@@ -97,9 +96,6 @@ export function DemoPanel() {
         svgBytes: byteLength(output.svg),
         svg: output.svg,
         sourceName: file.name,
-        sourcePixels: image.originalWidth * image.originalHeight,
-        processedPixels: image.width * image.height,
-        downscaled: image.downscaled,
         elapsed,
         colors: output.settings?.colors ?? null,
       });
@@ -130,21 +126,12 @@ export function DemoPanel() {
 
   return (
     <section className="panel demo" id="try" aria-labelledby="demo-title">
-      <div className="demo-head">
-        <div>
-          <p className="section-label">Try free</p>
-          <h2 id="demo-title">Vectorize one image, right here</h2>
-        </div>
-        <button
-          type="button"
-          className="button button-secondary"
-          onClick={() => inputRef.current?.click()}
-          disabled={busy}
-        >
-          <Upload className="nav-icon" aria-hidden="true" />
-          Choose image
-        </button>
-      </div>
+      {/* Bagian ini tidak lagi memakai judul sendiri. Judul halaman di atasnya
+          sudah menjelaskan isinya, dan tombol unggahnya cukup satu: yang ada di
+          dalam kotak unggah, tempat pengunjung memang melihatnya. */}
+      <h2 id="demo-title" className="visually-hidden">
+        Vectorize one image
+      </h2>
 
       <input
         ref={inputRef}
@@ -173,7 +160,11 @@ export function DemoPanel() {
           <p className="dropzone-detail">
             {DEMO_LIMITS.accepted}, up to {formatBytes(DEMO_LIMITS.fileBytes)}.
           </p>
-          <button type="button" className="button button-primary" onClick={() => inputRef.current?.click()}>
+          <button
+            type="button"
+            className="button button-primary button-compact"
+            onClick={() => inputRef.current?.click()}
+          >
             Choose image
           </button>
         </div>
@@ -273,15 +264,9 @@ export function DemoPanel() {
             </div>
           </dl>
           <p className="result-note">
-            {result.downscaled
-              ? "Your image is " +
-                formatMegapixels(result.sourcePixels) +
-                " and was processed at " +
-                formatMegapixels(result.processedPixels) +
-                " to keep it quick. The desktop app uses the full size."
-              : "The image was processed at full size (" +
-                formatMegapixels(result.processedPixels) +
-                "), the same as the desktop app."}
+            This free page runs a basic engine in your browser. Download the XIX Vectorizer
+            desktop app for the best results: its vectorizing is powered by AI, so it keeps
+            fine detail, handles big batches, and exports SVG, AI, and DXF.
           </p>
         </div>
       )}
