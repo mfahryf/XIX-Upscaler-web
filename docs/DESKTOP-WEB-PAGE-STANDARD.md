@@ -280,6 +280,15 @@ tombol transportasi 30 x 24 px, dan sepuluh batang indikator aktivitas.
    sehingga isinya terbaca sebagai dua baris berjarak jauh. Kolom kanan hero
    sudah disediakan untuk gambar, jadi tempat itu dipakai untuk jendela yang
    sebenarnya.
+ - **Tinggi pratinjau di halaman mengikuti kolom teks, bukan tinggi asli
+   jendela.** Pada hero dua kolom, jendela dibuat setinggi kolom teks di
+   sebelahnya supaya ujung bawahnya jatuh sejajar dengan ujung bawah tombol.
+   Yang melar hanya bagian daftar putar, sehingga bilah judul, layar status,
+   dan bilah alat tetap seukuran aslinya. Daftar putarnya dirapatkan ke dasar
+   kotaknya, dengan alasan yang sama seperti aplikasi menggulir daftarnya:
+   baris yang sedang diproses harus tetap terlihat pada tinggi berapa pun.
+   Pada lebar satu kolom, jendela kembali setinggi aslinya karena tidak ada
+   kolom teks yang tingginya perlu disamakan.
 - **Pada layar sangat sempit, pratinjau dikecilkan sebagai satu kesatuan,**
   bukan dipotong dan bukan dibiarkan mendorong halaman melebar. Lebar 300 px
   berasal dari jendela aslinya, jadi pratinjau tidak dapat dibuat lebih sempit

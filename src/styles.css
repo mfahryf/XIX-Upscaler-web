@@ -788,6 +788,13 @@ h2 {
    same way. The playlist is scrolled just as the app scrolls it, so the row being
    processed stays fully visible.
 
+   Di halaman, tinggi jendela mengikuti tinggi kolom teks di hero, bukan tinggi
+   600 px milik aplikasi, supaya ujung bawahnya jatuh sejajar dengan ujung bawah
+   tombol di bawah daftar keunggulan. Yang melar hanya bagian daftar putar, jadi
+   perubahannya berupa tinggi relatif: daftar memakai baris sebanyak ruang yang
+   tersedia, sedangkan bilah judul, baris status, dan bilah alat tetap seukuran
+   aslinya.
+
    The window carries the app's own palette and font stack, scoped here so they do
    not leak into the page. */
 .app-preview {
@@ -811,7 +818,13 @@ h2 {
 .pv-app {
   display: flex;
   flex-direction: column;
-  height: 588px;
+  /* Tinggi jendela ditentukan oleh tinggi kolom teks di halaman, bukan oleh
+     tinggi asli aplikasi. Lihat catatan di blok .app-preview di atas. */
+  flex: 1 1 auto;
+  /* Tanpa ini, jendela menolak menyusut di bawah tinggi isinya sendiri dan
+     malah tumbuh memuat seluruh dua belas baris, sehingga bagian daftar putar
+     yang seharusnya dipangkas justru memanjangkan jendela. */
+  min-height: 0;
   margin: 6px;
   overflow: hidden;
   border-radius: 18px;
@@ -1352,6 +1365,14 @@ h2 {
   flex: 1 1 auto;
   min-height: 40px;
   margin: 8px 8px 0;
+  /* Daftar dirapatkan ke dasar kotak. Aplikasi menggulir daftarnya sendiri
+     supaya baris yang sedang diproses tetap terlihat; dengan tinggi jendela
+     yang kini mengikuti kolom teks, baris itu dijamin terlihat kalau daftar
+     dirapatkan ke bawah. Sebelumnya daftar digeser dengan angka tetap, dan
+     angka itu hanya benar untuk satu tinggi jendela. */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
   overflow-x: hidden;
   overflow-y: auto;
   border: 1px solid rgba(255, 255, 255, 0.15);
@@ -1367,10 +1388,11 @@ h2 {
 }
 
 .pv-pl-list {
-  /* The app scrolls the list while a batch runs so the row being processed
-     stays fully visible. This is the offset it settles on for this playlist,
-     which clips the rows above it exactly as the app clips them. */
-  margin: -31.33px 0 0;
+  /* Daftar tetap setinggi isinya dan dibiarkan meluber ke atas, lalu dipangkas
+     oleh kotaknya. Baris di atas yang terpotong adalah baris yang sudah
+     selesai, sama seperti yang dipangkas aplikasi saat menggulir. */
+  flex: none;
+  margin: 0;
   padding: 0;
   list-style: none;
 }
@@ -1635,9 +1657,41 @@ h2 {
 
 /* ----------------------------------------------------------- responsive */
 
+/* Hero dua kolom: jendela pratinjau mengisi tinggi kolom teks, sehingga ujung
+   bawahnya jatuh sejajar dengan ujung bawah tombol di bawah daftar keunggulan.
+   Sifat-sifat berikut harus ada bersamaan. Baris grid bertipe "auto" tumbuh
+   mengikuti ukuran terbesar isinya, jadi selama jendela masih menyumbang
+   tingginya sendiri, baris akan mengikuti jendela, bukan mengikuti teks.
+   "contain: size" membuat jendela tidak menyumbang tinggi sama sekali,
+   "stretch" menyamakan tingginya dengan tinggi baris, dan "min-height: 0"
+   memberi izin menyusut sehingga bagian daftar putar yang dipangkas, bukan
+   bagian itu yang memanjangkan jendela. Di bawah 881 px hero menjadi satu
+   kolom, dan di sana jendela kembali setinggi isinya. */
+@media (min-width: 881px) {
+  .app-preview {
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+    min-height: 0;
+    contain: size;
+    /* Jendela membawa margin transparan 6 px di tepinya, jadi tanpa tarikan ini
+       tepi kacanya berhenti 6 px di atas ujung tombol. Tarikan 6 px membuat tepi
+       yang terlihat jatuh tepat sejajar dengan ujung bawah tombol. */
+    margin-bottom: -6px;
+  }
+}
+
 @media (max-width: 880px) {
   .hero {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Satu kolom: jendela kembali setinggi aslinya, karena di sini tidak ada
+     kolom teks yang tingginya perlu disamakan. Tanpa ini jendela memuat
+     seluruh dua belas baris daftar putarnya dan jadi lebih tinggi daripada
+     di layar lebar. */
+  .pv-app {
+    height: 588px;
   }
 
   .plan {

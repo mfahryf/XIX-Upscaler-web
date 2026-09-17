@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
+import { readFileSync } from "node:fs";
 import { AppPreview } from "./AppPreview";
 
 describe("AppPreview", () => {
@@ -110,5 +111,31 @@ describe("AppPreview", () => {
     for (const button of container.querySelectorAll(".pv-pl-btn")) {
       expect(button).toHaveClass("pv-locked");
     }
+  });
+
+  // Di halaman, tinggi jendela mengikuti tinggi kolom teks di hero supaya ujung
+  // bawahnya sejajar dengan ujung bawah tombol di bawah daftar keunggulan.
+  // Yang membuatnya bekerja bukan satu sifat, melainkan gabungan: baris grid
+  // bertipe auto tumbuh mengikuti ukuran terbesar isinya, jadi selama jendela
+  // masih menyumbang tingginya sendiri, baris akan mengikuti jendela dan bukan
+  // mengikuti teks. Tanpa "contain: size" jendela justru memanjang memuat
+  // seluruh dua belas baris daftar putarnya. Di lebar satu kolom jendela harus
+  // kembali setinggi aslinya, karena di sana tidak ada kolom teks yang
+  // tingginya perlu disamakan.
+  it("mengikuti tinggi kolom teks di hero dua kolom dan kembali setinggi asli di satu kolom", () => {
+    const stylesheet = readFileSync("src/styles.css", "utf8");
+
+    const duaKolom = stylesheet.match(/@media\s*\(min-width:\s*881px\)\s*\{\s*\.app-preview\s*\{([^}]*)\}/);
+    expect(duaKolom, "aturan .app-preview untuk hero dua kolom").not.toBeNull();
+    expect(duaKolom[1]).toMatch(/align-self:\s*stretch/);
+    expect(duaKolom[1]).toMatch(/min-height:\s*0/);
+    expect(duaKolom[1]).toMatch(/contain:\s*size/);
+    // Jendela membawa margin transparan 6 px, jadi tepi kacanya perlu ditarik
+    // 6 px supaya jatuh tepat sejajar dengan ujung bawah tombol.
+    expect(duaKolom[1]).toMatch(/margin-bottom:\s*-6px/);
+
+    const satuKolom = stylesheet.match(/@media\s*\(max-width:\s*880px\)[\s\S]*?\.pv-app\s*\{([^}]*)\}/);
+    expect(satuKolom, "aturan .pv-app untuk hero satu kolom").not.toBeNull();
+    expect(satuKolom[1]).toMatch(/height:\s*588px/);
   });
 });
