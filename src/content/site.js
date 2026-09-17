@@ -36,14 +36,17 @@ export const PLAN_LABEL = (() => {
 // Keunggulan aplikasi desktop, ditampilkan di hero tepat setelah judul dan
 // sebelum tombol percobaan gratis. Setiap butir hanya menyebut hal yang
 // benar-benar dikerjakan aplikasi: tiga mesin (dua daring, satu lokal),
-// artboard yang dapat diatur, ekspor SVG/AI/DXF, proses paralel, padding
-// otomatis, dan installer yang kecil.
+// artboard yang dapat diatur, ekspor SVG/AI/DXF, keluaran siap spesifikasi
+// Adobe Stock, proses paralel, mode Tor bawaan, padding otomatis, dan
+// installer yang kecil.
 export const HERO_HIGHLIGHTS = [
   "Three vector engines — two AI-powered online, one fully local and offline",
   "AI vectorizing that returns clean, tidy artwork",
   "Artboard size you set yourself, or fitted to the artwork",
   "Export to SVG, AI, and DXF",
+  "Output prepared to the Adobe Stock spec, ready for stock uploads",
   "Runs several files at once instead of one by one",
+  "Built-in Tor mode — route the online engines through Tor when you need it",
   "Automatic padding: full-bleed, or +7% breathing room",
   "Lightweight — the installer is about 7 MB",
 ];
