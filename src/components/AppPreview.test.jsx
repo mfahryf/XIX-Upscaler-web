@@ -7,6 +7,7 @@ describe("AppPreview", () => {
     render(<AppPreview />);
     const preview = screen.getByRole("img");
     expect(preview).toHaveAttribute("aria-label", expect.stringContaining("XIX Vectorizer"));
+    expect(preview).toHaveAttribute("aria-label", expect.stringContaining("three engines"));
   });
 
   // Bagian dalam jendela bersifat hiasan. Membacakannya kontrol demi kontrol
@@ -19,7 +20,7 @@ describe("AppPreview", () => {
   });
 
   // Urutan bagian mengikuti tata letak aplikasi: titlebar, display, marquee,
-  // baris pengaturan, progress bar, transport, lalu playlist.
+  // baris pengaturan, progress bar, transport, panel lanjutan, lalu playlist.
   it("menampilkan bagian-bagian utama jendela aplikasi", () => {
     const { container } = render(<AppPreview />);
     for (const part of [
@@ -29,14 +30,31 @@ describe("AppPreview", () => {
       "pv-cfg-row",
       "pv-seek-wrap",
       "pv-transport",
+      "pv-adv",
       "pv-playlist",
     ]) {
       expect(container.querySelector("." + part), part).toBeInTheDocument();
     }
   });
 
+  // Daftar engine dibuka supaya pengunjung tahu aplikasi desktop punya tiga
+  // mesin, dengan V3 sebagai yang sedang dipakai.
+  it("menampilkan daftar tiga engine dengan V3 terpilih", () => {
+    const { container } = render(<AppPreview />);
+    const options = [...container.querySelectorAll(".pv-dd-opt")];
+    expect(options).toHaveLength(3);
+    expect(options.map((el) => el.textContent)).toEqual([
+      expect.stringContaining("Vectorize V1"),
+      expect.stringContaining("Vectorize V2"),
+      expect.stringContaining("Vectorize V3"),
+    ]);
+    expect(options[0]).not.toHaveClass("pv-dd-selected");
+    expect(options[1]).not.toHaveClass("pv-dd-selected");
+    expect(options[2]).toHaveClass("pv-dd-selected");
+  });
+
   // Baris playlist meniru aplikasi: nomor dua digit, penanda status, nama
-  // berkas, lalu hasilnya (OK / ERR / persen / ukuran berkas).
+  // berkas, lalu hasilnya (OK / persen / ukuran berkas).
   it("menuliskan baris playlist dengan urutan dan penanda milik aplikasi", () => {
     const { container } = render(<AppPreview />);
     const rows = container.querySelectorAll(".pv-track");
@@ -48,12 +66,18 @@ describe("AppPreview", () => {
     expect(first.querySelector(".pv-track-len").textContent).toBe("OK");
     expect(first).toHaveAttribute("data-state", "done");
 
-    const failed = rows[6];
-    expect(failed.querySelector(".pv-track-state").textContent).toBe("\u2718");
-    expect(failed.querySelector(".pv-track-len").textContent).toBe("ERR");
+    expect(rows[9].querySelector(".pv-track-state").textContent).toBe("\u23f3");
+    expect(rows[9].querySelector(".pv-track-len").textContent).toBe("47%");
+    expect(rows[10].querySelector(".pv-track-len").textContent).toBe("128.4 KB");
+  });
 
-    expect(rows[8].querySelector(".pv-track-len").textContent).toBe("47%");
-    expect(rows[9].querySelector(".pv-track-len").textContent).toBe("128.4 KB");
+  // Semua berkas pada pratinjau berhasil, jadi tidak ada baris bertanda gagal.
+  it("tidak menampilkan baris yang gagal", () => {
+    const { container } = render(<AppPreview />);
+    expect(container.querySelector('[data-state="fail"]')).toBeNull();
+    for (const state of container.querySelectorAll(".pv-track-state")) {
+      expect(state.textContent).not.toBe("\u2718");
+    }
   });
 
   it("menyebut mesin V3 pada baris pengaturan", () => {

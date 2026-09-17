@@ -960,6 +960,7 @@ h2 {
   color: var(--pv-text);
   background: rgba(255, 255, 255, 0.18);
   font-size: 8px;
+  text-align: center;
 }
 
 .pv-win-button svg {
@@ -1115,12 +1116,19 @@ h2 {
 }
 
 .pv-dd {
-  display: flex;
+  /* Holds the visible head, plus the panel that drops out of it while the
+     engine list is open. */
+  position: relative;
   flex: 1;
+  min-width: 0;
+  height: 20px;
+}
+
+.pv-dd-head {
+  display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 4px;
-  min-width: 0;
   height: 20px;
   padding: 0 6px;
   border: 1px solid var(--pv-edge);
@@ -1141,6 +1149,35 @@ h2 {
   color: var(--pv-dim);
   font-size: 8px;
   font-style: normal;
+}
+
+/* The open engine list. The app sizes this list to its widest entry, so it
+   reaches past the control and covers part of the panel below it. */
+.pv-dd-list {
+  position: absolute;
+  top: calc(100% + 3px);
+  left: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  padding: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 8px;
+  background: linear-gradient(160deg, #1b1035 0%, #0b1030 55%, #10052a 100%);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.pv-dd-opt {
+  padding: 5px 8px;
+  border-radius: 6px;
+  color: var(--pv-text);
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+/* The engine currently in use, marked the way the app marks it. */
+.pv-dd-opt.pv-dd-selected {
+  color: var(--pv-accent-3);
 }
 
 /* ---- progress bar ---- */
@@ -1398,9 +1435,9 @@ h2 {
 
 .pv-pl-list {
   /* The app scrolls the list while a batch runs so the row being processed
-     stays fully visible; this is the offset it settles on, which leaves the
-     first row clipped exactly as it is in the app. */
-  margin: -8px 0 0;
+     stays fully visible. This is the offset it settles on for this playlist,
+     which clips the rows above it exactly as the app clips them. */
+  margin: -31.33px 0 0;
   padding: 0;
   list-style: none;
 }
@@ -1439,11 +1476,6 @@ h2 {
 .pv-track[data-state="done"] .pv-track-state,
 .pv-track[data-state="done"] .pv-track-len {
   color: var(--pv-accent-3);
-}
-
-.pv-track[data-state="fail"] .pv-track-state,
-.pv-track[data-state="fail"] .pv-track-len {
-  color: #ff6b6b;
 }
 
 .pv-track[data-state="processing"] .pv-track-state {
@@ -1511,7 +1543,7 @@ h2 {
    while start, pause and stop stay live. Start sits a little dimmer still, since
    the app has already disabled it for the duration of the run. */
 .pv-app[data-run="1"] .pv-locked,
-.pv-app[data-run="1"] .pv-dd {
+.pv-app[data-run="1"] .pv-dd-head {
   opacity: 0.45;
 }
 

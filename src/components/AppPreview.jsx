@@ -21,10 +21,10 @@ import {
 // the sunset palette the app ships with. Keeping the app's own numbers is what
 // makes the preview read as the real window instead of a lookalike.
 //
-// The frame is taken mid batch: nine of twelve files done, one failed, the ninth
-// still going, and everything the app locks while a batch runs is dimmed the way
-// the app dims it. The playlist rows follow the app's own layout and ordering -
-// two digit number, state marker, file name, then OK / ERR / progress / size.
+// The frame is taken mid batch: nine of twelve files done, the tenth going, two
+// still queued, and everything the app locks while a batch runs dimmed the way
+// the app dims it. The engine dropdown is open, which is how the app shows that
+// three engines ship with the desktop build.
 //
 // The window is exposed as one image with a label, and its parts are hidden from
 // assistive technology. A pretend interface read control by control would be
@@ -33,17 +33,27 @@ import {
 // Row heights the app assigns to the ten activity bars.
 const BARS = [40, 70, 30, 90, 55, 75, 35, 60, 45, 80];
 
+// Superscripts the app puts after each engine name to say whether it runs online
+// or offline, written as entities so the file keeps its encoding.
+const ONLINE = "\u207D\u1D3C\u207F\u02E1\u1DA6\u207F\u1D49\u207E";
+const OFFLINE = "\u207D\u1D3C\u1DA0\u1DA0\u02E1\u1DA6\u207F\u1D49\u207E";
+
+const ENGINES = [
+  { name: "Vectorize V1", mode: ONLINE },
+  { name: "Vectorize V2", mode: ONLINE },
+  { name: "Vectorize V3", mode: OFFLINE, selected: true },
+];
+
 // Same glyphs the app writes into the state cell of each row.
 const MARKERS = {
   done: "\u2714",
-  fail: "\u2718",
-  processing: "\u23f3",
-  queued: "\u00b7",
+  processing: "\u23F3",
+  queued: "\u00B7",
 };
 
-// Twelve files, six done, one failed, one running at 47%, three still queued.
-// The trailing cell follows the app: "OK" when a file finished, "ERR" when it
-// failed, the percentage while it runs, and the file size before it starts.
+// Twelve files, nine finished, the tenth running at 47%, two still queued. The
+// trailing cell follows the app: "OK" once a file finished, the percentage while
+// it runs, and the file size before it starts.
 const PLAYLIST = [
   { name: "logo-mark.png", state: "done", trailing: "OK" },
   { name: "hero-illustration.jpg", state: "done", trailing: "OK" },
@@ -51,12 +61,12 @@ const PLAYLIST = [
   { name: "product-shot.png", state: "done", trailing: "OK" },
   { name: "banner-wide.jpg", state: "done", trailing: "OK" },
   { name: "icon-set-32.png", state: "done", trailing: "OK" },
-  { name: "flatlay-scene.jpg", state: "fail", trailing: "ERR" },
+  { name: "flatlay-scene.jpg", state: "done", trailing: "OK" },
   { name: "packaging.webp", state: "done", trailing: "OK" },
-  { name: "diagram-flow.png", state: "processing", trailing: "47%" },
-  { name: "mockup-device.png", state: "queued", trailing: "128.4 KB" },
-  { name: "pattern-tile.jpg", state: "queued", trailing: "356.2 KB" },
-  { name: "poster-a3.png", state: "queued", trailing: "902.1 KB" },
+  { name: "diagram-flow.png", state: "done", trailing: "OK" },
+  { name: "mockup-device.png", state: "processing", trailing: "47%" },
+  { name: "pattern-tile.jpg", state: "queued", trailing: "128.4 KB" },
+  { name: "poster-a3.png", state: "queued", trailing: "356.2 KB" },
 ];
 
 // The advanced panel is open by default in the app, showing the output folder
@@ -71,7 +81,7 @@ export function AppPreview() {
     <div
       className="app-preview"
       role="img"
-      aria-label="XIX Vectorizer desktop window: 9 of 12 files processed with one failure, the Vectorize V3 engine selected, and a playlist of twelve images"
+      aria-label="XIX Vectorizer desktop window: 10 of 12 files processed, the Vectorize V3 engine selected from a list of three engines, and a playlist of twelve images"
     >
       <div className="pv-app" data-run="1" aria-hidden="true">
         <div className="pv-titlebar">
@@ -88,10 +98,7 @@ export function AppPreview() {
 
         <div className="pv-display">
           <span className="pv-lcd">
-            <span className="pv-lcd-clock">
-              9/12
-              <span className="pv-lcd-errors">&#10008;1</span>
-            </span>
+            <span className="pv-lcd-clock">10/12</span>
             <span className="pv-lcd-meta">
               <b>SVG</b>
               <span>Full-bleed</span>
@@ -111,23 +118,39 @@ export function AppPreview() {
 
         <div className="pv-cfg-row">
           <span className="pv-dd">
-            <span className="pv-dd-label">Vectorize V3 &#8317;&#7464;&#8319;&#737;&#7526;&#8319;&#7497;&#8318;</span>
-            <i className="pv-dd-arrow">&#9662;</i>
+            <span className="pv-dd-head">
+              <span className="pv-dd-label">Vectorize V3 {OFFLINE}</span>
+              <i className="pv-dd-arrow">&#9662;</i>
+            </span>
+            <span className="pv-dd-list">
+              {ENGINES.map((engine) => (
+                <span
+                  className={"pv-dd-opt" + (engine.selected ? " pv-dd-selected" : "")}
+                  key={engine.name}
+                >
+                  {engine.name} {engine.mode}
+                </span>
+              ))}
+            </span>
           </span>
           <span className="pv-dd">
-            <span className="pv-dd-label">Full-bleed</span>
-            <i className="pv-dd-arrow">&#9662;</i>
+            <span className="pv-dd-head">
+              <span className="pv-dd-label">Full-bleed</span>
+              <i className="pv-dd-arrow">&#9662;</i>
+            </span>
           </span>
           <span className="pv-dd">
-            <span className="pv-dd-label">SVG</span>
-            <i className="pv-dd-arrow">&#9662;</i>
+            <span className="pv-dd-head">
+              <span className="pv-dd-label">SVG</span>
+              <i className="pv-dd-arrow">&#9662;</i>
+            </span>
           </span>
         </div>
 
         <div className="pv-seek-wrap">
           <span className="pv-seek-track">
-            <span className="pv-seek-fill" style={{ width: "67%" }} />
-            <span className="pv-seek-thumb" style={{ left: "calc(67% - 4px)" }} />
+            <span className="pv-seek-fill" style={{ width: "75%" }} />
+            <span className="pv-seek-thumb" style={{ left: "calc(75% - 4px)" }} />
           </span>
         </div>
 
