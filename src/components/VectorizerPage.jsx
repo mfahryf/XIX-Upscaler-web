@@ -1,5 +1,6 @@
 
 import { Download, Sparkles, Wand2 } from "lucide-react";
+import { AppPreview } from "./AppPreview";
 import { DemoPanel } from "./DemoPanel";
 import { Footer } from "./Footer";
 import {
@@ -148,22 +149,30 @@ export function VectorizerPage() {
         <section className="panel" id="download" aria-labelledby="download-title">
           <p className="section-label">Download</p>
           <h2 id="download-title">Desktop app</h2>
-          {DOWNLOAD_URL ? (
-            <a className="button button-primary" href={DOWNLOAD_URL} rel="noreferrer">
-              <Download className="nav-icon" aria-hidden="true" />
-              Download Windows installer
-            </a>
-          ) : (
-            <p className="plan-footnote">
-              The installer is not available for download yet. The trial on this page already uses
-              the same engine, so you can judge the output first.
-            </p>
-          )}
-          <ul className="download-points">
-            <li>Windows 10 or newer</li>
-            <li>Image processing runs on your own computer</li>
-            <li>After activation it works without internet for up to {CATALOG.offlineLeaseDays} days</li>
-          </ul>
+          <div className="download-grid">
+            <div className="download-copy">
+              {DOWNLOAD_URL ? (
+                <a className="button button-primary" href={DOWNLOAD_URL} rel="noreferrer">
+                  <Download className="nav-icon" aria-hidden="true" />
+                  Download Windows installer
+                </a>
+              ) : (
+                <p className="plan-footnote">
+                  The installer is not available for download yet. The trial on this page already
+                  uses the same engine, so you can judge the output first.
+                </p>
+              )}
+              <ul className="download-points">
+                <li>Windows 10 or newer</li>
+                <li>Image processing runs on your own computer</li>
+                <li>
+                  After activation it works without internet for up to {CATALOG.offlineLeaseDays}{" "}
+                  days
+                </li>
+              </ul>
+            </div>
+            <AppPreview />
+          </div>
         </section>
       </main>
 
