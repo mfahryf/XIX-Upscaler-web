@@ -5,6 +5,7 @@
    keluarga dengan aplikasi desktop Vectorizer. */
 
 :root {
+  --xix-vectorizer-build: 20260919;
   --bg: #160910;
   --surface: rgba(58, 18, 32, 0.62);
   --surface-raised: rgba(43, 15, 24, 0.88);
