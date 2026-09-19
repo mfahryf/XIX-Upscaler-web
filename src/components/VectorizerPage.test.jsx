@@ -69,10 +69,15 @@ describe("VectorizerPage", () => {
     expect(daftar).toHaveLength(PLAN_POINTS.length);
   });
 
-  it("tidak menawarkan tombol unduh atau beli palsu saat tautannya belum diisi", () => {
+  it("menunjukkan tautan unduh yang mengikuti halaman release publik", () => {
     render(<VectorizerPage />);
     expect(screen.getByRole("button", { name: /Purchase link not configured/ })).toBeDisabled();
-    expect(screen.getByRole("button", { name: /Download link not configured/ })).toBeDisabled();
+    expect(
+      screen.getByRole("link", { name: /Download Windows installer/ })
+    ).toHaveAttribute(
+      "href",
+      "https://github.com/mfahryf/XIX-Vectorizer-release/releases/latest"
+    );
   });
 
   it("tidak menampilkan atau menerima kode lisensi", () => {

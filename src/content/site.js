@@ -27,9 +27,13 @@ export const CATALOG = {
 // time from the gateway catalog.
 export const CHECKOUT_URL = (import.meta.env?.VITE_CHECKOUT_URL || "").trim();
 
-// The installer has no hosting yet. While this is empty the download section
-// explains that, instead of showing a button that leads nowhere.
-export const DOWNLOAD_URL = (import.meta.env?.VITE_DOWNLOAD_URL || "").trim();
+// Keep the public release page as the safe default. A build-specific value may
+// still override it, but the landing page never needs a source edit when a new
+// release is published.
+export const DOWNLOAD_URL = (
+  import.meta.env?.VITE_DOWNLOAD_URL ||
+  "https://github.com/mfahryf/XIX-Vectorizer-release/releases/latest"
+).trim();
 
 export const PLAN_LABEL = (() => {
   const amount = CATALOG.priceAmount.toLocaleString("en-US");
