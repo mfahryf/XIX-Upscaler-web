@@ -60,6 +60,52 @@ describe("DemoPanel", () => {
     expect(screen.getByText(/up to 5.0 MB/)).toBeInTheDocument();
   });
 
+  it("meminta login sebelum membuka pemilih berkas", () => {
+    const onRequireLogin = vi.fn();
+    const inputClick = vi.spyOn(HTMLInputElement.prototype, "click");
+    render(<DemoPanel authenticated={false} onRequireLogin={onRequireLogin} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Choose image" }));
+
+    expect(onRequireLogin).toHaveBeenCalledTimes(1);
+    expect(inputClick).not.toHaveBeenCalled();
+    inputClick.mockRestore();
+  });
+
+  it("meminta login saat berkas dijatuhkan sebelum memprosesnya", () => {
+    const onRequireLogin = vi.fn();
+    const file = new File([new Uint8Array(2)], "gambar.png", { type: "image/png" });
+    const { container } = render(
+      <DemoPanel authenticated={false} onRequireLogin={onRequireLogin} />
+    );
+
+    fireEvent.drop(container.querySelector(".dropzone"), {
+      dataTransfer: { files: [file] },
+    });
+
+    expect(onRequireLogin).toHaveBeenCalledTimes(1);
+    expect(loadImage).not.toHaveBeenCalled();
+    expect(vectorize).not.toHaveBeenCalled();
+  });
+
+  it("menunggu status sesi sebelum menerima berkas", () => {
+    const onRequireLogin = vi.fn();
+    const inputClick = vi.spyOn(HTMLInputElement.prototype, "click");
+    const { container } = render(
+      <DemoPanel authChecking authenticated={false} onRequireLogin={onRequireLogin} />
+    );
+    const file = new File([new Uint8Array(2)], "gambar.png", { type: "image/png" });
+
+    fireEvent.click(screen.getByRole("button", { name: "Choose image" }));
+    fireEvent.drop(container.querySelector(".dropzone"), {
+      dataTransfer: { files: [file] },
+    });
+
+    expect(inputClick).not.toHaveBeenCalled();
+    expect(onRequireLogin).not.toHaveBeenCalled();
+    inputClick.mockRestore();
+  });
+
   it("memproses satu berkas lalu menampilkan pembanding dan keterangan hasil", async () => {
     const { container } = render(<DemoPanel />);
     pickFile(container, "logo.png");

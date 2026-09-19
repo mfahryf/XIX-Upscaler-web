@@ -1,9 +1,20 @@
 
-import { describe, expect, it, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { readFileSync } from "node:fs";
 import { VectorizerPage } from "./VectorizerPage";
 import { HERO_HIGHLIGHTS, PLAN_POINTS } from "../content/site";
+import { getPlatformSession } from "../lib/platformAuth";
+
+vi.mock("../lib/platformAuth", () => ({
+  getPlatformSession: vi.fn().mockResolvedValue({ status: "anonymous" }),
+  loginHref: (returnTo = "/") => `/auth/login?return_to=${encodeURIComponent(returnTo || "/")}`,
+  logoutHref: () => "/auth/logout",
+}));
+
+beforeEach(() => {
+  vi.mocked(getPlatformSession).mockImplementation(() => new Promise(() => {}));
+});
 
 vi.mock("./DemoPanel", () => ({
   DemoPanel: () => <div data-testid="demo-panel" />,
@@ -20,6 +31,24 @@ describe("VectorizerPage", () => {
       screen.getByRole("heading", { name: /Desktop app and licence/ })
     ).toBeInTheDocument();
     expect(screen.getByText(/Support/)).toBeInTheDocument();
+  });
+
+  it("menampilkan tombol Sign in untuk pengunjung anonim", async () => {
+    vi.mocked(getPlatformSession).mockResolvedValue({ status: "anonymous" });
+    render(<VectorizerPage />);
+    expect(await screen.findByRole("button", { name: "Sign in" })).toBeInTheDocument();
+  });
+
+  it("membuka modal login dari header", async () => {
+    vi.mocked(getPlatformSession).mockResolvedValue({ status: "anonymous" });
+    render(<VectorizerPage />);
+    fireEvent.click(await screen.findByRole("button", { name: "Sign in" }));
+
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Continue with Google/ })).toHaveAttribute(
+      "href",
+      expect.stringContaining("return_to=%2F")
+    );
   });
 
   it("menampilkan harga dan kuota dari katalog", () => {

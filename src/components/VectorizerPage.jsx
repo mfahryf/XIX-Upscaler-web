@@ -1,8 +1,11 @@
 
-import { Download, Sparkles, Wand2 } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Download, LogIn, Sparkles, Wand2 } from "lucide-react";
 import { AppPreview } from "./AppPreview";
 import { DemoPanel } from "./DemoPanel";
 import { Footer } from "./Footer";
+import LoginPromptModal from "./LoginPromptModal";
+import { getPlatformSession, logoutHref } from "../lib/platformAuth";
 import {
   CHECKOUT_URL,
   COPYRIGHT,
@@ -26,6 +29,27 @@ const NAV_ITEMS = [
 
 export function VectorizerPage() {
   const checkoutReady = CHECKOUT_URL.length > 0;
+  const [platformSession, setPlatformSession] = useState({ status: "loading" });
+  const [loginPromptOpen, setLoginPromptOpen] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    getPlatformSession().then((session) => {
+      if (active) setPlatformSession(session);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const authenticated = platformSession.status === "authenticated";
+  const authChecking = platformSession.status !== "anonymous" && !authenticated;
+  const returnTo = useMemo(() => {
+    if (typeof window === "undefined") return "/vectorizer/";
+    return `${window.location.pathname}${window.location.search}` || "/vectorizer/";
+  }, []);
+  const accountLabel = platformSession.user?.name || platformSession.user?.email || "Account";
+  const signOutUrl = `${logoutHref()}?return_to=${encodeURIComponent(returnTo)}`;
 
   return (
     <div className="app-shell" id="top">
@@ -52,6 +76,35 @@ export function VectorizerPage() {
           </nav>
 
           <div className="app-header-actions">
+            {authenticated ? (
+              <>
+                <span className="header-account" title={platformSession.user?.email || undefined}>
+                  {accountLabel}
+                </span>
+                <a className="button button-secondary button-compact" href={signOutUrl}>
+                  Sign out
+                </a>
+              </>
+            ) : (
+              <button
+                type="button"
+                className="button button-secondary button-compact"
+                data-testid="header-sign-in"
+                onClick={() => setLoginPromptOpen(true)}
+                disabled={authChecking}
+                aria-busy={platformSession.status === "loading" ? "true" : undefined}
+                title={
+                  platformSession.status === "loading"
+                    ? "Checking central account status"
+                    : platformSession.status === "unavailable"
+                      ? "Central account service is temporarily unavailable"
+                      : undefined
+                }
+              >
+                <LogIn className="nav-icon" aria-hidden="true" />
+                Sign in
+              </button>
+            )}
             {checkoutReady ? (
               <a className="button button-primary button-compact" href={CHECKOUT_URL} rel="noreferrer">
                 <Sparkles className="nav-icon" aria-hidden="true" />
@@ -97,7 +150,11 @@ export function VectorizerPage() {
           <AppPreview />
         </section>
 
-        <DemoPanel />
+        <DemoPanel
+          authenticated={authenticated}
+          authChecking={authChecking}
+          onRequireLogin={() => setLoginPromptOpen(true)}
+        />
 
         <section className="panel" id="download" aria-labelledby="download-title">
           <p className="section-label">Download</p>
@@ -166,6 +223,11 @@ export function VectorizerPage() {
         mainLinks={FOOTER_LINKS.main}
         legalLinks={FOOTER_LINKS.legal}
         copyright={COPYRIGHT}
+      />
+      <LoginPromptModal
+        open={loginPromptOpen}
+        onClose={() => setLoginPromptOpen(false)}
+        returnTo={returnTo}
       />
     </div>
   );

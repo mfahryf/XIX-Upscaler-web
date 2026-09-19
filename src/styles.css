@@ -236,6 +236,15 @@ input,
   font-size: 0.72rem;
 }
 
+.header-account {
+  max-width: 10rem;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 0.75rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* -------------------------------------------------------------- buttons */
 
 .button {
@@ -286,6 +295,132 @@ input,
   min-height: 2.2rem;
   padding: 0.4rem 0.8rem;
   font-size: 0.82rem;
+}
+
+/* ----------------------------------------------------------- sign-in modal */
+
+.auth-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(10, 3, 7, 0.72);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.auth-modal {
+  position: relative;
+  width: min(100%, 28rem);
+  padding: clamp(1.5rem, 5vw, 2.25rem);
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
+  border-radius: 1.2rem;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(255, 107, 157, 0.17), transparent 42%),
+    linear-gradient(150deg, rgba(70, 22, 38, 0.94), rgba(22, 9, 16, 0.97));
+  box-shadow: 0 2rem 5rem rgba(0, 0, 0, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.auth-modal > *:not(.auth-modal-watermark) {
+  position: relative;
+  z-index: 1;
+}
+
+.auth-modal-close {
+  position: absolute;
+  top: 0.8rem;
+  right: 0.8rem;
+  z-index: 2;
+  display: grid;
+  width: 2.2rem;
+  height: 2.2rem;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 0.65rem;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+}
+
+.auth-modal-close:hover {
+  color: var(--text);
+  border-color: var(--line-strong);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.auth-modal-watermark {
+  position: absolute;
+  top: 1.2rem;
+  right: 3.8rem;
+  width: 5.5rem;
+  height: 3.8rem;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  opacity: 0.08;
+}
+
+.auth-modal .section-label {
+  margin-bottom: 0.75rem;
+}
+
+.auth-modal h2 {
+  max-width: 18rem;
+  margin-bottom: 0.7rem;
+  font-size: clamp(1.45rem, 4vw, 1.9rem);
+}
+
+.auth-modal-copy {
+  max-width: 25rem;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.4rem 0 1rem;
+  color: var(--muted);
+  font-family: "Courier New", Consolas, monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+  content: "";
+}
+
+.auth-sign-in-button {
+  width: 100%;
+}
+
+.auth-provider-button {
+  color: #1f2937;
+  border-color: rgba(255, 255, 255, 0.7);
+  background: #ffffff;
+  box-shadow: 0 0.7rem 1.6rem rgba(0, 0, 0, 0.16);
+}
+
+.auth-provider-button:not(:disabled):hover {
+  filter: brightness(0.97);
+  transform: translateY(-1px);
+}
+
+.auth-modal-note {
+  margin: 0.85rem 0 0;
+  color: var(--muted);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  text-align: center;
 }
 
 /* ------------------------------------------------------------ typography */
@@ -1699,13 +1834,20 @@ h2 {
   }
 
   .app-header-inner {
+    flex-wrap: wrap;
     width: min(100% - 24px, 1160px);
     min-height: 44px;
+    padding: 0.35rem 0;
   }
 
   /* The navigation collapses on narrow screens, matching the app shell, so the
      brand and the action button keep the full width. */
   .app-nav {
+    display: none;
+  }
+
+  .header-account,
+  .header-note {
     display: none;
   }
 

@@ -29,7 +29,11 @@ function previewWidthFor(ratio) {
 
 // Free trial panel. One file per run, processed on the visitor's own computer,
 // with progress shown honestly from the stages the engine reports.
-export function DemoPanel() {
+export function DemoPanel({
+  authenticated = true,
+  authChecking = false,
+  onRequireLogin = () => {},
+}) {
   const [state, setState] = useState("idle");
   const [message, setMessage] = useState("");
   const [stage, setStage] = useState("");
@@ -112,10 +116,25 @@ export function DemoPanel() {
       event.preventDefault();
       setDropping(false);
       const file = event.dataTransfer?.files?.[0];
-      if (file) handleFile(file);
+      if (!file) return;
+      if (authChecking) return;
+      if (!authenticated) {
+        onRequireLogin();
+        return;
+      }
+      handleFile(file);
     },
-    [handleFile]
+    [authChecking, authenticated, handleFile, onRequireLogin]
   );
+
+  const openFilePicker = useCallback(() => {
+    if (authChecking) return;
+    if (!authenticated) {
+      onRequireLogin();
+      return;
+    }
+    inputRef.current?.click();
+  }, [authChecking, authenticated, onRequireLogin]);
 
   const busy = state === "reading" || state === "processing";
 
@@ -135,7 +154,17 @@ export function DemoPanel() {
         accept="image/png,image/jpeg,image/webp"
         onChange={(event) => {
           const file = event.target.files?.[0];
-          if (file) handleFile(file);
+          if (!file) return;
+          if (authChecking) {
+            event.target.value = "";
+            return;
+          }
+          if (!authenticated) {
+            event.target.value = "";
+            onRequireLogin();
+            return;
+          }
+          handleFile(file);
         }}
       />
 
@@ -158,7 +187,7 @@ export function DemoPanel() {
           <button
             type="button"
             className="button button-primary button-compact"
-            onClick={() => inputRef.current?.click()}
+            onClick={openFilePicker}
           >
             Choose image
           </button>
