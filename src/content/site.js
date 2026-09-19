@@ -32,7 +32,7 @@ export const CHECKOUT_URL = (import.meta.env?.VITE_CHECKOUT_URL || "").trim();
 // release is published.
 export const DOWNLOAD_URL = (
   import.meta.env?.VITE_DOWNLOAD_URL ||
-  "https://github.com/mfahryf/XIX-Vectorizer-release/releases/latest"
+  "https://github.com/mfahryf/XIX-Vectorizer-release/releases/latest/download/Vectorizer-latest-x64-setup.exe"
 ).trim();
 
 export const PLAN_LABEL = (() => {

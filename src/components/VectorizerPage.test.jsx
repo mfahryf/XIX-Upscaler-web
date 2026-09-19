@@ -76,7 +76,7 @@ describe("VectorizerPage", () => {
       screen.getByRole("link", { name: /Download Windows installer/ })
     ).toHaveAttribute(
       "href",
-      "https://github.com/mfahryf/XIX-Vectorizer-release/releases/latest"
+      "https://github.com/mfahryf/XIX-Vectorizer-release/releases/latest/download/Vectorizer-latest-x64-setup.exe"
     );
   });
 
