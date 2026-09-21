@@ -10,8 +10,9 @@ berjalan di aplikasi desktop.
 
 ## Konfigurasi
 
-Atur `VITE_CHECKOUT_URL` di Coolify setelah produk Mayar produksi tersedia.
-`VITE_DOWNLOAD_URL` bersifat opsional untuk mengganti URL installer stabil.
+`VITE_CHECKOUT_URL` bersifat opsional untuk mengganti checkout URL produksi
+Upscaler yang sudah disediakan. `VITE_DOWNLOAD_URL` juga opsional untuk
+mengganti URL installer stabil.
 
 Tidak ada API key Mayar atau token rahasia di halaman ini. Harga selalu diambil
 dari halaman checkout.

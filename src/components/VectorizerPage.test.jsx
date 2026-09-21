@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { VectorizerPage } from "./VectorizerPage";
-import { HERO_HIGHLIGHTS, SITE } from "../content/site";
+import { CHECKOUT_URL, HERO_HIGHLIGHTS, SITE } from "../content/site";
 
 describe("desktop product page", () => {
   beforeEach(() => { global.fetch = async () => ({ ok: true, json: async () => ({ authenticated: false }) }); });
@@ -17,9 +17,9 @@ describe("desktop product page", () => {
     await waitFor(() => expect(screen.getByTestId("header-sign-in")).not.toBeDisabled());
   });
 
-  it("keeps purchase disabled until the production checkout is configured", async () => {
+  it("links the purchase action to the configured production checkout", async () => {
     render(<VectorizerPage />);
-    expect(screen.getByRole("button", { name: "Purchase link not configured" })).toBeDisabled();
+    expect(screen.getByRole("link", { name: "Get licence" })).toHaveAttribute("href", CHECKOUT_URL);
     await waitFor(() => expect(screen.getByTestId("header-sign-in")).not.toBeDisabled());
   });
 });

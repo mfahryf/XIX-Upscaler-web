@@ -12,6 +12,7 @@ export const SITE = Object.freeze({
 
 export const CATALOG = Object.freeze({
   productId: "xix-upscaler",
+  mayarProductId: "8f484b93-a67f-4a41-a679-f5294965dcdc",
   durationDays: 30,
   trialQuota: 10,
   maxActiveDevices: 1,
@@ -19,7 +20,7 @@ export const CATALOG = Object.freeze({
 });
 
 // Coolify supplies VITE_CHECKOUT_URL after the production Mayar product exists.
-export const CHECKOUT_URL = (import.meta.env?.VITE_CHECKOUT_URL || "").trim();
+export const CHECKOUT_URL = (import.meta.env?.VITE_CHECKOUT_URL || "https://xix-apps.myr.id/pl/xix-upscaler-monthly-license").trim();
 export const DOWNLOAD_URL = (
   import.meta.env?.VITE_DOWNLOAD_URL ||
   "https://github.com/mfahryf/XIX-Upscaler-release/releases/latest/download/Upscaler-latest-x64-setup.exe"
