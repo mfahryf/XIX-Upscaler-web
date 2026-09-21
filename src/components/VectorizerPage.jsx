@@ -105,14 +105,6 @@ export function VectorizerPage() {
                 Sign in
               </button>
             )}
-            {checkoutReady ? (
-              <a className="button button-primary button-compact" href={CHECKOUT_URL} rel="noreferrer">
-                <Sparkles className="nav-icon" aria-hidden="true" />
-                Get licence
-              </a>
-            ) : (
-              <span className="header-note">Purchase link not configured</span>
-            )}
           </div>
         </div>
       </header>

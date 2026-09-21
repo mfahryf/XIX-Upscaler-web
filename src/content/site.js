@@ -10,7 +10,7 @@ export const SITE = {
 // source of truth; when price or quota changes there, match it here.
 export const CATALOG = {
   productId: "xix-vectorizer",
-  priceAmount: 99000,
+  priceAmount: 49000,
   currency: "IDR",
   durationDays: 30,
   filesPerEngine: 5,

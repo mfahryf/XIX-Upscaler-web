@@ -53,7 +53,7 @@ describe("VectorizerPage", () => {
 
   it("menampilkan harga dan kuota dari katalog", () => {
     render(<VectorizerPage />);
-    expect(screen.getByText(/IDR 99,000 \/ month/)).toBeInTheDocument();
+    expect(screen.getByText(/IDR 49,000 \/ month/)).toBeInTheDocument();
     expect(screen.getByText(/5 successful files before a licence is required/)).toBeInTheDocument();
     expect(screen.getByText(/Valid for 30 days/)).toBeInTheDocument();
     expect(screen.getByText(/Unlimited batch processing/)).toBeInTheDocument();
@@ -72,7 +72,7 @@ describe("VectorizerPage", () => {
   it("menunjukkan tautan unduh yang mengikuti halaman release publik", () => {
     render(<VectorizerPage />);
     const purchaseLinks = screen.getAllByRole("link", { name: /Get licence/ });
-    expect(purchaseLinks).toHaveLength(2);
+    expect(purchaseLinks).toHaveLength(1);
     for (const link of purchaseLinks) {
       expect(link).toHaveAttribute(
         "href",
@@ -153,7 +153,7 @@ describe("VectorizerPage", () => {
 
     // Harga duduk di kartu lisensi, bukan di kartu installer.
     expect(kartu[0].querySelector(".plan-amount")).toBeNull();
-    expect(kartu[1].querySelector(".plan-amount").textContent).toMatch(/IDR 99,000/);
+    expect(kartu[1].querySelector(".plan-amount").textContent).toMatch(/IDR 49,000/);
 
     // Kedua kartu sama-sama memuat satu tombol di kakinya.
     expect(kartu[0].querySelectorAll(".button")).toHaveLength(1);
