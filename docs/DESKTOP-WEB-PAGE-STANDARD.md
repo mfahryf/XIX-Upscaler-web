@@ -7,6 +7,11 @@ XIX-Vectorizer. Padanan untuk aplikasi web ada di
 aplikasi desktopnya sendiri ada di
 `XIX-Vectorizer/docs/XIX-DESKTOP-UI-STANDARD.md`.
 
+Status dokumen: diperbarui 21 September 2026. Contoh Vectorizer di bagian
+berikut adalah pola UI dan bukan nilai konfigurasi yang boleh disalin mentah.
+Untuk nilai aplikasi, gunakan README repository web, registry landing, dan
+katalog gateway production.
+
 Dokumen ini tidak mengulang kontrak yang sudah dimiliki layanan pusat.
 Fungsinya adalah pintu masuk: memetakan di mana setiap kontrak tinggal,
 lalu menetapkan peran halaman, urutan kerja, dan batas tanggung jawab.
@@ -63,6 +68,9 @@ xixlabs.net/
 |-- landing pusat (xixlabs-landing)
 |-- animotion/    -> frontend-animotion
 |-- vectorizer/   -> frontend-vectorizer
+|-- bgremover/    -> bgremover-web
+|-- svgconverter/ -> svgconverter-web
+|-- upscaler/     -> upscaler-web
 ```
 
 Konsekuensi yang harus dikerjakan, dan ini berlaku untuk setiap halaman
@@ -70,8 +78,9 @@ desktop baru:
 
 1. Aplikasi baru di Coolify pada project `XIXLabs`, environment
    `production`, dengan health check yang mengembalikan `200`.
-2. Blok `location` baru pada konfigurasi nginx landing pusat, mengikuti
-   pola blok `/animotion/`.
+2. Route baru pada gateway landing pusat (`landing-server.mjs`; konfigurasi
+   nginx di `deploy/nginx.conf` adalah referensi lama), mengikuti pola
+   `/animotion/`.
 3. `base` build aset diatur ke path halaman, misalnya `/vectorizer/`,
    supaya berkas tidak dimuat dari akar domain.
 4. Blok `location = /<app>` mengembalikan `301` ke `/<app>/`.
@@ -443,11 +452,11 @@ keduanya terbaca sebagai satu kolom isi.
 
 | Nilai | Contoh | Catatan |
 | --- | --- | --- |
-| `app_key` | `xix-vectorizer` | Sama dengan `product_id` di katalog |
-| Path halaman | `/vectorizer` | Path di domain pusat |
-| Repo halaman | `mfahryf/XIX-Vectorizer-web` | Private, repo terpisah |
-| `base` aset | `/vectorizer/` | Bukan akar domain |
-| Nama aplikasi Coolify | `frontend-vectorizer` | Project `XIXLabs` |
+| `app_key` | `xix-upscaler` | Sama dengan `product_id` di katalog |
+| Path halaman | `/upscaler` | Path di domain pusat |
+| Repo halaman | `mfahryf/XIX-Upscaler-web` | GitHub App `fahry-github`, branch `main` |
+| `base` aset | `/upscaler/` | Bukan akar domain |
+| Nama aplikasi Coolify | `upscaler-web` | Project `XIXLabs`, port 80 |
 | Sumber mesin | `XIX-Vectorizer/src-tauri/` | Disalin saat build |
 | Berkas mesin di browser | `worker.js`, `detect.js` | Runner Node tidak ikut |
 | Batas ukuran berkas | 5 MB | Ditolak bila lebih |

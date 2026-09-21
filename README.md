@@ -30,5 +30,9 @@ Installer desktop dirilis dari repo publik
 `mfahryf/XIX-Upscaler-release` dengan nama aset stabil
 `Upscaler-latest-x64-setup.exe`.
 
+Deployment production memakai resource Coolify `upscaler-web`, GitHub App
+`fahry-github`, branch `main`, port `80`, dan route
+`https://xixlabs.net/upscaler/`. Push ke `main` memicu deployment otomatis.
+
 `docs/DESKTOP-WEB-PAGE-STANDARD.md` adalah standar bersama untuk semua halaman
 publik aplikasi desktop XIXLabs.
