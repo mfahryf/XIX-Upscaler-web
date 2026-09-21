@@ -2,11 +2,11 @@ import { LogIn, X } from "lucide-react";
 import { loginHref } from "../lib/platformAuth";
 
 function defaultReturnTo() {
-  if (typeof window === "undefined") return "/vectorizer/";
-  return `${window.location.pathname}${window.location.search}` || "/vectorizer/";
+  if (typeof window === "undefined") return "/";
+  return `${window.location.pathname}${window.location.search}` || "/";
 }
 
-export function LoginPromptModal({ open, onClose, returnTo = defaultReturnTo() }) {
+export function LoginPromptModal({ open, onClose, returnTo = defaultReturnTo(), productName = "this app" }) {
   if (!open) return null;
 
   return (
@@ -33,9 +33,9 @@ export function LoginPromptModal({ open, onClose, returnTo = defaultReturnTo() }
         </button>
         <img className="auth-modal-watermark" src="XIX.svg" alt="" aria-hidden="true" />
         <p className="section-label">Central account</p>
-        <h2 id="login-prompt-title">Sign in to use Vectorizer</h2>
+        <h2 id="login-prompt-title">Sign in to use {productName}</h2>
         <p className="auth-modal-copy">
-          Sign in with Google to choose an image, drop a file, and use the Vectorizer trial.
+          Sign in with Google to connect your central XIXLabs account and continue.
         </p>
         <div className="auth-divider" aria-hidden="true">
           <span>CONTINUE WITH</span>

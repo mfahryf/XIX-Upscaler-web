@@ -5,7 +5,7 @@ import { App } from "./App";
 import "./styles.css";
 
 // Keeps the browser-visible bundle versioned after the gateway encoding fix.
-document.documentElement.dataset.xixVectorizerBuild = "20260919-encoding-fix";
+document.documentElement.dataset.xixProductPageBuild = "20260921-desktop-pages";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>

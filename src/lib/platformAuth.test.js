@@ -3,7 +3,7 @@ import { getPlatformSession, loginHref, logoutHref } from "./platformAuth";
 
 describe("platformAuth", () => {
   it("membentuk tautan masuk yang kembali ke halaman aplikasi", () => {
-    expect(loginHref("/vectorizer/")).toBe("/auth/login?return_to=%2Fvectorizer%2F");
+    expect(loginHref("/upscaler/")).toBe("/auth/login?return_to=%2Fupscaler%2F");
     expect(logoutHref()).toBe("/auth/logout");
   });
 

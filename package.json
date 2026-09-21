@@ -1,5 +1,5 @@
 {
-  "name": "xix-vectorizer-web",
+  "name": "xix-upscaler-web",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -7,11 +7,8 @@
     "node": ">=20"
   },
   "scripts": {
-    "engine:sync": "node scripts/sync-engine.mjs",
-    "engine:verify": "node scripts/sync-engine.mjs --verify",
-    "engine:verify-generated": "node scripts/sync-engine.mjs --verify-generated",
     "dev": "vite",
-    "build": "npm run engine:verify-generated && vite build",
+    "build": "vite build",
     "preview": "vite preview",
     "test": "vitest run"
   },

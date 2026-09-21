@@ -1,11 +1,10 @@
 
-/* Halaman publik XIX Vectorizer.
+/* Halaman publik aplikasi desktop XIXLabs.
    Struktur dan perilaku mengikuti sistem UI bersama XIXLabs; yang berbeda
-   hanya palet. Palet sunset dipakai supaya halaman ini terlihat sebagai satu
-   keluarga dengan aplikasi desktop Vectorizer. */
+   hanya palet produk dan isi. */
 
 :root {
-  --xix-vectorizer-build: 20260919;
+  --xix-product-page-build: 20260921;
   --bg: #160910;
   --surface: rgba(58, 18, 32, 0.62);
   --surface-raised: rgba(43, 15, 24, 0.88);
@@ -922,6 +921,10 @@ h2 {
   --pv-accent: #ffb36b;
   --pv-accent-2: #ff6b9d;
   --pv-accent-3: #ffd166;
+  --pv-bg-one: #ff8c5a;
+  --pv-bg-two: #ff5a8c;
+  --pv-bg-three: #ffc850;
+  --pv-bg-base: #2b0f18;
   --pv-lcd: #ffd166;
   --pv-text: #f2f4fb;
   --pv-dim: rgba(242, 244, 251, 0.65);
@@ -951,10 +954,10 @@ h2 {
   border-radius: 18px;
   color: var(--pv-text);
   background:
-    radial-gradient(circle at 15% 15%, #ff8c5a 0%, transparent 45%),
-    radial-gradient(circle at 85% 20%, #ff5a8c 0%, transparent 45%),
-    radial-gradient(circle at 50% 90%, #ffc850 0%, transparent 50%),
-    linear-gradient(160deg, #3a1220 0%, #2b0f18 55%, #1a0a10 100%),
+    radial-gradient(circle at 15% 15%, var(--pv-bg-one) 0%, transparent 45%),
+    radial-gradient(circle at 85% 20%, var(--pv-bg-two) 0%, transparent 45%),
+    radial-gradient(circle at 50% 90%, var(--pv-bg-three) 0%, transparent 50%),
+    linear-gradient(160deg, var(--pv-bg-one) 0%, var(--pv-bg-base) 55%, #1a0a10 100%),
     rgba(255, 255, 255, 0.1);
   box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.45),

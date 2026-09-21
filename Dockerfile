@@ -6,11 +6,6 @@ RUN npm ci
 
 COPY . .
 
-# Berkas mesin ikut disimpan di repo, jadi build image tidak memerlukan repo
-# aplikasi desktop. Sidik jarinya tetap diperiksa supaya salinan yang
-# tercampur tanpa disengaja tidak lolos ke produksi.
-RUN npm run engine:verify-generated
-
 RUN npm run build
 
 FROM nginx:1.27-alpine
