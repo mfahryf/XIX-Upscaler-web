@@ -71,7 +71,14 @@ describe("VectorizerPage", () => {
 
   it("menunjukkan tautan unduh yang mengikuti halaman release publik", () => {
     render(<VectorizerPage />);
-    expect(screen.getByRole("button", { name: /Purchase link not configured/ })).toBeDisabled();
+    const purchaseLinks = screen.getAllByRole("link", { name: /Get licence/ });
+    expect(purchaseLinks).toHaveLength(2);
+    for (const link of purchaseLinks) {
+      expect(link).toHaveAttribute(
+        "href",
+        "https://xix-apps.myr.id/pl/xix-vectorizer-monthly-license"
+      );
+    }
     expect(
       screen.getByRole("link", { name: /Download Windows installer/ })
     ).toHaveAttribute(

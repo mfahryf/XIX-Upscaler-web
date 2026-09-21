@@ -22,10 +22,10 @@ export const CATALOG = {
   engines: ["Vectorize V1", "Vectorize V2", "Vectorize V3"],
 };
 
-// The purchase link comes from configuration rather than source, so the page
-// and the catalog can never point at different products. It is filled at build
-// time from the gateway catalog.
-export const CHECKOUT_URL = (import.meta.env?.VITE_CHECKOUT_URL || "").trim();
+// Coolify may override this at build time, but the public page must still have
+// a working production checkout when the variable is not configured.
+const DEFAULT_CHECKOUT_URL = "https://xix-apps.myr.id/pl/xix-vectorizer-monthly-license";
+export const CHECKOUT_URL = (import.meta.env?.VITE_CHECKOUT_URL || DEFAULT_CHECKOUT_URL).trim();
 
 // Keep the public release page as the safe default. A build-specific value may
 // still override it, but the landing page never needs a source edit when a new
