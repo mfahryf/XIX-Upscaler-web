@@ -14,7 +14,10 @@
 //
 // Running in a worker keeps the page responsive while the model works.
 
-import * as ort from "onnxruntime-web";
+// The WebGPU build of the runtime is imported rather than the default one: it
+// carries the same runtime plus the WebGPU execution provider, which is the
+// only way the model can run on the visitor's GPU from a page.
+import * as ort from "onnxruntime-web/webgpu";
 
 const TILE = 128;
 const OVERLAP = 16;
@@ -41,7 +44,12 @@ async function sessionFor(scale, pageBase) {
   const spec = MODELS[scale];
   if (!spec) throw new Error("Unsupported scale: " + scale);
   const created = ort.InferenceSession.create(modelBase(pageBase) + spec.file, {
-    executionProviders: ["wasm"],
+    // WebGPU first, with the CPU build as the fallback for a browser or device
+    // that cannot provide a GPU adapter. It matters because the model takes
+    // about 1.6 seconds per tile on a single CPU thread — the runtime's
+    // multi-threaded build needs cross-origin isolation, which this page does
+    // not have — so a two-megapixel photo would take minutes.
+    executionProviders: ["webgpu", "wasm"],
     graphOptimizationLevel: "all",
   });
   sessions.set(scale, created);

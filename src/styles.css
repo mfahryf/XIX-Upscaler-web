@@ -253,13 +253,115 @@ input,
   font-size: 0.72rem;
 }
 
-.header-account {
-  max-width: 10rem;
+/* The signed-in account is a menu behind one avatar, not a name plus a button
+   in a row: keeping the name out of the header stops it from pushing the
+   navigation around on narrow screens. */
+.account-menu {
+  position: relative;
+}
+
+.account-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.25rem 0.5rem 0.25rem 0.3rem;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  background: var(--surface-inset);
+  color: var(--text);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.18s ease, background 0.18s ease;
+}
+
+.account-trigger:hover {
+  border-color: var(--line-strong);
+  background: var(--accent-soft);
+}
+
+.account-avatar {
+  display: grid;
+  place-items: center;
+  width: 1.7rem;
+  height: 1.7rem;
+  flex: none;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 800;
+  object-fit: cover;
+}
+
+.account-trigger-name {
+  max-width: 8rem;
   overflow: hidden;
-  color: var(--muted);
-  font-size: 0.75rem;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.account-trigger-icon {
+  color: var(--muted);
+  font-size: 0.6rem;
+}
+
+.account-dropdown {
+  position: absolute;
+  top: calc(100% + 0.55rem);
+  right: 0;
+  z-index: 60;
+  display: grid;
+  gap: 0.5rem;
+  min-width: 13rem;
+  padding: 0.75rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 0.9rem;
+  background: var(--surface-raised);
+  box-shadow: 0 1.2rem 2.8rem var(--shadow-strong);
+  backdrop-filter: blur(14px) saturate(140%);
+}
+
+.account-dropdown[hidden] {
+  display: none;
+}
+
+.account-identity {
+  display: grid;
+  gap: 0.15rem;
+  margin: 0;
+  padding: 0 0.35rem 0.5rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.account-identity-name {
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.account-identity-email {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 0.72rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-action {
+  display: block;
+  padding: 0.5rem 0.35rem;
+  border-radius: 0.5rem;
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  text-align: left;
+}
+
+.account-action:hover {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
 }
 
 /* -------------------------------------------------------------- buttons */
@@ -1877,9 +1979,16 @@ h2 {
     display: none;
   }
 
-  .header-account,
+  /* Nama di pemicu disembunyikan pada layar sempit, bukan menunya: avatar
+     tetap ada, dan nama lengkap beserta Sign out tetap terbaca di dalamnya. */
+  .account-trigger-name,
+  .account-trigger-icon,
   .header-note {
     display: none;
+  }
+
+  .account-trigger {
+    padding: 0.2rem;
   }
 
   .app-footer {

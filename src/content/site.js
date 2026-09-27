@@ -52,8 +52,13 @@ export const PLAN_POINTS = [
 export const HERO_HIGHLIGHTS = [
   "Upscale small images for product pages, social posts, and print",
   "Choose an online engine or keep image processing on your computer",
-  "Use ESRGAN locally when source files should remain private",
-  "Process an image playlist with clear progress and output controls",
+  "Local engine for source files that should stay private",
+  "Runs on Windows 10 or newer",
+  "Process an image list with clear progress and output controls",
+  "Pick the output folder and clear finished rows from the list",
+  "Per-file status and a running total while a batch runs",
+  "Optional proxy settings for the online engine",
+  "Update check that asks before installing a new version",
   "Video workflow is clearly marked as experimental before use",
 ];
 
