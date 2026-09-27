@@ -5,23 +5,29 @@
 
 :root {
   --xix-product-page-build: 20260921;
-  --bg: #160910;
-  --surface: rgba(58, 18, 32, 0.62);
-  --surface-raised: rgba(43, 15, 24, 0.88);
-  --surface-inset: rgba(26, 10, 16, 0.7);
-  --line: rgba(255, 210, 230, 0.16);
-  --line-strong: rgba(255, 210, 230, 0.3);
-  --text: #fdf2f6;
-  --muted: #d3a8b8;
-  --accent: #ffb36b;
-  --accent-2: #ff6b9d;
-  --accent-3: #ffd166;
-  --glow-1: #ff8c5a;
-  --glow-2: #ff5a8c;
-  --glow-3: #ffc850;
-  --success: #8ce6b0;
-  --danger: #ff8f8f;
-  color-scheme: dark;
+  --bg: #f7f9fa;
+  --surface: rgba(255, 255, 255, 0.78);
+  --surface-raised: rgba(255, 255, 255, 0.92);
+  --surface-inset: rgba(255, 255, 255, 0.62);
+  --line: rgba(82, 96, 106, 0.2);
+  --line-strong: rgba(82, 96, 106, 0.34);
+  --text: #1a2024;
+  --muted: #647079;
+  --accent: #147e96;
+  --accent-2: #0f6b80;
+  --accent-3: #147e96;
+  /* A darker cut of the accent for text only. The canvas is light enough that
+     --accent itself lands at 4.46:1, just under the 4.5:1 floor for body text;
+     this keeps links and labels above it (5.8:1 on the canvas, 6.1:1 on a panel). */
+  --accent-ink: #0f6b80;
+  --glow-1: #ffffff;
+  --glow-2: #d6dfe3;
+  --glow-3: #e8edef;
+  --success: #2c8a62;
+  --danger: #c53f3f;
+  --accent-soft: rgba(20, 126, 150, 0.12);
+  --shadow-strong: rgba(51, 64, 73, 0.16);
+  color-scheme: light;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   color: var(--text);
   background: var(--bg);
@@ -70,10 +76,18 @@ input,
 
 /* ---------------------------------------------------------------- shell */
 
+/* Landasan halaman: kanvas putih dengan dua gradien abu-abu, sama seperti shell
+   platform di landing pusat. Palet aplikasi tetap hidup di dalam pratinjau,
+   yang membawa variabelnya sendiri. */
 .app-shell {
   position: relative;
   isolation: isolate;
   overflow: visible;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 8% 0%, rgba(255, 255, 255, 0.98), transparent 34rem),
+    radial-gradient(circle at 92% 8%, rgba(213, 221, 225, 0.72), transparent 32rem),
+    linear-gradient(145deg, #ffffff 0%, var(--bg) 52%, #edf1f3 100%);
 }
 
 .page-shell {
@@ -146,8 +160,8 @@ input,
 
 .app-header {
   border-bottom: 1px solid var(--line);
-  background: linear-gradient(180deg, rgba(70, 22, 38, 0.74), rgba(22, 9, 16, 0.68));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 12px 38px rgba(0, 0, 0, 0.24);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(246, 249, 250, 0.7));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.92), 0 12px 38px var(--shadow-strong);
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
 }
@@ -180,7 +194,9 @@ input,
   width: 2.5rem;
   height: 1.75rem;
   object-fit: contain;
-  filter: brightness(0) invert(1);
+  /* The shell is light now, so the mark keeps its own dark artwork. Whitening
+     it, as it was on the dark shell, would erase it against the canvas. */
+  filter: none;
 }
 
 .app-brand-wordmark {
@@ -212,9 +228,11 @@ input,
 }
 
 .app-nav-link:hover {
-  color: #ffffff;
+  /* Sama seperti platform shell di landing pusat: latar mengangkat sedikit,
+     teksnya tetap gelap. Teks putih di sini akan hilang di kanvas terang. */
+  color: var(--text);
   border-color: var(--line);
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.72);
 }
 
 .app-header-actions {
@@ -268,10 +286,10 @@ input,
 }
 
 .button-primary {
-  color: #2a0c14;
-  border-color: rgba(255, 209, 102, 0.55);
+  color: #ffffff;
+  border-color: rgba(20, 126, 150, 0.55);
   background: linear-gradient(135deg, var(--accent), var(--accent-3));
-  box-shadow: 0 0.7rem 1.6rem rgba(255, 140, 90, 0.16);
+  box-shadow: 0 0.7rem 1.6rem var(--accent-soft);
 }
 
 .button-primary:not(:disabled):hover {
@@ -282,12 +300,12 @@ input,
 .button-secondary {
   color: var(--text);
   border-color: var(--line-strong);
-  background: rgba(26, 10, 16, 0.5);
+  background: var(--surface-inset);
 }
 
 .button-secondary:not(:disabled):hover {
-  border-color: rgba(255, 179, 107, 0.55);
-  background: rgba(255, 179, 107, 0.1);
+  border-color: rgba(20, 126, 150, 0.55);
+  background: var(--accent-soft);
 }
 
 .button-compact {
@@ -305,7 +323,7 @@ input,
   display: grid;
   place-items: center;
   padding: 1rem;
-  background: rgba(10, 3, 7, 0.72);
+  background: rgba(26, 32, 36, 0.42);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
@@ -318,12 +336,16 @@ input,
   border: 1px solid var(--line-strong);
   border-radius: 1.2rem;
   background:
-    radial-gradient(circle at 100% 0%, rgba(255, 107, 157, 0.17), transparent 42%),
-    linear-gradient(150deg, rgba(70, 22, 38, 0.94), rgba(22, 9, 16, 0.97));
-  box-shadow: 0 2rem 5rem rgba(0, 0, 0, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    radial-gradient(circle at 100% 0%, rgba(20, 126, 150, 0.12), transparent 42%),
+    linear-gradient(150deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.97));
+  box-shadow: 0 2rem 5rem var(--shadow-strong), inset 0 1px 0 rgba(255, 255, 255, 0.92);
 }
 
-.auth-modal > *:not(.auth-modal-watermark) {
+/* Konten dinaikkan di atas tanda air, tetapi tombol tutup tidak boleh ikut:
+   aturan ini lebih spesifik daripada .auth-modal-close, sehingga tanpa
+   pengecualian di sini ia menimpa position: absolute dan tombolnya jatuh ke
+   sudut kiri atas, menimpa label bagian. */
+.auth-modal > *:not(.auth-modal-watermark):not(.auth-modal-close) {
   position: relative;
   z-index: 1;
 }
@@ -339,15 +361,17 @@ input,
   place-items: center;
   border: 1px solid var(--line);
   border-radius: 0.65rem;
-  color: var(--muted);
-  background: rgba(255, 255, 255, 0.05);
+  /* A raised light chip: the mark inside is a thin glyph, so it needs dark
+     ink on a pale surface rather than mid-grey on a mid-grey fill. */
+  color: var(--text);
+  background: var(--surface-inset);
   cursor: pointer;
 }
 
 .auth-modal-close:hover {
   color: var(--text);
   border-color: var(--line-strong);
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--accent-soft);
 }
 
 .auth-modal-watermark {
@@ -357,8 +381,10 @@ input,
   width: 5.5rem;
   height: 3.8rem;
   object-fit: contain;
-  filter: brightness(0) invert(1);
-  opacity: 0.08;
+  /* A dark mark instead of a whitened one: the modal is white now, so a
+     whitened mark at low opacity would not be visible at all. */
+  filter: none;
+  opacity: 0.07;
 }
 
 .auth-modal .section-label {
@@ -404,9 +430,9 @@ input,
 
 .auth-provider-button {
   color: #1f2937;
-  border-color: rgba(255, 255, 255, 0.7);
+  border-color: rgba(255, 255, 255, 0.9);
   background: #ffffff;
-  box-shadow: 0 0.7rem 1.6rem rgba(0, 0, 0, 0.16);
+  box-shadow: 0 0.7rem 1.6rem rgba(82, 96, 106, 0.16);
 }
 
 .auth-provider-button:not(:disabled):hover {
@@ -426,7 +452,7 @@ input,
 
 .section-label {
   margin: 0 0 0.5rem;
-  color: var(--accent);
+  color: var(--accent-ink);
   font-family: "Courier New", Consolas, monospace;
   font-size: 0.7rem;
   font-weight: 700;
@@ -505,7 +531,7 @@ h2 {
 .hero-highlights li::before {
   position: absolute;
   left: 0;
-  color: var(--accent-3);
+  color: var(--accent-ink);
   content: "\2713";
   font-weight: 800;
 }
@@ -524,8 +550,8 @@ h2 {
   padding: clamp(1.25rem, 3.5vw, 2rem);
   border: 1px solid var(--line);
   border-radius: 1.2rem;
-  background: linear-gradient(150deg, rgba(58, 18, 32, 0.55), rgba(22, 9, 16, 0.62));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), 0 1rem 2.5rem rgba(0, 0, 0, 0.18);
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.78), rgba(239, 244, 246, 0.64));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.92), 0 1rem 2.5rem rgba(51, 64, 73, 0.1);
   backdrop-filter: blur(14px) saturate(140%);
 }
 
@@ -539,14 +565,14 @@ h2 {
   padding: clamp(1.75rem, 5vw, 3rem) 1.25rem;
   border: 1px dashed var(--line-strong);
   border-radius: 1rem;
-  background: rgba(26, 10, 16, 0.42);
+  background: var(--surface-inset);
   text-align: center;
   transition: border-color 0.18s ease, background 0.18s ease;
 }
 
 .dropzone[data-dropping="true"] {
   border-color: var(--accent);
-  background: rgba(255, 179, 107, 0.1);
+  background: var(--accent-soft);
 }
 
 .dropzone-mark {
@@ -556,8 +582,8 @@ h2 {
   place-items: center;
   border: 1px solid var(--line-strong);
   border-radius: 0.9rem;
-  color: var(--accent);
-  background: rgba(255, 179, 107, 0.1);
+  color: var(--accent-ink);
+  background: var(--accent-soft);
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.06em;
@@ -600,7 +626,7 @@ h2 {
 }
 
 .progress-value {
-  color: var(--accent);
+  color: var(--accent-ink);
   font-family: "Courier New", Consolas, monospace;
   font-size: 0.9rem;
   font-weight: 700;
@@ -611,7 +637,7 @@ h2 {
   margin-top: 0.7rem;
   overflow: hidden;
   border-radius: 99px;
-  background: rgba(255, 210, 230, 0.12);
+  background: var(--line);
 }
 
 .progress-bar {
@@ -643,9 +669,9 @@ h2 {
 .alert {
   margin-top: 1.5rem;
   padding: 1rem 1.1rem;
-  border: 1px solid rgba(255, 143, 143, 0.45);
+  border: 1px solid rgba(197, 63, 63, 0.45);
   border-radius: 0.9rem;
-  background: rgba(255, 143, 143, 0.1);
+  background: rgba(197, 63, 63, 0.1);
 }
 
 .alert strong {
@@ -712,7 +738,7 @@ h2 {
   width: 3px;
   transform: translateX(-50%);
   background: var(--accent);
-  box-shadow: 0 0 1rem rgba(255, 179, 107, 0.5);
+  box-shadow: 0 0 1rem rgba(20, 126, 150, 0.4);
 }
 
 .compare-handle {
@@ -726,9 +752,9 @@ h2 {
   transform: translate(-50%, -50%);
   border: 2px solid var(--text);
   border-radius: 50%;
-  color: #2a0c14;
+  color: #ffffff;
   background: var(--accent);
-  box-shadow: 0 0.5rem 1.2rem rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0.5rem 1.2rem rgba(51, 64, 73, 0.22);
   transition: transform 0.15s ease;
 }
 
@@ -742,8 +768,10 @@ h2 {
   z-index: 5;
   padding: 0.3rem 0.65rem;
   border-radius: 99px;
-  color: var(--text);
-  background: rgba(18, 6, 12, 0.72);
+  /* The chip sits over the visitor's own image, so it keeps a dark backing and
+     its label stays white: the shell palette cannot guarantee contrast there. */
+  color: #ffffff;
+  background: rgba(26, 32, 36, 0.66);
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -763,7 +791,7 @@ h2 {
 /* Kalimat ajakan di bawah pembanding. Tautannya dibuat sewarna halaman alih-alih
    biru bawaan peramban, supaya tetap terbaca sebagai satu kalimat utuh. */
 .compare-hint-link {
-  color: var(--accent);
+  color: var(--accent-ink);
   text-decoration: none;
   text-underline-offset: 3px;
 }
@@ -845,7 +873,7 @@ h2 {
   font-size: clamp(1.6rem, 3.5vw, 2.2rem);
   font-weight: 800;
   letter-spacing: -0.03em;
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 
 .plan-footnote {
@@ -874,7 +902,7 @@ h2 {
 .plan-points li::before {
   position: absolute;
   left: 0;
-  color: var(--accent-3);
+  color: var(--accent-ink);
   content: "\2713";
   font-weight: 800;
 }
@@ -891,7 +919,7 @@ h2 {
 
 .download-points li::before {
   margin-right: 0.5rem;
-  color: var(--accent-3);
+  color: var(--accent-ink);
   content: "\2022";
 }
 
@@ -1667,8 +1695,8 @@ h2 {
   width: 2.5rem;
   height: 1.75rem;
   object-fit: contain;
-  /* Same reason as the header mark: the raw asset is black. */
-  filter: brightness(0) invert(1);
+  /* Same as the header mark: the shell is light, so the raw dark asset shows. */
+  filter: none;
 }
 
 .footer-brand-name {
@@ -1694,14 +1722,14 @@ h2 {
   border: 1px solid var(--line-strong);
   border-radius: 50%;
   color: var(--text);
-  background: rgba(26, 10, 16, 0.5);
+  background: var(--surface-inset);
   text-decoration: none;
   transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
 }
 
 .footer-social-link:hover {
-  border-color: rgba(255, 179, 107, 0.55);
-  background: rgba(255, 179, 107, 0.1);
+  border-color: rgba(20, 126, 150, 0.55);
+  background: var(--accent-soft);
   transform: translateY(-1px);
 }
 
@@ -1870,6 +1898,26 @@ h2 {
     zoom: 0.94;
   }
  }
+
+/* Pilihan skala 2x/4x di dalam kotak unggah. Dibuat rapat dan di tengah,
+   mengikuti deretan tombol hasil di bawah gambar. */
+.demo-scale {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-top: 0.4rem;
+}
+
+/* Catatan di bawah gambar hasil, memakai ukuran dan warna teks bantu yang sama
+   dengan catatan kartu unduhan. */
+.result-note {
+  margin: 0.75rem 0 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.6;
+  text-align: center;
+}
 
 @media (prefers-reduced-motion: reduce) {
   *,

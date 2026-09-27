@@ -6,6 +6,9 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   base: "/upscaler/",
   plugins: [react()],
+  // Worker mesin memakai bentuk ESM supaya onnxruntime-web dapat memuat berkas
+  // wasm-nya lewat impor dinamis; bentuk klasik gagal saat dijalankan.
+  worker: { format: "es" },
   // globals diaktifkan supaya Testing Library membersihkan DOM antar uji
   // secara otomatis; tanpa itu hasil render menumpuk dan pencarian elemen
   // menemukan lebih dari satu kecocokan.

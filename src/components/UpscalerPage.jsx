@@ -1,14 +1,18 @@
 import { useEffect, useMemo, useState } from "react";
 import { Download, LogIn, Sparkles, Wand2 } from "lucide-react";
 import { AppPreview } from "./AppPreview";
+import { DemoPanel } from "./DemoPanel";
 import { Footer } from "./Footer";
 import LoginPromptModal from "./LoginPromptModal";
 import { getPlatformSession, logoutHref } from "../lib/platformAuth";
 import { CHECKOUT_URL, COPYRIGHT, CATALOG, DOWNLOAD_URL, FOOTER_LINKS, HERO_HIGHLIGHTS, PLAN_LABEL, PLAN_POINTS, PREVIEW, SITE } from "../content/site";
 
-const NAV_ITEMS = [{ id: "download", href: "#download", label: "Download", Icon: Download }];
+const NAV_ITEMS = [
+  { id: "try", href: "#try", label: "Try free", Icon: Wand2 },
+  { id: "download", href: "#download", label: "Download", Icon: Download },
+];
 
-export function VectorizerPage() {
+export function UpscalerPage() {
   const [platformSession, setPlatformSession] = useState({ status: "loading" });
   const [loginPromptOpen, setLoginPromptOpen] = useState(false);
 
@@ -40,8 +44,14 @@ export function VectorizerPage() {
         <section className="hero" aria-labelledby="hero-title"><div className="hero-copy">
           <p className="section-label">Desktop application</p><h1 id="hero-title">{SITE.title} <span className="hero-accent">{SITE.accentTitle}</span></h1>
           <ul className="hero-highlights">{HERO_HIGHLIGHTS.map((highlight) => <li key={highlight}>{highlight}</li>)}</ul>
-          <div className="hero-actions"><a className="button button-primary" href="#download"><Wand2 className="nav-icon" aria-hidden="true" />Start free trial</a><a className="button button-secondary" href="#download"><Download className="nav-icon" aria-hidden="true" />Download app</a></div>
+          <div className="hero-actions"><a className="button button-primary" href="#try"><Wand2 className="nav-icon" aria-hidden="true" />Start free trial</a><a className="button button-secondary" href="#download"><Download className="nav-icon" aria-hidden="true" />Download app</a></div>
         </div><AppPreview product={SITE.product} preview={PREVIEW} /></section>
+
+        <DemoPanel
+          authenticated={authenticated}
+          authChecking={authChecking}
+          onRequireLogin={() => setLoginPromptOpen(true)}
+        />
 
         <section className="panel" id="download" aria-labelledby="download-title"><p className="section-label">Download</p><h2 id="download-title">Desktop app and licence</h2><div className="download-cards">
           <article className="download-card"><p className="section-label">Installer</p><h3 className="card-title">Windows desktop app</h3><p className="card-note">Process your files locally with {CATALOG.engines.join(" and ")} and keep your source files on your own computer.</p><ul className="download-points"><li>Windows 10 or newer</li><li>Ten successful files in the free trial</li><li>Batch processing with no browser upload required</li></ul>{DOWNLOAD_URL ? <a className="button button-primary" href={DOWNLOAD_URL} rel="noreferrer"><Download className="nav-icon" aria-hidden="true" />Download Windows installer</a> : <button type="button" className="button button-primary" disabled>Download link not configured</button>}</article>
@@ -54,4 +64,4 @@ export function VectorizerPage() {
   );
 }
 
-export default VectorizerPage;
+export default UpscalerPage;

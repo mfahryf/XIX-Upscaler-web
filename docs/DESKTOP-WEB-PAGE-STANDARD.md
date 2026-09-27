@@ -395,33 +395,50 @@ Halaman memakai shell dan komponen dasar yang sama dengan Animotion,
 sesuai `XIXLabs.net/docs/design-system.md`. Perbedaan antar aplikasi
 hanya palet warna, ikon, nama, dan konten.
 
-Palet halaman harus sama dengan palet aplikasi desktopnya, supaya
-pengunjung yang baru mengunduh merasa melanjutkan hal yang sama. Untuk
-XIX-Vectorizer, paletnya sunset: aksen `#ffb36b`, aksen kedua `#ff6b9d`,
-aksen ketiga `#ffd166`.
+Palet halaman mengikuti landing pusat `XIXLabs.net`, bukan palet aplikasi
+desktopnya. Halaman ini adalah bagian dari situs pusat, dan pengunjung
+berpindah dari landing ke halaman aplikasi dalam satu kunjungan; pergantian
+palet di tengah jalan terbaca sebagai pindah situs. Palet aplikasi tetap
+hidup di dalam pratinjau jendela, jadi pengunjung masih melihat wujud produk
+yang sebenarnya.
+
+Nilainya diambil dari `.platform-shell` di `XIXLabs.net/src/styles.css`,
+bukan dikarang: kanvas `#f7f9fa`, permukaan `rgba(255, 255, 255, 0.78)`,
+garis `rgba(82, 96, 106, 0.2)`, tinta `#1a2024`, teks redup `#647079`,
+aksen `#147e96`, bayangan `rgba(51, 64, 73, 0.16)`.
+
+Aksen `#147e96` dipakai untuk latar dan border, bukan untuk teks: di atas
+kanvas terang ia hanya mencapai 4,46:1, di bawah batas 4,5:1 untuk teks
+isi. Teks beraksen memakai `--accent-ink` `#0f6b80` — 5,79:1 di kanvas dan
+6,11:1 di atas panel.
+
+Perubahan palet dilakukan lewat token tema, bukan menyalin ulang seluruh
+komponen: `:root`, latar `.app-shell`, dan aturan yang mengandung warna
+literal gelap.
 
 Setiap halaman wajib memiliki state loading, empty, error, dan success.
 Semua kontrol keyboard memiliki focus ring, dan gerakan animasi dapat
 dikurangi pada perangkat yang meminta `prefers-reduced-motion`.
 
-### Tanda merek di atas kerangka gelap
+### Tanda merek di atas kerangka terang
 
 Aset `XIX.svg` adalah gambar hitam dengan latar bening, bukan bentuk vektor
-yang dapat diwarnai lewat atribut. Di atas kerangka gelap halaman ini, logo
-seperti itu nyaris tidak terlihat: diukur langsung pada peramban, rata-rata
-kecerahannya 27 dari 255 pada header dan 9 pada catatan kaki, sementara
-latar di belakangnya 22 dari 255.
+yang dapat diwarnai lewat atribut. Di kerangka putih, artwork gelap itulah
+yang terbaca, jadi tanda merek dibiarkan apa adanya — `filter: none` pada
+`.app-brand-logo` dan `.footer-brand-logo`.
 
-Aturannya: di tempat yang latarnya gelap, tanda merek diputihkan dengan
-saringan CSS `brightness(0) invert(1)`, bukan dengan menggambar ulang
-berkasnya. Berkas aslinya dibiarkan apa adanya karena favicon memakai
-berkas yang sama dan di sana latarnya terang.
+Aturan sebaliknya berlaku selagi kerangkanya gelap: di tempat yang latarnya
+gelap, tanda merek diputihkan dengan saringan CSS `brightness(0) invert(1)`,
+bukan dengan menggambar ulang berkasnya. Berkas aslinya dibiarkan apa adanya
+karena favicon memakai berkas yang sama dan di sana latarnya terang. Diukur
+pada kerangka gelap saat itu: rata-rata kecerahan logo 27 dari 255 pada
+header dan 9 pada catatan kaki, sementara latar di belakangnya 22 dari 255;
+sesudah diputihkan menjadi 82 dan 67. Angka itu yang dipakai sebagai bukti,
+bukan pemeriksaan dengan mata.
 
-Angka hasil sesudah perbaikan, pada halaman yang berjalan: header 82,
-catatan kaki 67, dengan piksel putih murni yang sebelumnya tidak ada sama
-sekali. Angka ini yang dipakai sebagai bukti, bukan pemeriksaan dengan
-mata, karena logo gelap di latar gelap tidak memicu kegagalan lain di
-halaman dan hanya akan disadari pada layar yang benar-benar dilihat.
+Tanda air di modal ikut berubah karena alasannya sama: mark putih dengan
+opasitas 0,08 tidak akan terlihat sama sekali di atas permukaan putih, jadi
+yang dipakai mark aslinya dengan opasitas 0,07.
 
 ### Irama jarak tegak
 
@@ -461,7 +478,7 @@ keduanya terbaca sebagai satu kolom isi.
 | Berkas mesin di browser | `worker.js`, `detect.js` | Runner Node tidak ikut |
 | Batas ukuran berkas | 5 MB | Ditolak bila lebih |
 | Batas piksel | 2 MP | Diperkecil, bukan ditolak |
-| Palet | Sunset | Sama dengan aplikasi desktop |
+| Palet | Putih/abu landing | Token dari `.platform-shell` landing pusat |
 | Pratinjau jendela | `src/components/AppPreview.jsx` | Angka disalin dari aplikasi, bukan dikarang |
 | URL checkout | Dari katalog gateway | Jangan ditulis di kode |
 | Halaman bantuan setelah bayar | `/payment/complete` | Milik landing pusat |
@@ -555,6 +572,7 @@ gejalanya lebih cepat.
 | Waktu tunggu jauh lebih lama dari perkiraan | Kerapatan gambar, bukan ukurannya, yang menentukan biaya | Ukur dengan gambar bertekstur, bukan hanya foto halus |
 | Pratinjau jendela tidak mirip aplikasinya | Pratinjau digambar dari perkiraan, bukan disalin dari aplikasi | Ambil ukuran, urutan bagian, dan tulisan dari berkas aplikasi, lalu ukur kedua sisi |
 | Angka pada pratinjau saling bertentangan | Kemajuan, jumlah berkas, dan tulisan daftar diisi terpisah | Turunkan semuanya dari satu keadaan proses yang sama |
+| Tombol tutup modal muncul di kiri atas dan menimpa label | `.auth-modal > *:not(.auth-modal-watermark)` menyetel `position: relative` dan lebih spesifik daripada `.auth-modal-close`, sehingga `position: absolute` tombol itu kalah | Kecualikan tombol tutup pada aturan generiknya, lalu periksa posisinya di peramban — nilai `position` yang terhitung, bukan hanya yang tertulis di lembar gaya |
 
 ### Catatan waktu proses
 

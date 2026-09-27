@@ -1,12 +1,12 @@
 import { render, screen, waitFor } from "@testing-library/react";
-import { VectorizerPage } from "./VectorizerPage";
+import { UpscalerPage } from "./UpscalerPage";
 import { CHECKOUT_URL, HERO_HIGHLIGHTS, SITE } from "../content/site";
 
 describe("desktop product page", () => {
   beforeEach(() => { global.fetch = async () => ({ ok: true, json: async () => ({ authenticated: false }) }); });
 
   it("shows product copy, preview, and sign-in action", async () => {
-    render(<VectorizerPage />);
+    render(<UpscalerPage />);
     expect(screen.getByRole("heading", { name: new RegExp(SITE.title) })).toBeInTheDocument();
     expect(screen.getByText(SITE.shortName)).toBeInTheDocument();
     expect(screen.getByRole("img")).toHaveAttribute("aria-label", expect.stringContaining(SITE.product));
@@ -18,7 +18,7 @@ describe("desktop product page", () => {
   });
 
   it("links the purchase action to the configured production checkout", async () => {
-    render(<VectorizerPage />);
+    render(<UpscalerPage />);
     expect(screen.getByRole("link", { name: "Get licence" })).toHaveAttribute("href", CHECKOUT_URL);
     await waitFor(() => expect(screen.getByTestId("header-sign-in")).not.toBeDisabled());
   });

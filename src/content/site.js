@@ -10,13 +10,28 @@ export const SITE = Object.freeze({
   accentTitle: "with more detail",
 });
 
+// The desktop app is the source of these engines: the id it uses, the name it
+// shows, and the mode suffix it prints beside that name. The page must not
+// invent its own labels, because the preview exists to mirror the real window.
+export const ENGINES = Object.freeze([
+  { id: "upscale-v1", name: "Image", mode: "(Online)" },
+  { id: "upscale-esrgan", name: "Image", mode: "(Offline)" },
+  { id: "video-colab", name: "Video (Colab)", mode: "" },
+]);
+
+// One engine printed the way the app prints it: name and mode, so a mode suffix
+// that is already part of the name is never written twice.
+export function engineLabel(engine) {
+  return engine ? [engine.name, engine.mode].filter(Boolean).join(" ") : "";
+}
+
 export const CATALOG = Object.freeze({
   productId: "xix-upscaler",
   mayarProductId: "8f484b93-a67f-4a41-a679-f5294965dcdc",
   durationDays: 30,
   trialQuota: 10,
   maxActiveDevices: 1,
-  engines: ["Image Online", "Image ESRGAN Offline", "Video Colab Experimental"],
+  engines: ENGINES.map(engineLabel),
 });
 
 // Coolify supplies VITE_CHECKOUT_URL after the production Mayar product exists.
@@ -42,6 +57,14 @@ export const HERO_HIGHLIGHTS = [
   "Video workflow is clearly marked as experimental before use",
 ];
 
+// No sample image is shipped with the page. Every trial starts from a file the
+// visitor chooses.
+export const DEMO_LIMITS = {
+  fileBytes: 5 * 1024 * 1024,
+  maxPixels: 2_000_000,
+  accepted: "PNG, JPG, or WebP",
+};
+
 export const PREVIEW = Object.freeze({
   palette: { accent: "#9fe7ff", accent2: "#b487ff", accent3: "#d7f7ff", bgOne: "#196d96", bgTwo: "#553d91", bgThree: "#7ec8ed", bgBase: "#101a38" },
   brand: "UPSCALER",
@@ -52,8 +75,8 @@ export const PREVIEW = Object.freeze({
   timer: "2:08",
   status: "UPSCALE 64%",
   progress: 64,
-  selectedEngine: "Image ESRGAN Offline",
-  engines: [{ name: "Image Online", mode: "online" }, { name: "Image ESRGAN Offline", mode: "offline" }, { name: "Video Colab Experimental", mode: "experimental" }],
+  selectedEngine: "upscale-esrgan",
+  engines: ENGINES,
   advancedRows: [{ id: "scale", label: "SCALE", value: "4x", percent: 65 }, { id: "quality", label: "QUALITY", value: "92", percent: 78 }],
   files: [
     ["product-small.jpg", "done", "4x"], ["portrait-lowres.png", "done", "4x"], ["catalog-detail.webp", "done", "4x"],

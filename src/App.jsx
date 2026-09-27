@@ -1,8 +1,8 @@
 
-import { VectorizerPage } from "./components/VectorizerPage";
+import { UpscalerPage } from "./components/UpscalerPage";
 
 export function App() {
-  return <VectorizerPage />;
+  return <UpscalerPage />;
 }
 
 export default App;
