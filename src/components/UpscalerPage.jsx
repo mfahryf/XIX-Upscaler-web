@@ -42,7 +42,7 @@ export function UpscalerPage() {
 
       <main className="page-shell page-main">
         <section className="hero" aria-labelledby="hero-title"><div className="hero-copy">
-          <p className="section-label">Desktop application</p><h1 id="hero-title">{SITE.title} <span className="hero-accent">{SITE.accentTitle}</span></h1>
+          <h1 id="hero-title">{SITE.title} <span className="hero-accent">{SITE.accentTitle}</span></h1>
           <ul className="hero-highlights">{HERO_HIGHLIGHTS.map((highlight) => <li key={highlight}>{highlight}</li>)}</ul>
           <div className="hero-actions"><a className="button button-primary" href="#try"><Wand2 className="nav-icon" aria-hidden="true" />Start free trial</a><a className="button button-secondary" href="#download"><Download className="nav-icon" aria-hidden="true" />Download app</a></div>
         </div><AppPreview product={SITE.product} preview={PREVIEW} /></section>
