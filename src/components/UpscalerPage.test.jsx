@@ -11,7 +11,8 @@ describe("desktop product page", () => {
     expect(screen.getByText(SITE.shortName)).toBeInTheDocument();
     expect(screen.getByRole("img")).toHaveAttribute("aria-label", expect.stringContaining(SITE.product));
     expect(screen.getByTestId("header-sign-in")).toBeInTheDocument();
-    expect(document.querySelectorAll(".hero-highlights > li")).toHaveLength(HERO_HIGHLIGHTS.length);
+    expect(HERO_HIGHLIGHTS).toHaveLength(10);
+      expect(document.querySelectorAll(".hero-highlights > li")).toHaveLength(HERO_HIGHLIGHTS.length);
     expect(document.querySelectorAll(".download-points > li")).toHaveLength(3);
     expect(document.querySelectorAll(".plan-points > li")).toHaveLength(4);
     await waitFor(() => expect(screen.getByTestId("header-sign-in")).not.toBeDisabled());

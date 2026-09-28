@@ -4,9 +4,9 @@ import { Footer } from "./Footer";
 
 const MAIN = [
   { href: "#try", label: "Try free" },
-  { href: "mailto:hello@xixlabs.net", label: "Support" },
+  { href: "https://wa.me/6281395192226", label: "Support" },
 ];
-const LEGAL = [{ href: "/healthz", label: "Service status" }];
+const LEGAL = [{ href: "https://chat.whatsapp.com/LjygdVs4fZqHQHq3ME0FaV", label: "Community" }];
 const COPYRIGHT = { text: "(c) 2026 XIXLabs", license: "All rights reserved" };
 
 function renderFooter(props = {}) {
@@ -37,13 +37,13 @@ describe("Footer", () => {
     expect(within(nav).getByRole("link", { name: "Try free" })).toHaveAttribute("href", "#try");
     expect(within(nav).getByRole("link", { name: "Support" })).toHaveAttribute(
       "href",
-      "mailto:hello@xixlabs.net"
+      "https://wa.me/6281395192226"
     );
   });
 
   it("menampilkan tautan legal", () => {
     renderFooter();
-    expect(screen.getByRole("link", { name: "Service status" })).toHaveAttribute("href", "/healthz");
+    expect(screen.getByRole("link", { name: "Community" })).toHaveAttribute("href", "https://chat.whatsapp.com/LjygdVs4fZqHQHq3ME0FaV");
   });
 
   // Baris sosial disembunyikan saat kosong, supaya halaman tidak menampilkan

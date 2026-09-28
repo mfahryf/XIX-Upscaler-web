@@ -35,7 +35,7 @@ export const CATALOG = Object.freeze({
 });
 
 // Coolify supplies VITE_CHECKOUT_URL after the production Mayar product exists.
-export const CHECKOUT_URL = (import.meta.env?.VITE_CHECKOUT_URL || "https://xix-apps.myr.id/pl/xix-upscaler-monthly-license").trim();
+export const CHECKOUT_URL = (import.meta.env?.VITE_CHECKOUT_URL || "https://xixlabs.net/buy/upscaler").trim();
 export const DOWNLOAD_URL = (
   import.meta.env?.VITE_DOWNLOAD_URL ||
   "https://github.com/mfahryf/XIX-Upscaler-release/releases/latest/download/Upscaler-latest-x64-setup.exe"
@@ -92,8 +92,8 @@ export const PREVIEW = Object.freeze({
 
 export const FOOTER_LINKS = Object.freeze({
   social: [],
-  main: [{ href: "#download", label: "Download" }, { href: "mailto:hello@xixlabs.net", label: "Support" }],
-  legal: [{ href: "/healthz", label: "Service status" }, { href: "https://xixlabs.net", label: "XIXLabs" }],
+  main: [{ href: "#download", label: "Download" }, { href: "https://wa.me/6281395192226", label: "Support" }],
+  legal: [{ href: "https://chat.whatsapp.com/LjygdVs4fZqHQHq3ME0FaV", label: "Community" }, { href: "https://xixlabs.net", label: "XIXLabs" }],
 });
 
 export const COPYRIGHT = Object.freeze({ text: "© " + new Date().getFullYear() + " XIXLabs", license: "All rights reserved" });
