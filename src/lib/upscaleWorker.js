@@ -19,12 +19,9 @@
 // only way the model can run on the visitor's GPU from a page.
 import * as ort from "onnxruntime-web/webgpu";
 
-// Runtime ini melaporkan dua hal yang tidak bisa ditindaklanjuti dari sini:
-// deteksi vendor CPU yang gagal di WASM, dan powerPreference yang memang
-// diabaikan Chromium di Windows (crbug.com/369219127). Keduanya hanya
-// mengotori konsol pengunjung, jadi diturunkan ke level error supaya kegagalan
-// yang sungguhan tetap terlihat.
-ort.env.logLevel = "error";
+// Catatan: `ort.env.logLevel` tidak menyenyapkan peringatan powerPreference di
+// Windows. Pesan itu dipancarkan dari WASM lewat callback JavaScript langsung,
+// jadi tidak ada opsi runtime yang bisa menurunkannya.
 
 const TILE = 128;
 const OVERLAP = 16;
@@ -88,11 +85,9 @@ function toByte(value) {
   return Math.round(clamped * 255);
 }
 
-// Beberapa petak dikerjakan bersamaan supaya GPU tidak menganggur menunggu satu
-// petak selesai sebelum menyusun petak berikutnya. Tiga cukup untuk menutupi
-// latensi tanpa menumpuk memori; pada backend CPU yang satu utas hasilnya sama
-// saja karena runtime menjalankan permintaan secara berurutan.
-const CONCURRENCY = 3;
+// Petak dikerjakan satu per satu, berurutan. Beberapa `session.run()` bersamaan
+// pada sesi yang sama tidak aman: runtime menyimpan keadaan bersama per sesi,
+// dan menjalankannya paralel membuat proses berhenti tanpa progres sama sekali.
 
 async function upscale(rgba, width, height, scale, onProgress, pageBase) {
   const session = await sessionFor(scale, pageBase);
@@ -107,18 +102,16 @@ async function upscale(rgba, width, height, scale, onProgress, pageBase) {
   const inputName = session.inputNames[0];
   const outputName = session.outputNames[0];
   const srcX = OVERLAP * scale;
+  // Satu buffer dipakai ulang untuk tiap petak; aman karena petak tidak
+  // dikerjakan bersamaan.
+  const tile = new Uint8ClampedArray(TILE * TILE * 3);
   let completed = 0;
-  let next = 0;
 
   async function runTile(index) {
     const originX = (index % cols) * CORE;
     const originY = Math.floor(index / cols) * CORE;
     const copyWidth = Math.min(CORE, width - originX);
     const copyHeight = Math.min(CORE, height - originY);
-    // Buffer petak dibuat per petak, bukan dipakai bersama: beberapa petak
-    // berjalan bersamaan dan yang satu tidak boleh menimpa isi yang lain saat
-    // menunggu model selesai.
-    const tile = new Uint8ClampedArray(TILE * TILE * 3);
 
     for (let ty = 0; ty < TILE; ty += 1) {
       const sy = reflected(originY + ty - OVERLAP, height);
@@ -154,23 +147,14 @@ async function upscale(rgba, width, height, scale, onProgress, pageBase) {
     }
   }
 
-  // Tiap pengambil mengambil petak berikutnya sampai habis; dengan begitu
-  // petak dibagi rata tanpa daftar tunggu terpisah.
-  async function drain() {
-    for (;;) {
-      const index = next;
-      next += 1;
-      if (index >= total) return;
-      await runTile(index);
-      completed += 1;
-      onProgress({
-        label: "Upscaling " + Math.round((completed / total) * 100) + "%",
-        fraction: completed / total,
-      });
-    }
+  for (let index = 0; index < total; index += 1) {
+    await runTile(index);
+    completed += 1;
+    onProgress({
+      label: "Upscaling " + Math.round((completed / total) * 100) + "%",
+      fraction: completed / total,
+    });
   }
-
-  await Promise.all(Array.from({ length: Math.min(CONCURRENCY, total) }, drain));
 
   return { pixels: output, width: outputWidth, height: outputHeight };
 }
