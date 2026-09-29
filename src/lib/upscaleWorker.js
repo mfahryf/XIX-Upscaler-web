@@ -81,64 +81,89 @@ function toByte(value) {
   return Math.round(clamped * 255);
 }
 
-async function upscale(rgba, width, height, scale, onProgress) {
-  const session = await sessionFor(scale);
+// Beberapa petak dikerjakan bersamaan supaya GPU tidak menganggur menunggu satu
+// petak selesai sebelum menyusun petak berikutnya. Tiga cukup untuk menutupi
+// latensi tanpa menumpuk memori; pada backend CPU yang satu utas hasilnya sama
+// saja karena runtime menjalankan permintaan secara berurutan.
+const CONCURRENCY = 3;
+
+async function upscale(rgba, width, height, scale, onProgress, pageBase) {
+  const session = await sessionFor(scale, pageBase);
   const cols = Math.ceil(width / CORE);
   const rows = Math.ceil(height / CORE);
   const total = cols * rows;
   const outputWidth = width * scale;
   const outputHeight = height * scale;
   const output = new Uint8ClampedArray(outputWidth * outputHeight * 4);
-  const tile = new Uint8ClampedArray(TILE * TILE * 3);
   const outSide = TILE * scale;
-  const done = { count: 0 };
+  const expected = outSide * outSide;
+  const inputName = session.inputNames[0];
+  const outputName = session.outputNames[0];
+  const srcX = OVERLAP * scale;
+  let completed = 0;
+  let next = 0;
 
-  for (let row = 0; row < rows; row += 1) {
-    for (let col = 0; col < cols; col += 1) {
-      const originX = col * CORE;
-      const originY = row * CORE;
-      const copyWidth = Math.min(CORE, width - originX);
-      const copyHeight = Math.min(CORE, height - originY);
+  async function runTile(index) {
+    const originX = (index % cols) * CORE;
+    const originY = Math.floor(index / cols) * CORE;
+    const copyWidth = Math.min(CORE, width - originX);
+    const copyHeight = Math.min(CORE, height - originY);
+    // Buffer petak dibuat per petak, bukan dipakai bersama: beberapa petak
+    // berjalan bersamaan dan yang satu tidak boleh menimpa isi yang lain saat
+    // menunggu model selesai.
+    const tile = new Uint8ClampedArray(TILE * TILE * 3);
 
-      for (let ty = 0; ty < TILE; ty += 1) {
-        const sy = reflected(originY + ty - OVERLAP, height);
-        for (let tx = 0; tx < TILE; tx += 1) {
-          const sx = reflected(originX + tx - OVERLAP, width);
-          const src = (sy * width + sx) * 4;
-          const dst = (ty * TILE + tx) * 3;
-          tile[dst] = rgba[src];
-          tile[dst + 1] = rgba[src + 1];
-          tile[dst + 2] = rgba[src + 2];
-        }
+    for (let ty = 0; ty < TILE; ty += 1) {
+      const sy = reflected(originY + ty - OVERLAP, height);
+      for (let tx = 0; tx < TILE; tx += 1) {
+        const sx = reflected(originX + tx - OVERLAP, width);
+        const src = (sy * width + sx) * 4;
+        const dst = (ty * TILE + tx) * 3;
+        tile[dst] = rgba[src];
+        tile[dst + 1] = rgba[src + 1];
+        tile[dst + 2] = rgba[src + 2];
       }
+    }
 
-      const input = new ort.Tensor("float32", toChw(tile), [1, 3, TILE, TILE]);
-      const results = await session.run({ [session.inputNames[0]]: input });
-      const out = results[session.outputNames[0]];
-      const values = out.data;
-      const expected = outSide * outSide;
-      if (out.dims[0] !== 1 || out.dims[1] !== 3 || out.dims[2] !== outSide || out.dims[3] !== outSide) {
-        throw new Error("Unexpected model output shape: " + out.dims.join("x"));
+    const input = new ort.Tensor("float32", toChw(tile), [1, 3, TILE, TILE]);
+    const results = await session.run({ [inputName]: input });
+    const out = results[outputName];
+    const values = out.data;
+    if (out.dims[0] !== 1 || out.dims[1] !== 3 || out.dims[2] !== outSide || out.dims[3] !== outSide) {
+      throw new Error("Unexpected model output shape: " + out.dims.join("x"));
+    }
+
+    for (let y = 0; y < copyHeight * scale; y += 1) {
+      const srcRow = (OVERLAP * scale + y) * outSide;
+      const dstRow = (originY * scale + y) * outputWidth;
+      for (let x = 0; x < copyWidth * scale; x += 1) {
+        const index = srcRow + srcX + x;
+        const target = (dstRow + originX * scale + x) * 4;
+        output[target] = toByte(values[index]);
+        output[target + 1] = toByte(values[expected + index]);
+        output[target + 2] = toByte(values[expected * 2 + index]);
+        output[target + 3] = 255;
       }
-
-      const srcX = OVERLAP * scale;
-      for (let y = 0; y < copyHeight * scale; y += 1) {
-        const srcRow = (OVERLAP * scale + y) * outSide;
-        const dstRow = (originY * scale + y) * outputWidth;
-        for (let x = 0; x < copyWidth * scale; x += 1) {
-          const index = srcRow + srcX + x;
-          const target = (dstRow + originX * scale + x) * 4;
-          output[target] = toByte(values[index]);
-          output[target + 1] = toByte(values[expected + index]);
-          output[target + 2] = toByte(values[expected * 2 + index]);
-          output[target + 3] = 255;
-        }
-      }
-
-      done.count += 1;
-      onProgress({ label: "Upscaling tile " + done.count + " of " + total, fraction: done.count / total });
     }
   }
+
+  // Tiap pengambil mengambil petak berikutnya sampai habis; dengan begitu
+  // petak dibagi rata tanpa daftar tunggu terpisah.
+  async function drain() {
+    for (;;) {
+      const index = next;
+      next += 1;
+      if (index >= total) return;
+      await runTile(index);
+      completed += 1;
+      onProgress({
+        label: "Upscaling " + Math.round((completed / total) * 100) + "%",
+        fraction: completed / total,
+      });
+    }
+  }
+
+  await Promise.all(Array.from({ length: Math.min(CONCURRENCY, total) }, drain));
 
   return { pixels: output, width: outputWidth, height: outputHeight };
 }
@@ -146,10 +171,11 @@ async function upscale(rgba, width, height, scale, onProgress) {
 self.onmessage = async (event) => {
   const { id, rgba, width, height, scale, base } = event.data || {};
   try {
-    await sessionFor(scale, base);
+    // Sesi model dibuat di dalam upscale() dengan base halaman yang sama,
+    // jadi tidak perlu disiapkan lagi di sini.
     const result = await upscale(rgba, width, height, scale, (progress) => {
       self.postMessage({ id, type: "progress", ...progress });
-    });
+    }, base);
     self.postMessage(
       { id, type: "done", width: result.width, height: result.height, pixels: result.pixels },
       [result.pixels.buffer]
