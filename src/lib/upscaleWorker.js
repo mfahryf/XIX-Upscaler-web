@@ -41,23 +41,34 @@ function modelBase(pageBase) {
   return new URL("models/", new URL(base, self.location.origin)).href;
 }
 
-const sessions = new Map();
+// Satu antrean petak boleh berjalan paralel, tetapi satu sesi tidak: runtime
+// menyimpan keadaan bersama per sesi, dan menjalankan dua `run()` sekaligus di
+// dalamnya membuat proses berhenti tanpa progres. Tiap antrean karena itu
+// memakai sesi sendiri, dibuat sesuai kebutuhan lalu dipakai ulang.
+const sessionPools = new Map();
 
-async function sessionFor(scale, pageBase) {
-  if (sessions.has(scale)) return sessions.get(scale);
+function sessionFor(scale, pageBase, lane) {
   const spec = MODELS[scale];
-  if (!spec) throw new Error("Unsupported scale: " + scale);
-  const created = ort.InferenceSession.create(modelBase(pageBase) + spec.file, {
-    // WebGPU first, with the CPU build as the fallback for a browser or device
-    // that cannot provide a GPU adapter. It matters because the model takes
-    // about 1.6 seconds per tile on a single CPU thread — the runtime's
-    // multi-threaded build needs cross-origin isolation, which this page does
-    // not have — so a two-megapixel photo would take minutes.
-    executionProviders: ["webgpu", "wasm"],
-    graphOptimizationLevel: "all",
-  });
-  sessions.set(scale, created);
-  return created;
+  if (!spec) return Promise.reject(new Error("Unsupported scale: " + scale));
+  let pool = sessionPools.get(scale);
+  if (!pool) {
+    pool = [];
+    sessionPools.set(scale, pool);
+  }
+  // Yang disimpan adalah promise-nya, bukan hasilnya, supaya dua antrean yang
+  // meminta jalur yang sama bersamaan tetap berbagi satu sesi.
+  if (!pool[lane]) {
+    pool[lane] = ort.InferenceSession.create(modelBase(pageBase) + spec.file, {
+      // WebGPU first, with the CPU build as the fallback for a browser or device
+      // that cannot provide a GPU adapter. It matters because the model takes
+      // about 1.6 seconds per tile on a single CPU thread — the runtime's
+      // multi-threaded build needs cross-origin isolation, which this page does
+      // not have — so a two-megapixel photo would take minutes.
+      executionProviders: ["webgpu", "wasm"],
+      graphOptimizationLevel: "all",
+    });
+  }
+  return pool[lane];
 }
 
 // Mirrors the app's `reflected`: the image edge folds back on itself rather than
@@ -85,76 +96,91 @@ function toByte(value) {
   return Math.round(clamped * 255);
 }
 
-// Petak dikerjakan satu per satu, berurutan. Beberapa `session.run()` bersamaan
-// pada sesi yang sama tidak aman: runtime menyimpan keadaan bersama per sesi,
-// dan menjalankannya paralel membuat proses berhenti tanpa progres sama sekali.
+// Berapa antrean berjalan bersamaan. Tiap antrean butuh sesinya sendiri, jadi
+// angka ini menentukan berapa salinan model yang ditahan di memori dan VRAM.
+const LANES = 3;
 
 async function upscale(rgba, width, height, scale, onProgress, pageBase) {
-  const session = await sessionFor(scale, pageBase);
   const cols = Math.ceil(width / CORE);
   const rows = Math.ceil(height / CORE);
   const total = cols * rows;
+  const laneCount = Math.min(LANES, total);
+  // Semua sesi disiapkan lebih dulu supaya waktunya masuk ke tahap pemuatan
+  // model, bukan ke sela-sela pemrosesan petak.
+  const pool = await Promise.all(
+    Array.from({ length: laneCount }, (unused, lane) => sessionFor(scale, pageBase, lane)),
+  );
   const outputWidth = width * scale;
   const outputHeight = height * scale;
   const output = new Uint8ClampedArray(outputWidth * outputHeight * 4);
   const outSide = TILE * scale;
   const expected = outSide * outSide;
-  const inputName = session.inputNames[0];
-  const outputName = session.outputNames[0];
   const srcX = OVERLAP * scale;
-  // Satu buffer dipakai ulang untuk tiap petak; aman karena petak tidak
-  // dikerjakan bersamaan.
-  const tile = new Uint8ClampedArray(TILE * TILE * 3);
   let completed = 0;
+  let next = 0;
 
-  async function runTile(index) {
-    const originX = (index % cols) * CORE;
-    const originY = Math.floor(index / cols) * CORE;
-    const copyWidth = Math.min(CORE, width - originX);
-    const copyHeight = Math.min(CORE, height - originY);
+  // Tiap antrean mengambil petak berikutnya sampai habis, dan tiap petak
+  // menulis ke wilayahnya sendiri di `output`, jadi beberapa petak boleh
+  // selesai bersamaan tanpa saling menimpa.
+  async function runTile(session, laneTiles) {
+    for (;;) {
+      const index = next;
+      next += 1;
+      if (index >= total) return;
 
-    for (let ty = 0; ty < TILE; ty += 1) {
-      const sy = reflected(originY + ty - OVERLAP, height);
-      for (let tx = 0; tx < TILE; tx += 1) {
-        const sx = reflected(originX + tx - OVERLAP, width);
-        const src = (sy * width + sx) * 4;
-        const dst = (ty * TILE + tx) * 3;
-        tile[dst] = rgba[src];
-        tile[dst + 1] = rgba[src + 1];
-        tile[dst + 2] = rgba[src + 2];
+      const originX = (index % cols) * CORE;
+      const originY = Math.floor(index / cols) * CORE;
+      const copyWidth = Math.min(CORE, width - originX);
+      const copyHeight = Math.min(CORE, height - originY);
+
+      for (let ty = 0; ty < TILE; ty += 1) {
+        const sy = reflected(originY + ty - OVERLAP, height);
+        for (let tx = 0; tx < TILE; tx += 1) {
+          const sx = reflected(originX + tx - OVERLAP, width);
+          const src = (sy * width + sx) * 4;
+          const dst = (ty * TILE + tx) * 3;
+          laneTiles[dst] = rgba[src];
+          laneTiles[dst + 1] = rgba[src + 1];
+          laneTiles[dst + 2] = rgba[src + 2];
+        }
       }
-    }
 
-    const input = new ort.Tensor("float32", toChw(tile), [1, 3, TILE, TILE]);
-    const results = await session.run({ [inputName]: input });
-    const out = results[outputName];
-    const values = out.data;
-    if (out.dims[0] !== 1 || out.dims[1] !== 3 || out.dims[2] !== outSide || out.dims[3] !== outSide) {
-      throw new Error("Unexpected model output shape: " + out.dims.join("x"));
-    }
-
-    for (let y = 0; y < copyHeight * scale; y += 1) {
-      const srcRow = (OVERLAP * scale + y) * outSide;
-      const dstRow = (originY * scale + y) * outputWidth;
-      for (let x = 0; x < copyWidth * scale; x += 1) {
-        const index = srcRow + srcX + x;
-        const target = (dstRow + originX * scale + x) * 4;
-        output[target] = toByte(values[index]);
-        output[target + 1] = toByte(values[expected + index]);
-        output[target + 2] = toByte(values[expected * 2 + index]);
-        output[target + 3] = 255;
+      const input = new ort.Tensor("float32", toChw(laneTiles), [1, 3, TILE, TILE]);
+      const results = await session.run({ [session.inputNames[0]]: input });
+      const out = results[session.outputNames[0]];
+      const values = out.data;
+      if (out.dims[0] !== 1 || out.dims[1] !== 3 || out.dims[2] !== outSide || out.dims[3] !== outSide) {
+        throw new Error("Unexpected model output shape: " + out.dims.join("x"));
       }
+
+      for (let y = 0; y < copyHeight * scale; y += 1) {
+        const srcRow = (OVERLAP * scale + y) * outSide;
+        const dstRow = (originY * scale + y) * outputWidth;
+        for (let x = 0; x < copyWidth * scale; x += 1) {
+          const pick = srcRow + srcX + x;
+          const target = (dstRow + originX * scale + x) * 4;
+          output[target] = toByte(values[pick]);
+          output[target + 1] = toByte(values[expected + pick]);
+          output[target + 2] = toByte(values[expected * 2 + pick]);
+          output[target + 3] = 255;
+        }
+      }
+
+      completed += 1;
+      onProgress({
+        label: "Upscaling " + Math.round((completed / total) * 100) + "%",
+        fraction: completed / total,
+      });
     }
   }
 
-  for (let index = 0; index < total; index += 1) {
-    await runTile(index);
-    completed += 1;
-    onProgress({
-      label: "Upscaling " + Math.round((completed / total) * 100) + "%",
-      fraction: completed / total,
-    });
-  }
+  await Promise.all(
+    pool.map((session) =>
+      // Buffer petak milik tiap antrean: dipakai ulang antar petak, tetapi tidak
+      // boleh dibagi antar antrean yang berjalan bersamaan.
+      runTile(session, new Uint8ClampedArray(TILE * TILE * 3)),
+    ),
+  );
 
   return { pixels: output, width: outputWidth, height: outputHeight };
 }
