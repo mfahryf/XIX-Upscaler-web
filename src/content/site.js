@@ -27,6 +27,12 @@ export function engineLabel(engine) {
 
 export const CATALOG = Object.freeze({
   productId: "xix-upscaler",
+  // The gateway catalog stays the source of truth for the price; when it
+  // changes there, match it here. The page states the amount itself instead of
+  // deferring to the checkout page, so the price is visible before the visitor
+  // commits to leaving the site.
+  priceAmount: 49000,
+  currency: "IDR",
   mayarProductId: "8f484b93-a67f-4a41-a679-f5294965dcdc",
   durationDays: 30,
   trialQuota: 10,
@@ -41,7 +47,10 @@ export const DOWNLOAD_URL = (
   "https://xixlabs.net/download/upscaler"
 ).trim();
 
-export const PLAN_LABEL = "Price shown at checkout";
+export const PLAN_LABEL = (() => {
+  const amount = CATALOG.priceAmount.toLocaleString("en-US");
+  return CATALOG.currency + " " + amount + " / month";
+})();
 export const PLAN_POINTS = [
   `${CATALOG.trialQuota} successful files total before a licence is required`,
   `Valid for ${CATALOG.durationDays} days from payment`,
