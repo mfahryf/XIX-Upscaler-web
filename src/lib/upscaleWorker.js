@@ -19,6 +19,13 @@
 // only way the model can run on the visitor's GPU from a page.
 import * as ort from "onnxruntime-web/webgpu";
 
+// Runtime ini melaporkan dua hal yang tidak bisa ditindaklanjuti dari sini:
+// deteksi vendor CPU yang gagal di WASM, dan powerPreference yang memang
+// diabaikan Chromium di Windows (crbug.com/369219127). Keduanya hanya
+// mengotori konsol pengunjung, jadi diturunkan ke level error supaya kegagalan
+// yang sungguhan tetap terlihat.
+ort.env.logLevel = "error";
+
 const TILE = 128;
 const OVERLAP = 16;
 const CORE = TILE - OVERLAP * 2;
