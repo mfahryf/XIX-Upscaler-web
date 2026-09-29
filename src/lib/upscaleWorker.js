@@ -58,7 +58,7 @@ function sessionFor(scale, pageBase, lane) {
   // Yang disimpan adalah promise-nya, bukan hasilnya, supaya dua antrean yang
   // meminta jalur yang sama bersamaan tetap berbagi satu sesi.
   if (!pool[lane]) {
-    pool[lane] = ort.InferenceSession.create(modelBase(pageBase) + spec.file, {
+    const created = ort.InferenceSession.create(modelBase(pageBase) + spec.file, {
       // WebGPU first, with the CPU build as the fallback for a browser or device
       // that cannot provide a GPU adapter. It matters because the model takes
       // about 1.6 seconds per tile on a single CPU thread — the runtime's
@@ -67,6 +67,13 @@ function sessionFor(scale, pageBase, lane) {
       executionProviders: ["webgpu", "wasm"],
       graphOptimizationLevel: "all",
     });
+    // Sesi yang gagal dibuat tidak boleh tersimpan: kalau dibiarkan, jalur ini
+    // akan mengembalikan kegagalan yang sama pada setiap percobaan berikutnya,
+    // termasuk sesudah penyebabnya hilang.
+    created.catch(() => {
+      if (pool[lane] === created) delete pool[lane];
+    });
+    pool[lane] = created;
   }
   return pool[lane];
 }
@@ -105,11 +112,15 @@ async function upscale(rgba, width, height, scale, onProgress, pageBase) {
   const rows = Math.ceil(height / CORE);
   const total = cols * rows;
   const laneCount = Math.min(LANES, total);
-  // Semua sesi disiapkan lebih dulu supaya waktunya masuk ke tahap pemuatan
-  // model, bukan ke sela-sela pemrosesan petak.
-  const pool = await Promise.all(
-    Array.from({ length: laneCount }, (unused, lane) => sessionFor(scale, pageBase, lane)),
-  );
+  // Sesi disiapkan satu per satu. Runtime hanya mengizinkan satu pembuatan
+  // sesi WebGPU berjalan pada satu waktu — permintaan kedua ditolak dengan
+  // "another WebGPU EP inference session is being created" — sehingga membuat
+  // beberapa sesi sekaligus selalu gagal. Sesudah dibuat, semuanya boleh hidup
+  // bersamaan dan dipakai paralel.
+  const pool = [];
+  for (let lane = 0; lane < laneCount; lane += 1) {
+    pool.push(await sessionFor(scale, pageBase, lane));
+  }
   const outputWidth = width * scale;
   const outputHeight = height * scale;
   const output = new Uint8ClampedArray(outputWidth * outputHeight * 4);
